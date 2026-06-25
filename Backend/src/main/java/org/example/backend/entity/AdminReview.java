@@ -17,7 +17,7 @@ public class AdminReview {
     @Column(nullable = false)
     private LocalDateTime reviewedAt = LocalDateTime.now();
 
-    // مدیر
+
     @ManyToOne
     @JoinColumn(name = "admin_id", nullable = false)
     private User admin;
