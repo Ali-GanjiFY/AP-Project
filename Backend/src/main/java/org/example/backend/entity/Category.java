@@ -20,6 +20,13 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Advertisement> advertisements;
 
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory")
+    private List<Category> subCategories;
+
     // Constructors
     public Category() {}
 
