@@ -1,4 +1,5 @@
-```java
+
+
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
@@ -36,4 +37,4 @@ public class AdvertisementImage {
     public Advertisement getAdvertisement() { return advertisement; }
     public void setAdvertisement(Advertisement advertisement) { this.advertisement = advertisement; }
 }
-```
+
