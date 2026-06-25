@@ -14,6 +14,9 @@ public class City {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column
+    private String province;
+
     @OneToMany(mappedBy = "city")
     private List<Advertisement> advertisements;
 
@@ -33,4 +36,11 @@ public class City {
 
     public List<Advertisement> getAdvertisements() { return advertisements; }
     public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
+
+    public String getProvince() {
+        return province;
+    }
+    public void setProvince(String province) {
+        this.province = province;
+    }
 }
