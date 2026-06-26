@@ -13,7 +13,7 @@ public class AdvertisementImage {
     private Long id;
 
     @Column(nullable = false)
-    private String imagePath;   // مسیر فایل تصویر
+    private String imagePath;
 
     @ManyToOne
     @JoinColumn(name = "advertisement_id", nullable = false)

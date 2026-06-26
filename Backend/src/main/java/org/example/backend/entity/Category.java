@@ -20,6 +20,13 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Advertisement> advertisements;
 
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory")
+    private List<Category> subCategories;
+
     // Constructors
     public Category() {}
 
@@ -40,4 +47,18 @@ public class Category {
 
     public List<Advertisement> getAdvertisements() { return advertisements; }
     public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
+
+    public Category getParentCategory() {
+        return parentCategory;
+    }
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
+    }
+
+    public List<Category> getSubCategories() {
+        return subCategories;
+    }
+    public void setSubCategories(List<Category> subCategories) {
+        this.subCategories = subCategories;
+    }
 }
