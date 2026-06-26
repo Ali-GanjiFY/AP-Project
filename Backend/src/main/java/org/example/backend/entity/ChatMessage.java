@@ -17,6 +17,9 @@ public class ChatMessage {
     @Column(nullable = false)
     private LocalDateTime sentAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private boolean seen = false;
+
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
@@ -57,6 +60,10 @@ public class ChatMessage {
         return conversation;
     }
 
+    public boolean isSeen() {
+        return seen;
+    }
+
     // Setters
     public void setId(Long id) {
         this.id = id;
@@ -76,5 +83,9 @@ public class ChatMessage {
 
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 }
