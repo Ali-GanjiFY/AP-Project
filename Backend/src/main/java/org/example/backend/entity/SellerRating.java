@@ -23,10 +23,10 @@ public class SellerRating {
 
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
-    private User rater;
+    private User buyer;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id", nullable = false)
+    @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
     @ManyToOne
@@ -36,10 +36,10 @@ public class SellerRating {
     // Constructors
     public SellerRating() {}
 
-    public SellerRating(Integer score, String comment, User rater, User seller, Advertisement advertisement) {
+    public SellerRating(Integer score, String comment, User buyer, User seller, Advertisement advertisement) {
         this.score = score;
         this.comment = comment;
-        this.rater = rater;
+        this.buyer = buyer;
         this.seller = seller;
         this.advertisement = advertisement;
         this.ratedAt = LocalDateTime.now();
@@ -50,8 +50,8 @@ public class SellerRating {
         return ratedAt;
     }
 
-    public User getRater() {
-        return rater;
+    public User getBuyer() {
+        return buyer;
     }
 
     public Advertisement getAdvertisement() {
@@ -91,8 +91,8 @@ public class SellerRating {
         this.ratedAt = ratedAt;
     }
 
-    public void setRater(User rater) {
-        this.rater = rater;
+    public void setBuyer(User buyer) {
+        this.buyer = buyer;
     }
 
     public void setSeller(User seller) {
