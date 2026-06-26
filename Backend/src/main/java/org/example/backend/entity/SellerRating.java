@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "seller_ratings",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"rater_id", "advertisement_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"buyer_id", "advertisement_id"}))
 public class SellerRating {
 
     @Id
@@ -22,11 +22,11 @@ public class SellerRating {
     private LocalDateTime ratedAt = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "rater_id", nullable = false)
+    @JoinColumn(name = "buyer_id", nullable = false)
     private User rater;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "buyer_id", nullable = false)
     private User seller;
 
     @ManyToOne
