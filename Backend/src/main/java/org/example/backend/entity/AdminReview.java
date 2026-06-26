@@ -1,6 +1,8 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
+import org.example.backend.enums.AdvertisementStatus;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,20 +14,23 @@ public class AdminReview {
     private Long id;
 
     @Column(columnDefinition = "TEXT")
-    private String note;  // توضیح مدیر برای رد کردن آگهی
+    private String note;
 
     @Column(nullable = false)
     private LocalDateTime reviewedAt = LocalDateTime.now();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AdvertisementStatus decision;
 
     @ManyToOne
     @JoinColumn(name = "admin_id", nullable = false)
     private User admin;
 
-    // آگهی بررسی شده
     @OneToOne
     @JoinColumn(name = "advertisement_id", nullable = false)
     private Advertisement advertisement;
+
 
     // Constructors
     public AdminReview() {}
@@ -52,5 +57,12 @@ public class AdminReview {
 
     public Advertisement getAdvertisement() { return advertisement; }
     public void setAdvertisement(Advertisement advertisement) { this.advertisement = advertisement; }
+
+    public AdvertisementStatus getDecision() {
+        return decision;
+    }
+    public void setDecision(AdvertisementStatus decision) {
+        this.decision = decision;
+    }
 }
 
