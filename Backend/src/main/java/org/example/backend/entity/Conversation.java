@@ -16,6 +16,9 @@ public class Conversation {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column
+    private LocalDateTime lastMessageAt;
+
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
     private User buyer;
@@ -67,6 +70,10 @@ public class Conversation {
         return messages;
     }
 
+    public LocalDateTime getLastMessageAt() {
+        return lastMessageAt;
+    }
+
     // Setters
     public void setId(Long id) {
         this.id = id;
@@ -90,5 +97,9 @@ public class Conversation {
 
     public void setMessages(List<ChatMessage> messages) {
         this.messages = messages;
+    }
+
+    public void setLastMessageAt(LocalDateTime lastMessageAt) {
+        this.lastMessageAt = lastMessageAt;
     }
 }
