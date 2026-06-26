@@ -3,7 +3,7 @@ package org.example.backend.entity;
 import jakarta.persistence.*;
 import org.example.backend.enums.Role;
 import org.example.backend.enums.UserStatus;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -28,6 +28,9 @@ public class User {
 
     @Column(unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -59,7 +62,6 @@ public class User {
     }
 
     // Getters
-
     public Long getId() {
         return id;
     }
@@ -100,8 +102,11 @@ public class User {
         return favorites;
     }
 
-    // Setters
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
+    // Setters
     public void setId(Long id) {
         this.id = id;
     }
@@ -140,5 +145,9 @@ public class User {
 
     public void setFavorites(List<Favorite> favorites) {
         this.favorites = favorites;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
