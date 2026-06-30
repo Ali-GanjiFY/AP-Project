@@ -63,7 +63,7 @@ public class UserResponse {
     public UserStatus getStatus() {
         return status;
     }
-//
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
