@@ -1,4 +1,4 @@
-package org.example.backend.dto.response;
+package org.example.backend.dto;
 
 public class ErrorResponse {
 
