@@ -20,6 +20,7 @@ target/
 *.ipr
 out/
 srcTest
+docs/
 
 ### NetBeans ###
 /nbproject/private/
