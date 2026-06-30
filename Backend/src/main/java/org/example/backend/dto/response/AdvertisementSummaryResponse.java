@@ -3,7 +3,7 @@ package org.example.backend.dto.response;
 import org.example.backend.enums.AdvertisementStatus;
 import java.time.LocalDateTime;
 
-public class t  {
+public class AdvertisementSummaryResponse  {
 
     private final Long id;
     private final String title;
