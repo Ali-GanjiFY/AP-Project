@@ -11,14 +11,17 @@ public class CategoryRequest {
 
     private Long parentCategoryID;
 
+    private Boolean active;
+
     // Constructor
     public CategoryRequest() {
     }
 
-    public CategoryRequest(String name, String description, Long parentCategoryID) {
+    public CategoryRequest(String name, String description, Long parentCategoryID, Boolean active) {
         this.name = name;
         this.description = description;
         this.parentCategoryID = parentCategoryID;
+        this.active = active;
     }
 
     // Getters and Setters
@@ -41,5 +44,12 @@ public class CategoryRequest {
     }
     public void setParentCategoryID(Long parentCategoryID) {
         this.parentCategoryID = parentCategoryID;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
