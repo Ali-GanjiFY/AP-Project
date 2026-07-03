@@ -57,7 +57,7 @@ public class User {
         this.password = password;
         this.phone = phone;
         this.email = email;
-        this.role = Role.USER;
+        this.role = Role.NORMAL_USER;
         this.status = UserStatus.ACTIVE;
     }
 
