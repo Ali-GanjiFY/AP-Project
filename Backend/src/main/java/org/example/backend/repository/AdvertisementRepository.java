@@ -1,6 +1,7 @@
 package org.example.backend.repository;
 
 import org.example.backend.entity.Advertisement;
+import org.example.backend.entity.Category;
 import org.example.backend.entity.User;
 import org.example.backend.enums.AdvertisementStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     List<Advertisement> findByStatus(AdvertisementStatus status);
     List<Advertisement> findByOwner(User owner);
     List<Advertisement> findByStatusOrderByCreatedAtAsc(AdvertisementStatus status);
+
+    long countByCategory(Category category);
 }
