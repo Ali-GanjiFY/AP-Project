@@ -16,4 +16,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     List<Advertisement> findByStatusOrderByCreatedAtAsc(AdvertisementStatus status);
 
     long countByCategory(Category category);
+
+    long countByCity(City city);
 }
