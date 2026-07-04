@@ -12,5 +12,6 @@ import java.util.List;
 public interface SellerRatingRepository extends JpaRepository<SellerRating, Long> {
     List<SellerRating> findBySeller(User seller);
     boolean existsByBuyerAndAdvertisement(User buyer, Advertisement advertisement);
+    List<SellerRating> findByAdvertisement(Advertisement advertisement);
     long countBySeller(User seller);
 }
