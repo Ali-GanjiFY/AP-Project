@@ -73,6 +73,9 @@ public class SecurityConfig {
                                 "/docs/**"
                         ).permitAll()
 
+
+                        .requestMatchers(HttpMethod.GET, "/api/advertisements/mine").authenticated()
+
                         // read-only browsing is public, but ONLY for GET.
                         // Any future POST/PUT/DELETE on these paths (e.g. creating/
                         // editing an advertisement, or admin CRUD on categories/cities)
