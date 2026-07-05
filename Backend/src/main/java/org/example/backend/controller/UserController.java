@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// NOTE: @PreAuthorize below requires @EnableMethodSecurity on SecurityConfig.
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -24,10 +23,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Resolves the authenticated user's id from the JWT-backed Authentication,
-    // instead of trusting any id the client might send. If your UserDetails
-    // implementation already exposes the numeric id directly, swap this out
-    // for a cheaper lookup instead of hitting the repository by username.
     private Long currentUserId(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName()).getId();
     }

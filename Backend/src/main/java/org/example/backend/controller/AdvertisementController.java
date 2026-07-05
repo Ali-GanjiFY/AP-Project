@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// NOTE: @PreAuthorize below requires @EnableMethodSecurity on SecurityConfig.
 @RestController
 @RequestMapping("/api/advertisements")
 public class AdvertisementController {

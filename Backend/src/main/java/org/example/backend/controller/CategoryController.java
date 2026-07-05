@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// NOTE: @PreAuthorize below requires @EnableMethodSecurity on SecurityConfig.
-// This is defense-in-depth on top of the path rules already in SecurityConfig,
-// not a replacement for them.
 @RestController
 @RequestMapping("/api/categories")
 @Validated
