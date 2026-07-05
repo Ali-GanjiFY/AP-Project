@@ -2,6 +2,7 @@ package org.example.backend.repository;
 
 import org.example.backend.entity.Advertisement;
 import org.example.backend.entity.Category;
+import org.example.backend.entity.City;
 import org.example.backend.entity.User;
 import org.example.backend.enums.AdvertisementStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
