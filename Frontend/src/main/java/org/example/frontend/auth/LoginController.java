@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import javafx.application.Platform;
 import org.example.frontend.shared.NavigationService;
 
-
 public class LoginController {
 
     @FXML private TextField usernameField;
@@ -35,10 +34,11 @@ public class LoginController {
             // اعمال تغییرات روی UI باید در Thread اصلی JavaFX انجام شود
             Platform.runLater(() -> {
                 if ("SUCCESS".equals(result)) {
-                    showSuccess("ورود موفقیت‌آمیز بود! توکن دریافت شد.");
+                    showSuccess("ورود موفقیت‌آمیز بود! در حال انتقال...");
                     // TODO: در مرحله بعد جابجایی به صفحه اصلی (Dashboard) را اینجا می‌نویسیم
                 } else {
-                    showError(result);
+                    // ترجمه خطاها به فارسی
+                    showError(translateErrorMessage(result));
                 }
             });
         }).start();
@@ -49,6 +49,27 @@ public class LoginController {
         NavigationService.switchScene("/fxml/auth/register-view.fxml", "ثبت‌نام در سامانه");
     }
 
+    /**
+     * متد کمکی برای ترجمه خطاهای دریافتی از AuthService به فارسی
+     */
+    private String translateErrorMessage(String rawError) {
+        if (rawError == null) return "خطای نامشخصی رخ داده است.";
+
+        String cleanError = rawError.trim().toLowerCase();
+
+        if (cleanError.contains("invalid username or password") || cleanError.contains("bad credentials") || cleanError.contains("unauthorized")) {
+            return "نام کاربری یا رمز عبور اشتباه است.";
+        }
+        if (cleanError.contains("user not found")) {
+            return "کاربری با این مشخصات یافت نشد.";
+        }
+        if (cleanError.contains("connection refused") || cleanError.contains("network") || cleanError.contains("timeout")) {
+            return "برقراری ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.";
+        }
+
+        // بازگرداندن خطای اصلی در صورتی که ترجمه‌ای پیدا نشد
+        return rawError;
+    }
 
     private void showError(String message) {
         errorLabel.setText(message);
@@ -64,5 +85,3 @@ public class LoginController {
         errorLabel.setVisible(true);
     }
 }
-
-

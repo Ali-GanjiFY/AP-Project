@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import javafx.application.Platform;
 import org.example.frontend.shared.NavigationService;
 
-
 public class RegisterController {
 
     @FXML private TextField fullNameField;
@@ -47,7 +46,8 @@ public class RegisterController {
                     showSuccess("ثبت‌نام با موفقیت انجام شد! در حال انتقال...");
                     // TODO: در بخش بعد، انتقال مستقیم به داشبورد یا صفحه لاگین را می‌نویسیم
                 } else {
-                    showError(result);
+                    // ترجمه خطاها به فارسی
+                    showError(translateErrorMessage(result));
                 }
             });
         }).start();
@@ -58,6 +58,29 @@ public class RegisterController {
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
 
+    /**
+     * متد کمکی برای ترجمه خطاهای دریافتی از AuthService در بخش ثبت‌نام
+     */
+    private String translateErrorMessage(String rawError) {
+        if (rawError == null) return "خطای نامشخصی رخ داده است.";
+
+        String cleanError = rawError.trim().toLowerCase();
+
+        if (cleanError.contains("username already exists") || cleanError.contains("username is taken")) {
+            return "این نام کاربری قبلاً ثبت شده است.";
+        }
+        if (cleanError.contains("email already exists") || cleanError.contains("email is taken")) {
+            return "این آدرس ایمیل قبلاً ثبت شده است.";
+        }
+        if (cleanError.contains("phone already exists") || cleanError.contains("phone is taken")) {
+            return "این شماره تلفن قبلاً ثبت شده است.";
+        }
+        if (cleanError.contains("connection refused") || cleanError.contains("network") || cleanError.contains("timeout")) {
+            return "برقراری ارتباط با سرور برقرار نشد. اتصال اینترنت خود را بررسی کنید.";
+        }
+
+        return rawError;
+    }
 
     private void showError(String message) {
         errorLabel.setText(message);
@@ -73,4 +96,5 @@ public class RegisterController {
         errorLabel.setVisible(true);
     }
 }
+
 

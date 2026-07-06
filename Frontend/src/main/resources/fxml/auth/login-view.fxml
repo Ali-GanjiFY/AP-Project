@@ -7,6 +7,7 @@
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.example.frontend.auth.LoginController"
+           nodeOrientation="RIGHT_TO_LEFT"
            styleClass="scroll-container">
 
     <children>
@@ -21,8 +22,8 @@
 
             <Label text="ورود به حساب کاربری" styleClass="auth-title"/>
 
-            <!-- تغییر تراز به CENTER برای وسط‌چین شدن لیبل و فیلد نام کاربری -->
-            <VBox spacing="6.0" alignment="CENTER">
+            <!-- تراز VBox ها برای زبان‌های راست‌چین بهتر است CENTER_LEFT باشد تا لیبل‌ها سمت راستِ فیلد بایستند -->
+            <VBox spacing="6.0" alignment="CENTER_LEFT">
                 <Label text="نام کاربری:" styleClass="sub-label"/>
                 <TextField fx:id="usernameField"
                            promptText="نام کاربری"
@@ -30,8 +31,7 @@
                            prefWidth="360.0"/>
             </VBox>
 
-            <!-- تغییر تراز به CENTER برای وسط‌چین شدن لیبل و فیلد رمز عبور -->
-            <VBox spacing="6.0" alignment="CENTER">
+            <VBox spacing="6.0" alignment="CENTER_LEFT">
                 <Label text="رمز عبور:" styleClass="sub-label"/>
                 <PasswordField fx:id="passwordField"
                                promptText="رمز عبور"
@@ -61,5 +61,6 @@
         </VBox>
     </children>
 </StackPane>
+
 
 

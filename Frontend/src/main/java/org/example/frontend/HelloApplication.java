@@ -6,7 +6,7 @@ import org.example.frontend.shared.NavigationService;
 
 public class HelloApplication extends Application {
 
-    @Override
+    @Override  
     public void start(Stage stage) {
         // ثبت استیج اصلی در سرویس ناوبری
         NavigationService.setPrimaryStage(stage);
