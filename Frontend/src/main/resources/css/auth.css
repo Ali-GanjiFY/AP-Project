@@ -25,3 +25,17 @@
 .auth-link:hover {
     -fx-text-fill: -fx-primary-hover;
 }
+.sub-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-subtext-color;
+}
+
+.error-text {
+    -fx-text-fill: -fx-danger-color;
+    -fx-font-size: 13px;
+}
+
+/* فاصله دادن به کانتینر لاگین برای وسط‌چین شدن در صفحه اصلی */
+.root {
+    -fx-alignment: center;
+}
