@@ -1,0 +1,43 @@
+/* ===========================
+   CSS Variables for JavaFX App
+   =========================== */
+
+/* Theme Colors */
+:root {
+    /* Primary Colors */
+    -fx-primary-color: #4A6CF7;      /* رنگ اصلی */
+    -fx-primary-hover: #3D5EE6;      /* رنگ اصلی هنگام hover */
+
+    /* Accent Colors */
+    -fx-accent-color: #F7C948;       /* رنگ تاکیدی (زرد ملایم) */
+    -fx-accent-hover: #E6B63D;
+
+    /* Neutral Colors */
+    -fx-text-color: #333333;         /* رنگ متن اصلی */
+    -fx-subtext-color: #666666;
+    -fx-heading-color: #1A1A1A;
+
+    /* Background Colors */
+    -fx-background-light: #FFFFFF;
+    -fx-background-dark: #F3F4F6;    /* خاکستری خیلی روشن */
+    -fx-background-muted: #E5E7EB;   /* خاکستری متوسط */
+
+    /* Borders */
+    -fx-border-color: #D1D5DB;
+    -fx-border-hover: #B9C0CC;
+
+    /* Status Colors */
+    -fx-success-color: #34D399;      /* سبز */
+    -fx-warning-color: #FBBF24;      /* زرد */
+    -fx-danger-color: #EF4444;       /* قرمز */
+
+    /* Form Colors */
+    -fx-input-background: #FFFFFF;
+    -fx-input-border: #CBD5E1;
+    -fx-input-placeholder: #94A3B8;
+    -fx-input-focus-border: #4A6CF7;
+
+    /* Shadows */
+    -fx-shadow-light: rgba(0, 0, 0, 0.05);
+    -fx-shadow-medium: rgba(0, 0, 0, 0.15);
+}
