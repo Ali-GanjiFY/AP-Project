@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.URL;
 
 public class NavigationService {
 
@@ -20,7 +21,7 @@ public class NavigationService {
     }
 
     /**
-     * تغییر صفحه فعلی به یک FXML جدید
+     * تغییر صفحه فعلی به یک FXML جدید به همراه اعمال خودکار تم‌ها
      * @param fxmlPath مسیر فایل FXML نسبت به پوشه resources (مثلاً "/fxml/auth/register-view.fxml")
      * @param title عنوان پنجره
      */
@@ -36,10 +37,30 @@ public class NavigationService {
 
             Scene currentScene = primaryStage.getScene();
             if (currentScene == null) {
-                currentScene = new Scene(root, 450, 650);
+                // سایز اولیه پنجره (می‌توانید به دلخواه تغییر دهید، مثلاً 800 در 600)
+                currentScene = new Scene(root, 800, 600);
                 primaryStage.setScene(currentScene);
             } else {
                 currentScene.setRoot(root);
+            }
+
+            // پاک کردن استایل‌های قبلی برای جلوگیری از تداخل استایل صفحات مختلف
+            currentScene.getStylesheets().clear();
+
+            // لود کردن و اعمال فایل‌های CSS به صورت پویا و امن
+            URL variablesUri = NavigationService.class.getResource("/css/variables.css");
+            URL authUri = NavigationService.class.getResource("/css/auth.css");
+
+            if (variablesUri != null) {
+                currentScene.getStylesheets().add(variablesUri.toExternalForm());
+            } else {
+                System.err.println("هشدار: فایل variables.css در مسیر resources/css یافت نشد!");
+            }
+
+            if (authUri != null) {
+                currentScene.getStylesheets().add(authUri.toExternalForm());
+            } else {
+                System.err.println("هشدار: فایل auth.css در مسیر resources/css یافت نشد!");
             }
 
             primaryStage.setTitle(title);
@@ -50,4 +71,3 @@ public class NavigationService {
         }
     }
 }
-

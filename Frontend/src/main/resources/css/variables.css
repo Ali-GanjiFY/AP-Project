@@ -1,43 +1,39 @@
 /* ===========================
    CSS Variables for JavaFX App
+   GitHub Dark Theme (Fixed Names)
    =========================== */
 
-/* Theme Colors */
-:root {
-    /* Primary Colors */
-    -fx-primary-color: #4A6CF7;      /* رنگ اصلی */
-    -fx-primary-hover: #3D5EE6;      /* رنگ اصلی هنگام hover */
+.root {
+    /* Primary (Green) */
+    -fx-color-primary: #238636;
+    -fx-color-primary-hover: #2ea043;
 
-    /* Accent Colors */
-    -fx-accent-color: #F7C948;       /* رنگ تاکیدی (زرد ملایم) */
-    -fx-accent-hover: #E6B63D;
+    /* Accent / Link */
+    -fx-color-accent: #2f81f7;
+    -fx-color-accent-hover: #58a6ff;
 
-    /* Neutral Colors */
-    -fx-text-color: #333333;         /* رنگ متن اصلی */
-    -fx-subtext-color: #666666;
-    -fx-heading-color: #1A1A1A;
+    /* Text Colors */
+    -fx-color-text: #f0f6fc;
+    -fx-color-text-sub: #8b949e;
+    -fx-color-text-heading: #ffffff;
 
-    /* Background Colors */
-    -fx-background-light: #FFFFFF;
-    -fx-background-dark: #F3F4F6;    /* خاکستری خیلی روشن */
-    -fx-background-muted: #E5E7EB;   /* خاکستری متوسط */
+    /* Backgrounds */
+    -fx-color-bg-light: #161b22;
+    -fx-color-bg-dark: #0d1117;
+    -fx-color-bg-muted: #21262d;
 
     /* Borders */
-    -fx-border-color: #D1D5DB;
-    -fx-border-hover: #B9C0CC;
+    -fx-color-border: #30363d;
+    -fx-color-border-hover: #484f58;
 
     /* Status Colors */
-    -fx-success-color: #34D399;      /* سبز */
-    -fx-warning-color: #FBBF24;      /* زرد */
-    -fx-danger-color: #EF4444;       /* قرمز */
+    -fx-color-success: #3fb950;
+    -fx-color-warning: #d29922;
+    -fx-color-danger: #f85149;
 
-    /* Form Colors */
-    -fx-input-background: #FFFFFF;
-    -fx-input-border: #CBD5E1;
-    -fx-input-placeholder: #94A3B8;
-    -fx-input-focus-border: #4A6CF7;
-
-    /* Shadows */
-    -fx-shadow-light: rgba(0, 0, 0, 0.05);
-    -fx-shadow-medium: rgba(0, 0, 0, 0.15);
+    /* Input Styling */
+    -fx-color-input-bg: #0d1117;
+    -fx-color-input-border: #30363d;
+    -fx-color-input-placeholder: #8b949e;
+    -fx-color-input-focus: #2f81f7;
 }
