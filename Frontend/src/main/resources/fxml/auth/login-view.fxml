@@ -14,7 +14,8 @@
         <VBox alignment="CENTER"
               spacing="18.0"
               styleClass="auth-container"
-              maxWidth="460.0">
+              maxWidth="460.0"
+              maxHeight="-Infinity">
 
             <padding>
                 <Insets top="30.0" right="36.0" bottom="30.0" left="36.0"/>
@@ -22,7 +23,6 @@
 
             <Label text="ورود به حساب کاربری" styleClass="auth-title"/>
 
-            <!-- تراز VBox ها برای زبان‌های راست‌چین بهتر است CENTER_LEFT باشد تا لیبل‌ها سمت راستِ فیلد بایستند -->
             <VBox spacing="6.0" alignment="CENTER_LEFT">
                 <Label text="نام کاربری:" styleClass="sub-label"/>
                 <TextField fx:id="usernameField"
@@ -61,6 +61,3 @@
         </VBox>
     </children>
 </StackPane>
-
-
-
