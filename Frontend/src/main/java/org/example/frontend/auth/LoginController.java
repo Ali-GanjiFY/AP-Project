@@ -3,6 +3,8 @@ package org.example.frontend.auth;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.application.Platform;
+import org.example.frontend.shared.NavigationService;
+
 
 public class LoginController {
 
@@ -44,9 +46,9 @@ public class LoginController {
 
     @FXML
     private void navigateToRegister() {
-        System.out.println("هدایت به صفحه ثبت‌نام...");
-        // بعداً صفحه ثبت نام را اینجا باز می‌کنیم
+        NavigationService.switchScene("/fxml/auth/register-view.fxml", "ثبت‌نام در سامانه");
     }
+
 
     private void showError(String message) {
         errorLabel.setText(message);

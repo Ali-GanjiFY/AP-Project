@@ -39,3 +39,9 @@
 .root {
     -fx-alignment: center;
 }
+.scroll-container {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-fit-to-width: true;
+    -fx-fit-to-height: true;
+}

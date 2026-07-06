@@ -1,19 +1,25 @@
-package org.example.frontend;
+package org.example.frontend; // پکیج اصلی فرانت‌اند شما
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import org.example.frontend.shared.NavigationService;
 
 public class HelloApplication extends Application {
+
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage stage) {
+        // ثبت استیج اصلی در سرویس ناوبری
+        NavigationService.setPrimaryStage(stage);
+
+        // باز کردن صفحه لاگین به عنوان صفحه شروع
+        NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
+
+        stage.setWidth(450);
+        stage.setHeight(650);
+        stage.setResizable(false); // ثابت نگه داشتن اندازه پنجره برای فرم‌های ورود/ثبت‌نام
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
