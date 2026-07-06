@@ -1,0 +1,27 @@
+/* ===========================
+   Auth Forms (Login + Register)
+   =========================== */
+
+/* Container */
+.auth-container {
+    -fx-background-color: -fx-background-light;
+    -fx-padding: 24px;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, -fx-shadow-medium, 10, 0, 0, 2);
+}
+
+/* Titles */
+.auth-title {
+    -fx-text-fill: -fx-heading-color;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* Links */
+.auth-link {
+    -fx-text-fill: -fx-primary-color;
+}
+
+.auth-link:hover {
+    -fx-text-fill: -fx-primary-hover;
+}
