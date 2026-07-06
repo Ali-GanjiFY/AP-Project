@@ -69,5 +69,8 @@ public class NavigationService {
             System.err.println("خطا در بارگذاری فایل FXML: " + fxmlPath);
             e.printStackTrace();
         }
+        primaryStage.setMaximized(true);
+        primaryStage.setResizable(true);
+
     }
 }
