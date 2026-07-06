@@ -17,6 +17,9 @@ public class Category {
     @Column
     private String description;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @OneToMany(mappedBy = "category")
     private List<Advertisement> advertisements;
 
@@ -44,6 +47,13 @@ public class Category {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public List<Advertisement> getAdvertisements() { return advertisements; }
     public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }

@@ -7,14 +7,16 @@ public class CategoryResponse {
     private final String description;
     private final Long parentCategoryId;
     private final String parentCategoryName;
+    private final boolean active;
 
     public CategoryResponse(Long id, String name, String description,
-                            Long parentCategoryId, String parentCategoryName) {
+                            Long parentCategoryId, String parentCategoryName, boolean active) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.parentCategoryId = parentCategoryId;
         this.parentCategoryName = parentCategoryName;
+        this.active = active;
     }
 
     public Long getId() { return id; }
@@ -22,5 +24,5 @@ public class CategoryResponse {
     public String getDescription() { return description; }
     public Long getParentCategoryId() { return parentCategoryId; }
     public String getParentCategoryName() { return parentCategoryName; }
+    public boolean isActive() { return active; }
 }
-

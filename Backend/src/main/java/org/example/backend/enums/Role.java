@@ -1,6 +1,6 @@
 package org.example.backend.enums;
 
 public enum Role {
-    USER,
+    NORMAL_USER,
     ADMIN
 }
