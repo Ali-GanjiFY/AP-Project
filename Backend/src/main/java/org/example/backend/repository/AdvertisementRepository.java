@@ -1,22 +1,22 @@
 package org.example.backend.repository;
 
-import org.example.backend.entity.Advertisement;
-import org.example.backend.entity.Category;
-import org.example.backend.entity.City;
-import org.example.backend.entity.User;
-import org.example.backend.enums.AdvertisementStatus;
+import org.example.backend.entity.AdvertisementEntity;
+import org.example.backend.entity.CategoryEntity;
+import org.example.backend.entity.CityEntity;
+import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.AdvertisementStatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
-    List<Advertisement> findByStatus(AdvertisementStatus status);
-    List<Advertisement> findByOwner(User owner);
-    List<Advertisement> findByStatusOrderByCreatedAtAsc(AdvertisementStatus status);
+public interface AdvertisementRepository extends JpaRepository<AdvertisementEntity, Long> {
+    List<AdvertisementEntity> findByStatus(AdvertisementStatusEnum status);
+    List<AdvertisementEntity> findByOwner(UserEntity owner);
+    List<AdvertisementEntity> findByStatusOrderByCreatedAtAsc(AdvertisementStatusEnum status);
 
-    long countByCategory(Category category);
+    long countByCategory(CategoryEntity category);
 
-    long countByCity(City city);
+    long countByCity(CityEntity city);
 }

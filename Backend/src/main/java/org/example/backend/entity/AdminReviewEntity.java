@@ -1,14 +1,13 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
-import org.example.backend.enums.AdvertisementStatus;
-import org.example.backend.enums.ReviewDecision;
+import org.example.backend.enums.ReviewDecisionEnum;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "admin_reviews")
-public class AdminReview {
+public class AdminReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,21 +21,21 @@ public class AdminReview {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReviewDecision decision;
+    private ReviewDecisionEnum decision;
 
     @ManyToOne
     @JoinColumn(name = "admin_id", nullable = false)
-    private User admin;
+    private UserEntity admin;
 
     @OneToOne
     @JoinColumn(name = "advertisement_id", nullable = false)
-    private Advertisement advertisement;
+    private AdvertisementEntity advertisement;
 
 
     // Constructors
-    public AdminReview() {}
+    public AdminReviewEntity() {}
 
-    public AdminReview(String note, User admin, Advertisement advertisement) {
+    public AdminReviewEntity(String note, UserEntity admin, AdvertisementEntity advertisement) {
         this.note = note;
         this.admin = admin;
         this.advertisement = advertisement;
@@ -53,17 +52,16 @@ public class AdminReview {
     public LocalDateTime getReviewedAt() { return reviewedAt; }
     public void setReviewedAt(LocalDateTime reviewedAt) { this.reviewedAt = reviewedAt; }
 
-    public User getAdmin() { return admin; }
-    public void setAdmin(User admin) { this.admin = admin; }
+    public UserEntity getAdmin() { return admin; }
+    public void setAdmin(UserEntity admin) { this.admin = admin; }
 
-    public Advertisement getAdvertisement() { return advertisement; }
-    public void setAdvertisement(Advertisement advertisement) { this.advertisement = advertisement; }
+    public AdvertisementEntity getAdvertisement() { return advertisement; }
+    public void setAdvertisement(AdvertisementEntity advertisement) { this.advertisement = advertisement; }
 
-    public ReviewDecision getDecision() {
+    public ReviewDecisionEnum getDecision() {
         return decision;
     }
-    public void setDecision(ReviewDecision decision) {
+    public void setDecision(ReviewDecisionEnum decision) {
         this.decision = decision;
     }
 }
-

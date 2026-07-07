@@ -4,9 +4,9 @@ import jakarta.transaction.Transactional;
 import org.example.backend.dto.request.LoginRequest;
 import org.example.backend.dto.request.RegisterRequest;
 import org.example.backend.dto.response.AuthResponse;
-import org.example.backend.entity.User;
-import org.example.backend.enums.Role;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.RoleEnum;
+import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.exception.AuthenticationException;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.repository.UserRepository;
@@ -49,14 +49,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Create and save new user
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setFullName(request.getFullName());
         user.setUsername(request.getUsername());
         user.setPhone(request.getPhone());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword())); // Hash password
-        user.setRole(Role.NORMAL_USER); // Default role
-        user.setStatus(UserStatus.ACTIVE); // Default status
+        user.setRole(RoleEnum.NORMAL_USER); // Default role
+        user.setStatus(UserStatusEnum.ACTIVE); // Default status
 
         userRepository.save(user);
 
@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequest request) {
         // Find user by username
-        User user = userRepository.findByUsername(request.getUsername())
+        UserEntity user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
 
         // Verify password
@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthenticationException("Invalid username or password");
         }
         // Check if user is not blocked
-        if (user.getStatus() != UserStatus.ACTIVE) {
+        if (user.getStatus() != UserStatusEnum.ACTIVE) {
             throw new AuthenticationException("User is blocked");
         }
 

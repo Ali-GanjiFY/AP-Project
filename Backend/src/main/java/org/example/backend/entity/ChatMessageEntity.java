@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_messages")
-public class ChatMessage {
+public class ChatMessageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +23,16 @@ public class ChatMessage {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    private UserEntity sender;
 
     @ManyToOne
     @JoinColumn(name = "conversation_id", nullable = false)
-    private Conversation conversation;
+    private ConversationEntity conversation;
 
     // Constructors
-    public ChatMessage() {}
+    public ChatMessageEntity() {}
 
-    public ChatMessage(String content, User sender, Conversation conversation) {
+    public ChatMessageEntity(String content, UserEntity sender, ConversationEntity conversation) {
         this.content = content;
         this.sender = sender;
         this.conversation = conversation;
@@ -52,11 +52,11 @@ public class ChatMessage {
         return sentAt;
     }
 
-    public User getSender() {
+    public UserEntity getSender() {
         return sender;
     }
 
-    public Conversation getConversation() {
+    public ConversationEntity getConversation() {
         return conversation;
     }
 
@@ -77,11 +77,11 @@ public class ChatMessage {
         this.sentAt = sentAt;
     }
 
-    public void setSender(User sender) {
+    public void setSender(UserEntity sender) {
         this.sender = sender;
     }
 
-    public void setConversation(Conversation conversation) {
+    public void setConversation(ConversationEntity conversation) {
         this.conversation = conversation;
     }
 

@@ -6,7 +6,7 @@ import org.example.backend.dto.request.CreateAdvertisementRequest;
 import org.example.backend.dto.request.UpdateAdvertisementRequest;
 import org.example.backend.dto.response.AdvertisementDetailResponse;
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.service.AdvertisementService;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -30,14 +30,14 @@ public class AdvertisementController {
     }
 
     // Resolves the authenticated User entity; used where login is required.
-    private User currentUser(Authentication authentication) {
+    private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
     // Resolves the authenticated User entity, or null for anonymous/guest requests.
     // Used for public endpoints (e.g. ad detail) where "ownedByCurrentUser" still
     // needs to be computed correctly if the caller happens to be logged in.
-    private User currentUserOrNull(Authentication authentication) {
+    private UserEntity currentUserOrNull(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()
                 || "anonymousUser".equals(authentication.getPrincipal())) {
             return null;

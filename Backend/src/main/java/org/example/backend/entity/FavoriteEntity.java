@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "favorites",
        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "advertisement_id"}))
-public class Favorite {
+public class FavoriteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,16 +17,16 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "advertisement_id", nullable = false)
-    private Advertisement advertisement;
+    private AdvertisementEntity advertisement;
 
     // Constructors
-    public Favorite() {}
+    public FavoriteEntity() {}
 
-    public Favorite(User user, Advertisement advertisement) {
+    public FavoriteEntity(UserEntity user, AdvertisementEntity advertisement) {
         this.user = user;
         this.advertisement = advertisement;
         this.savedAt = LocalDateTime.now();
@@ -39,10 +39,9 @@ public class Favorite {
     public LocalDateTime getSavedAt() { return savedAt; }
     public void setSavedAt(LocalDateTime savedAt) { this.savedAt = savedAt; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public UserEntity getUser() { return user; }
+    public void setUser(UserEntity user) { this.user = user; }
 
-    public Advertisement getAdvertisement() { return advertisement; }
-    public void setAdvertisement(Advertisement advertisement) { this.advertisement = advertisement; }
+    public AdvertisementEntity getAdvertisement() { return advertisement; }
+    public void setAdvertisement(AdvertisementEntity advertisement) { this.advertisement = advertisement; }
 }
-

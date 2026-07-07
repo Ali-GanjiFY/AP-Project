@@ -1,15 +1,15 @@
 package org.example.backend.repository;
 
-import org.example.backend.entity.ChatMessage;
-import org.example.backend.entity.Conversation;
+import org.example.backend.entity.ChatMessageEntity;
+import org.example.backend.entity.ConversationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findByConversationOrderBySentAtAsc(Conversation conversation);
-    ChatMessage findTopByConversationOrderBySentAtDesc(Conversation conversation);
-    List<ChatMessage> findByConversationAndSeenFalse(Conversation conversation);
+public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
+    List<ChatMessageEntity> findByConversationOrderBySentAtAsc(ConversationEntity conversation);
+    ChatMessageEntity findTopByConversationOrderBySentAtDesc(ConversationEntity conversation);
+    List<ChatMessageEntity> findByConversationAndSeenFalse(ConversationEntity conversation);
 }

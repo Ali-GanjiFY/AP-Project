@@ -1,15 +1,15 @@
 package org.example.backend.dto.response;
 
-import org.example.backend.enums.Role;
+import org.example.backend.enums.RoleEnum;
 
 public class AuthResponse {
 
     private final String token;
     private final Long userId;
     private final String username;
-    private final Role role;
+    private final RoleEnum role;
 
-    public AuthResponse(String token, Long userId, String username, Role role) {
+    public AuthResponse(String token, Long userId, String username, RoleEnum role) {
         this.token = token;
         this.userId = userId;
         this.username = username;
@@ -28,7 +28,7 @@ public class AuthResponse {
         return username;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 }

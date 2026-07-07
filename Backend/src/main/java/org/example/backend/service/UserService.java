@@ -3,18 +3,18 @@ package org.example.backend.service;
 import org.example.backend.dto.request.ChangePasswordRequest;
 import org.example.backend.dto.request.UpdateProfileRequest;
 import org.example.backend.dto.response.UserResponse;
-import org.example.backend.entity.User;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.UserStatusEnum;
 
 import java.util.List;
 
 public interface UserService {
 
     // Get user entity by ID (internal use by other services)
-    User getUserEntityById(Long userId);
+    UserEntity getUserEntityById(Long userId);
 
     // Get user entity by username (internal use by other services)
-    User getUserEntityByUsername(String username);
+    UserEntity getUserEntityByUsername(String username);
 
     // Get user profile as DTO by ID
     UserResponse getUserById(Long userId);
@@ -29,7 +29,7 @@ public interface UserService {
     List<UserResponse> getAllUsers();
 
     // Get list of users filtered by status (ACTIVE, BLOCKED, DELETED)
-    List<UserResponse> getUsersByStatus(UserStatus status);
+    List<UserResponse> getUsersByStatus(UserStatusEnum status);
 
     // Block a user (admin only, cannot block other admins)
     UserResponse blockUser(Long userId);

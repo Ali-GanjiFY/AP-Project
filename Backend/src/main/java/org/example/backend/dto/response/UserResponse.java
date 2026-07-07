@@ -1,8 +1,8 @@
 package org.example.backend.dto.response;
 
-import org.example.backend.entity.User;
-import org.example.backend.enums.Role;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.RoleEnum;
+import org.example.backend.enums.UserStatusEnum;
 import java.time.LocalDateTime;
 
 public class UserResponse {
@@ -12,12 +12,12 @@ public class UserResponse {
     private final String username;
     private final String phone;
     private final String email;
-    private final Role role;
-    private final UserStatus status;
+    private final RoleEnum role;
+    private final UserStatusEnum status;
     private final LocalDateTime createdAt;
 
     public UserResponse(Long id, String fullName, String username, String phone,
-                        String email, Role role, UserStatus status, LocalDateTime createdAt) {
+                        String email, RoleEnum role, UserStatusEnum status, LocalDateTime createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.username = username;
@@ -28,7 +28,7 @@ public class UserResponse {
         this.createdAt = createdAt;
     }
 
-    public static UserResponse fromEntity(User user) {
+    public static UserResponse fromEntity(UserEntity user) {
         return new UserResponse(
                 user.getId(), user.getFullName(), user.getUsername(),
                 user.getPhone(), user.getEmail(), user.getRole(),
@@ -56,11 +56,11 @@ public class UserResponse {
         return email;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public UserStatus getStatus() {
+    public UserStatusEnum getStatus() {
         return status;
     }
 

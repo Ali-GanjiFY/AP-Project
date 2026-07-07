@@ -3,9 +3,9 @@ package org.example.backend.service.impl;
 import org.example.backend.dto.request.ChangePasswordRequest;
 import org.example.backend.dto.request.UpdateProfileRequest;
 import org.example.backend.dto.response.UserResponse;
-import org.example.backend.entity.User;
-import org.example.backend.enums.Role;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.RoleEnum;
+import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
@@ -30,22 +30,22 @@ public class UserServiceImpl implements UserService {
     }
 
     // Prevent operations on soft-deleted users
-    private void validateNotDeleted(User user) {
-        if (user.getStatus() == UserStatus.DELETED) {
+    private void validateNotDeleted(UserEntity user) {
+        if (user.getStatus() == UserStatusEnum.DELETED) {
             throw new InvalidInputException("این کاربر قبلاً حذف شده است");
         }
     }
 
     // Get user entity by ID (internal use)
     @Override
-    public User getUserEntityById(Long userId) {
+    public UserEntity getUserEntityById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("کاربر یافت نشد"));
     }
 
     // Get user entity by username (internal use)
     @Override
-    public User getUserEntityByUsername(String username) {
+    public UserEntity getUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("کاربر یافت نشد"));
     }
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
 
         // Update full name if provided
         if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(newPhone);
         }
 
-        User updatedUser = userRepository.save(user);
+        UserEntity updatedUser = userRepository.save(user);
         return UserResponse.fromEntity(updatedUser);
     }
 
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(Long userId, ChangePasswordRequest request) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
 
         // Check current password
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
     // Get users filtered by status
     @Override
-    public List<UserResponse> getUsersByStatus(UserStatus status) {
+    public List<UserResponse> getUsersByStatus(UserStatusEnum status) {
         return userRepository.findByStatus(status).stream()
                 .map(UserResponse::fromEntity)
                 .toList();
@@ -140,13 +140,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse blockUser(Long userId) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
 
-        if (user.getRole() == Role.ADMIN) {
+        if (user.getRole() == RoleEnum.ADMIN) {
             throw new UnauthorizedException("شما نمی‌توانید یک ادمین را مسدود کنید");
         }
 
-        user.setStatus(UserStatus.BLOCKED);
+        user.setStatus(UserStatusEnum.BLOCKED);
         return UserResponse.fromEntity(userRepository.save(user));
     }
 
@@ -154,11 +154,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse unblockUser(Long userId) {
-        User user = getUserEntityById(userId);
-        if (user.getStatus() == UserStatus.DELETED) {
+        UserEntity user = getUserEntityById(userId);
+        if (user.getStatus() == UserStatusEnum.DELETED) {
             throw new InvalidInputException("حساب کاربری حذف شده قابل فعال‌سازی مجدد نیست");
         }
-        user.setStatus(UserStatus.ACTIVE);
+        user.setStatus(UserStatusEnum.ACTIVE);
         return UserResponse.fromEntity(userRepository.save(user));
     }
 
@@ -166,19 +166,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long currentUserId, Long targetUserId) {
-        User currentUser = getUserEntityById(currentUserId);
-        User targetUser = getUserEntityById(targetUserId);
+        UserEntity currentUser = getUserEntityById(currentUserId);
+        UserEntity targetUser = getUserEntityById(targetUserId);
 
         validateNotDeleted(currentUser);
         validateNotDeleted(targetUser);
 
-        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        boolean isAdmin = currentUser.getRole() == RoleEnum.ADMIN;
         boolean isSelf = currentUserId.equals(targetUserId);
 
         // Authorization logic
         if (isAdmin) {
             // Admin cannot delete other admins (only themselves)
-            if (!isSelf && targetUser.getRole() == Role.ADMIN) {
+            if (!isSelf && targetUser.getRole() == RoleEnum.ADMIN) {
                 throw new UnauthorizedException("ادمین نمی‌تواند ادمین دیگر را حذف کند");
             }
         } else {
@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        targetUser.setStatus(UserStatus.DELETED);
+        targetUser.setStatus(UserStatusEnum.DELETED);
         userRepository.save(targetUser);
     }
 }

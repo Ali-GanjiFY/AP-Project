@@ -2,9 +2,9 @@ package org.example.backend.service.impl;
 
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
 import org.example.backend.dto.response.FavoriteResponse;
-import org.example.backend.entity.Advertisement;
-import org.example.backend.entity.Favorite;
-import org.example.backend.entity.User;
+import org.example.backend.entity.AdvertisementEntity;
+import org.example.backend.entity.FavoriteEntity;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.exception.ResourceNotFoundException;
 import org.example.backend.repository.FavoriteRepository;
@@ -26,18 +26,18 @@ public class FavoriteServiceImpl implements FavoriteService {
     // Add advertisement to user's favorites, prevent duplicates
     @Override
     @Transactional
-    public FavoriteResponse addFavorite(User user, Advertisement advertisement) {
+    public FavoriteResponse addFavorite(UserEntity user, AdvertisementEntity advertisement) {
         // Check if already favorite to avoid duplicate entry
         if (favoriteRepository.existsByUserAndAdvertisement(user, advertisement)) {
             throw new DuplicateResourceException("این آگهی قبلاً به علاقه‌مندی‌ها اضافه شده است");
         }
-        return toResponse(favoriteRepository.save(new Favorite(user, advertisement)));
+        return toResponse(favoriteRepository.save(new FavoriteEntity(user, advertisement)));
     }
 
     // Remove advertisement from user's favorites
     @Override
     @Transactional
-    public void removeFavorite(User user, Advertisement advertisement) {
+    public void removeFavorite(UserEntity user, AdvertisementEntity advertisement) {
         // Verify that it exists before attempting deletion
         if (!favoriteRepository.existsByUserAndAdvertisement(user, advertisement)) {
             throw new ResourceNotFoundException("این آگهی در لیست علاقه‌مندی‌های شما نیست");
@@ -47,21 +47,21 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     // Check if an advertisement is in user's favorites
     @Override
-    public boolean isFavorite(User user, Advertisement advertisement) {
+    public boolean isFavorite(UserEntity user, AdvertisementEntity advertisement) {
         return favoriteRepository.existsByUserAndAdvertisement(user, advertisement);
     }
 
     // Get all favorites for a user, most recent first
     @Override
-    public List<FavoriteResponse> getUserFavorites(User user) {
+    public List<FavoriteResponse> getUserFavorites(UserEntity user) {
         return favoriteRepository.findByUserOrderBySavedAtDesc(user).stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     // Convert Favorite entity to FavoriteResponse DTO with advertisement summary
-    private FavoriteResponse toResponse(Favorite favorite) {
-        Advertisement ad = favorite.getAdvertisement();
+    private FavoriteResponse toResponse(FavoriteEntity favorite) {
+        AdvertisementEntity ad = favorite.getAdvertisement();
         // Extract first image as main image
         String mainImage = (ad.getImages() != null && !ad.getImages().isEmpty())
                 ? ad.getImages().get(0).getImagePath() : null;

@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.example.backend.dto.request.CreateRatingRequest;
 import org.example.backend.dto.response.SellerRatingResponse;
 import org.example.backend.dto.response.SellerRatingSummaryResponse;
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.service.SellerRatingService;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class SellerRatingController {
     }
 
     // Resolves the authenticated User entity from the JWT-backed Authentication.
-    private User currentUser(Authentication authentication) {
+    private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
@@ -54,7 +54,7 @@ public class SellerRatingController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/sellers/{sellerId}")
     public ResponseEntity<List<SellerRatingResponse>> getSellerRatings(@PathVariable Long sellerId) {
-        User seller = userService.getUserEntityById(sellerId);
+        UserEntity seller = userService.getUserEntityById(sellerId);
         return ResponseEntity.ok(sellerRatingService.getSellerRatings(seller));
     }
 
@@ -63,7 +63,7 @@ public class SellerRatingController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/sellers/{sellerId}/summary")
     public ResponseEntity<SellerRatingSummaryResponse> getSellerRatingSummary(@PathVariable Long sellerId) {
-        User seller = userService.getUserEntityById(sellerId);
+        UserEntity seller = userService.getUserEntityById(sellerId);
         return ResponseEntity.ok(sellerRatingService.getSellerRatingSummary(seller));
     }
 

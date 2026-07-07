@@ -3,11 +3,11 @@ package org.example.backend.service.impl;
 import org.example.backend.dto.request.AdminDecisionRequest;
 import org.example.backend.dto.response.AdminReviewResponse;
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
-import org.example.backend.entity.AdminReview;
-import org.example.backend.entity.Advertisement;
-import org.example.backend.entity.User;
-import org.example.backend.enums.AdvertisementStatus;
-import org.example.backend.enums.ReviewDecision;
+import org.example.backend.entity.AdminReviewEntity;
+import org.example.backend.entity.AdvertisementEntity;
+import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.AdvertisementStatusEnum;
+import org.example.backend.enums.ReviewDecisionEnum;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
 import org.example.backend.repository.AdminReviewRepository;
@@ -34,25 +34,25 @@ public class AdminReviewServiceImpl implements AdminReviewService {
     // Review an advertisement: only PENDING ads can be reviewed
     @Override
     @Transactional
-    public AdminReviewResponse reviewAdvertisement(User admin, Long advertisementId, AdminDecisionRequest request) {
-        Advertisement advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
+    public AdminReviewResponse reviewAdvertisement(UserEntity admin, Long advertisementId, AdminDecisionRequest request) {
+        AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
 
         // Only pending advertisements can be reviewed
-        if (advertisement.getStatus() != AdvertisementStatus.PENDING) {
+        if (advertisement.getStatus() != AdvertisementStatusEnum.PENDING) {
             throw new InvalidInputException("فقط آگهی‌های در انتظار بررسی (PENDING) قابل تایید یا رد هستند");
         }
 
         // Map admin decision to target advertisement status
-        ReviewDecision decision = request.getDecision();
-        AdvertisementStatus targetStatus = switch (decision) {
-            case APPROVED -> AdvertisementStatus.ACTIVE;
-            case REJECTED -> AdvertisementStatus.REJECTED;
-            case REMOVED  -> AdvertisementStatus.DELETED;
+        ReviewDecisionEnum decision = request.getDecision();
+        AdvertisementStatusEnum targetStatus = switch (decision) {
+            case APPROVED -> AdvertisementStatusEnum.ACTIVE;
+            case REJECTED -> AdvertisementStatusEnum.REJECTED;
+            case REMOVED  -> AdvertisementStatusEnum.DELETED;
         };
 
         // Find existing review or create new one (allows re-review)
-        AdminReview review = adminReviewRepository.findByAdvertisement(advertisement)
-                .orElseGet(() -> new AdminReview(request.getNote(), admin, advertisement));
+        AdminReviewEntity review = adminReviewRepository.findByAdvertisement(advertisement)
+                .orElseGet(() -> new AdminReviewEntity(request.getNote(), admin, advertisement));
 
         // Update review fields
         review.setNote(request.getNote());
@@ -61,7 +61,7 @@ public class AdminReviewServiceImpl implements AdminReviewService {
         review.setReviewedAt(LocalDateTime.now());
 
         // Save review first, then update advertisement status in same transaction
-        AdminReview saved = adminReviewRepository.save(review);
+        AdminReviewEntity saved = adminReviewRepository.save(review);
         advertisementService.changeStatus(advertisement, targetStatus);
 
         return toResponse(saved);
@@ -70,8 +70,8 @@ public class AdminReviewServiceImpl implements AdminReviewService {
     // Get review record for a specific advertisement
     @Override
     public AdminReviewResponse getReviewByAdvertisementId(Long advertisementId) {
-        Advertisement advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
-        AdminReview review = adminReviewRepository.findByAdvertisement(advertisement)
+        AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
+        AdminReviewEntity review = adminReviewRepository.findByAdvertisement(advertisement)
                 .orElseThrow(() -> new ResourceNotFoundException("هنوز بازبینی‌ای برای این آگهی ثبت نشده است"));
         return toResponse(review);
     }
@@ -83,7 +83,7 @@ public class AdminReviewServiceImpl implements AdminReviewService {
     }
 
     // Convert AdminReview entity to AdminReviewResponse DTO
-    private AdminReviewResponse toResponse(AdminReview review) {
+    private AdminReviewResponse toResponse(AdminReviewEntity review) {
         return new AdminReviewResponse(
                 review.getId(), review.getDecision(), review.getNote(), review.getReviewedAt(),
                 review.getAdmin().getUsername(), review.getAdvertisement().getId()

@@ -2,7 +2,7 @@ package org.example.backend.service.impl;
 
 import org.example.backend.dto.request.CityRequest;
 import org.example.backend.dto.response.CityResponse;
-import org.example.backend.entity.City;
+import org.example.backend.entity.CityEntity;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
@@ -33,7 +33,7 @@ public class CityServiceImpl implements CityService {
         if (cityRepository.existsByName(request.getName())) {
             throw new DuplicateResourceException("این شهر قبلاً ثبت شده است");
         }
-        City city = new City(request.getName());
+        CityEntity city = new CityEntity(request.getName());
         city.setProvince(request.getProvince());
         return toResponse(cityRepository.save(city));
     }
@@ -42,7 +42,7 @@ public class CityServiceImpl implements CityService {
     @Override
     @Transactional
     public CityResponse updateCity(Long id, CityRequest request) {
-        City city = getCityEntityById(id);
+        CityEntity city = getCityEntityById(id);
         // Check name uniqueness if changed
         if (!city.getName().equals(request.getName()) && cityRepository.existsByName(request.getName())) {
             throw new DuplicateResourceException("این شهر قبلاً ثبت شده است");
@@ -56,7 +56,7 @@ public class CityServiceImpl implements CityService {
     @Override
     @Transactional
     public void deleteCity(Long id) {
-        City city = getCityEntityById(id);
+        CityEntity city = getCityEntityById(id);
 
         // Check if any advertisements use this city
         long advertisementsCount = advertisementRepository.countByCity(city);
@@ -80,14 +80,14 @@ public class CityServiceImpl implements CityService {
     @Override
     @Transactional(readOnly = true)
     public CityResponse getCityByName(String name) {
-        City city = cityRepository.findByNameIgnoreCase(name)
+        CityEntity city = cityRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new ResourceNotFoundException("شهر با نام '" + name + "' یافت نشد"));
         return toResponse(city);
     }
 
     // Get city entity by ID (internal use by other services)
     @Override
-    public City getCityEntityById(Long id) {
+    public CityEntity getCityEntityById(Long id) {
         return cityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("شهر یافت نشد"));
     }
@@ -99,7 +99,7 @@ public class CityServiceImpl implements CityService {
     }
 
     // Convert City entity to CityResponse DTO
-    private CityResponse toResponse(City city) {
+    private CityResponse toResponse(CityEntity city) {
         return new CityResponse(city.getId(), city.getName(), city.getProvince());
     }
 }

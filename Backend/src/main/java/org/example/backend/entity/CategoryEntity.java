@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "categories")
-public class Category {
+public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,19 +21,19 @@ public class Category {
     private boolean active = true;
 
     @OneToMany(mappedBy = "category")
-    private List<Advertisement> advertisements;
+    private List<AdvertisementEntity> advertisements;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    private Category parentCategory;
+    private CategoryEntity parentCategory;
 
     @OneToMany(mappedBy = "parentCategory")
-    private List<Category> subCategories;
+    private List<CategoryEntity> subCategories;
 
     // Constructors
-    public Category() {}
+    public CategoryEntity() {}
 
-    public Category(String name, String description) {
+    public CategoryEntity(String name, String description) {
         this.name = name;
         this.description = description;
     }
@@ -55,20 +55,20 @@ public class Category {
         this.active = active;
     }
 
-    public List<Advertisement> getAdvertisements() { return advertisements; }
-    public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
+    public List<AdvertisementEntity> getAdvertisements() { return advertisements; }
+    public void setAdvertisements(List<AdvertisementEntity> advertisements) { this.advertisements = advertisements; }
 
-    public Category getParentCategory() {
+    public CategoryEntity getParentCategory() {
         return parentCategory;
     }
-    public void setParentCategory(Category parentCategory) {
+    public void setParentCategory(CategoryEntity parentCategory) {
         this.parentCategory = parentCategory;
     }
 
-    public List<Category> getSubCategories() {
+    public List<CategoryEntity> getSubCategories() {
         return subCategories;
     }
-    public void setSubCategories(List<Category> subCategories) {
+    public void setSubCategories(List<CategoryEntity> subCategories) {
         this.subCategories = subCategories;
     }
 }

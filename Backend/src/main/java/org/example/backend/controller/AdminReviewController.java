@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.example.backend.dto.request.AdminDecisionRequest;
 import org.example.backend.dto.response.AdminReviewResponse;
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.service.AdminReviewService;
 import org.example.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class AdminReviewController {
     }
 
     // Resolves the authenticated admin User entity from the JWT-backed Authentication.
-    private User currentUser(Authentication authentication) {
+    private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 

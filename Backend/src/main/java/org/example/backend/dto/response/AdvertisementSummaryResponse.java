@@ -1,6 +1,6 @@
 package org.example.backend.dto.response;
 
-import org.example.backend.enums.AdvertisementStatus;
+import org.example.backend.enums.AdvertisementStatusEnum;
 import java.time.LocalDateTime;
 
 public class AdvertisementSummaryResponse  {
@@ -10,12 +10,12 @@ public class AdvertisementSummaryResponse  {
     private final Double price;
     private final String cityName;
     private final String categoryName;
-    private final AdvertisementStatus status;
+    private final AdvertisementStatusEnum status;
     private final LocalDateTime createdAt;
     private final String mainImagePath;
 
     public AdvertisementSummaryResponse(Long id, String title, Double price, String cityName,
-                                        String categoryName, AdvertisementStatus status,
+                                        String categoryName, AdvertisementStatusEnum status,
                                         LocalDateTime createdAt, String mainImagePath) {
         this.id = id;
         this.title = title;
@@ -32,7 +32,7 @@ public class AdvertisementSummaryResponse  {
     public Double getPrice() { return price; }
     public String getCityName() { return cityName; }
     public String getCategoryName() { return categoryName; }
-    public AdvertisementStatus getStatus() { return status; }
+    public AdvertisementStatusEnum getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public String getMainImagePath() { return mainImagePath; }
 }

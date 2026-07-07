@@ -3,7 +3,7 @@ package org.example.backend.controller;
 import jakarta.validation.Valid;
 import org.example.backend.dto.request.SendMessageRequest;
 import org.example.backend.dto.response.ChatMessageResponse;
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.service.MessageService;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class MessageController {
     }
 
     // Resolves the authenticated User entity from the JWT-backed Authentication.
-    private User currentUser(Authentication authentication) {
+    private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
