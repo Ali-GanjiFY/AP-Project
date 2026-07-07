@@ -1,0 +1,39 @@
+/* ===========================
+   Main Base Styles
+   =========================== */
+
+/* Global Text */
+.label {
+    -fx-text-fill: -fx-text-color;
+}
+
+/* Global Background */
+.root {
+    -fx-background-color: -fx-background-light;
+}
+
+/* Buttons Base Style */
+.button {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+}
+
+.button:hover {
+    -fx-background-color: -fx-primary-hover;
+}
+
+/* Inputs */
+.text-field, .password-field {
+    -fx-background-color: -fx-input-background;
+    -fx-text-fill: -fx-text-color;
+    -fx-border-color: -fx-input-border;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: -fx-input-focus-border;
+}

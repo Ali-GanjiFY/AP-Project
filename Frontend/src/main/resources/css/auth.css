@@ -1,0 +1,112 @@
+/* ===========================
+   Auth Forms (Login + Register)
+   GitHub Dark - No recursion
+   =========================== */
+
+/* Background page */
+.scroll-container {
+    -fx-background-color: -fx-color-bg-dark;
+    -fx-background: -fx-color-bg-dark;
+    -fx-padding: 0;
+}
+
+.scroll-container > .viewport {
+    -fx-background-color: -fx-color-bg-dark;
+}
+
+/* Main card */
+.auth-container {
+    -fx-background-color: -fx-color-bg-light;
+    -fx-padding: 32px 36px 32px 36px;
+    -fx-background-radius: 16px;
+    -fx-border-color: -fx-color-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 18, 0, 0, 6);
+    -fx-max-width: 460px;
+    -fx-min-width: 460px;
+}
+
+/* Titles */
+.auth-title {
+    -fx-text-fill: -fx-color-text-heading;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+/* Labels */
+.sub-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: -fx-color-text-sub;
+    -fx-font-weight: 600;
+}
+
+.label {
+    -fx-text-fill: -fx-color-text;
+}
+
+/* TextField / PasswordField */
+.text-field,
+.password-field {
+    -fx-background-color: -fx-color-input-bg;
+    -fx-text-fill: -fx-color-text;
+    -fx-prompt-text-fill: -fx-color-input-placeholder;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 16px;
+    -fx-pref-height: 46px;
+    -fx-padding: 0 14px 0 14px;
+
+    /*
+       ترازهای دستی برداشته شد.
+       چون هر دو صفحه ریشه‌شان RTL است، متن‌ها به صورت بومی و کاملاً تمیز راست‌چین می‌شوند.
+    */
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: -fx-color-input-focus;
+    -fx-border-width: 1.5px;
+    -fx-background-insets: 0;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: -fx-color-primary;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 46px;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: -fx-color-primary-hover;
+}
+
+/* Links */
+.auth-link {
+    -fx-text-fill: -fx-color-accent;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+}
+
+.auth-link:hover {
+    -fx-text-fill: -fx-color-accent-hover;
+}
+
+/* Messages */
+.error-text {
+    -fx-text-fill: -fx-color-danger;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.success-text {
+    -fx-text-fill: -fx-color-success;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
