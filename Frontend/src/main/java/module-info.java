@@ -19,8 +19,14 @@ module org.example.frontend {
     // باز کردن پکیج کدهای مشترک (مثل سرویس ناوبری) در صورت ارجاع متقابل از فایل‌های FXML
     opens org.example.frontend.shared to javafx.fxml;
 
+    // اضافه شده: باز کردن پکیج داشبورد برای بارگذاری FXML و کنترلر آن توسط JavaFX
+    opens org.example.frontend.dashboard to javafx.fxml;
+
     // اکسپورت کردن پکیج‌ها جهت استفاده و دسترسی ران‌تایم جاوااف‌ایکس
     exports org.example.frontend;
     exports org.example.frontend.auth;
     exports org.example.frontend.shared;
+
+    // اضافه شده: اکسپورت کردن پکیج داشبورد
+    exports org.example.frontend.dashboard;
 }

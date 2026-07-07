@@ -4,14 +4,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.net.URL;
 
 public class NavigationService {
 
     private static Stage primaryStage;
 
-    // این متد در ابتدای اجرای برنامه (کلاس Main یا App) صدا زده می‌شود تا استیج اصلی را ذخیره کند
     public static void setPrimaryStage(Stage stage) {
         primaryStage = stage;
     }
@@ -21,56 +19,68 @@ public class NavigationService {
     }
 
     /**
-     * تغییر صفحه فعلی به یک FXML جدید به همراه اعمال خودکار تم‌ها
-     * @param fxmlPath مسیر فایل FXML نسبت به پوشه resources (مثلاً "/fxml/auth/register-view.fxml")
+     * تغییر صفحه فعلی به یک FXML جدید
+     * @param fxmlPath مسیر فایل FXML (مثلاً "/fxml/dashboard/dashboard-view.fxml")
      * @param title عنوان پنجره
      */
     public static void switchScene(String fxmlPath, String title) {
         if (primaryStage == null) {
-            System.err.println("خطا: PrimaryStage مقداردهی نشده است!");
+            System.err.println("خطا: PrimaryStage مقداردهی نشده است! ابتدا setPrimaryStage را صدا بزنید.");
             return;
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(NavigationService.class.getResource(fxmlPath));
-            Parent root = loader.load();
+            System.out.println("[Navigation] Attempting to load FXML: " + fxmlPath);
+
+            URL fxmlUrl = NavigationService.class.getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                throw new IllegalArgumentException("فایل FXML در مسیر مشخص شده پیدا نشد: " + fxmlPath);
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load(); // اگر کنترلر داشبورد در initialize خطا بدهد، اینجا Exception پرتاب می‌شود.
 
             Scene currentScene = primaryStage.getScene();
             if (currentScene == null) {
-                // سایز اولیه پنجره (می‌توانید به دلخواه تغییر دهید، مثلاً 800 در 600)
-                currentScene = new Scene(root, 800, 600);
+                currentScene = new Scene(root, 1280, 720);
                 primaryStage.setScene(currentScene);
             } else {
                 currentScene.setRoot(root);
             }
 
-            // پاک کردن استایل‌های قبلی برای جلوگیری از تداخل استایل صفحات مختلف
+            // پاک کردن استایل‌های قبلی
             currentScene.getStylesheets().clear();
 
-            // لود کردن و اعمال فایل‌های CSS به صورت پویا و امن
+            // اعمال استایل‌های پایه (variables.css)
             URL variablesUri = NavigationService.class.getResource("/css/variables.css");
-            URL authUri = NavigationService.class.getResource("/css/auth.css");
-
             if (variablesUri != null) {
                 currentScene.getStylesheets().add(variablesUri.toExternalForm());
-            } else {
-                System.err.println("هشدار: فایل variables.css در مسیر resources/css یافت نشد!");
             }
 
-            if (authUri != null) {
-                currentScene.getStylesheets().add(authUri.toExternalForm());
-            } else {
-                System.err.println("هشدار: فایل auth.css در مسیر resources/css یافت نشد!");
+            // اعمال استایل اختصاصی بر اساس صفحه ای که لود می‌شود
+            if (fxmlPath.contains("/auth/")) {
+                URL authUri = NavigationService.class.getResource("/css/auth.css");
+                if (authUri != null) {
+                    currentScene.getStylesheets().add(authUri.toExternalForm());
+                }
+            } else if (fxmlPath.contains("/dashboard/")) {
+                // اگر فایل css مخصوص داشبورد دارید (مثلا dashboard.css) آن را اینجا لود کنید:
+                URL dashboardUri = NavigationService.class.getResource("/css/dashboard.css");
+                if (dashboardUri != null) {
+                    currentScene.getStylesheets().add(dashboardUri.toExternalForm());
+                }
             }
 
             primaryStage.setTitle(title);
+            primaryStage.setMaximized(true);
+            primaryStage.setResizable(true);
             primaryStage.show();
-        } catch (IOException e) {
-            System.err.println("خطا در بارگذاری فایل FXML: " + fxmlPath);
-            e.printStackTrace();
-        }
-        primaryStage.setMaximized(true);
-        primaryStage.setResizable(true);
 
+            System.out.println("[Navigation] Successfully switched to: " + title);
+
+        } catch (Throwable t) {
+            System.err.println("!!! خطا در حین انتقال صفحه به " + fxmlPath + " !!!");
+            t.printStackTrace(); // چاپ کامل StackTrace شامل خطاهای NullPointer یا خطای کنترلر مقصد
+        }
     }
 }

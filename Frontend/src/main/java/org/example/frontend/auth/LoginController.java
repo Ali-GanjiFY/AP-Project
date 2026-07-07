@@ -34,12 +34,21 @@ public class LoginController {
             Platform.runLater(() -> {
                 if ("SUCCESS".equals(result)) {
                     showSuccess("ورود موفقیت‌آمیز بود! در حال انتقال...");
-                    // تغییر به داشبورد
-                    NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+
+                    // اجرای فرآیند تغییر صفحه با کمی تاخیر یا به صورت ایمن روی ترد گرافیکی
+                    Platform.runLater(() -> {
+                        try {
+                            NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+                        } catch (Exception e) {
+                            e.printStackTrace(); // چاپ خطا در کنسول برای پیدا کردن علت دقیق
+                            showError("خطا در بارگذاری صفحه داشبورد: " + e.getMessage());
+                        }
+                    });
                 } else {
                     showError(translateErrorMessage(result));
                 }
             });
+
 
         }).start();
     }
