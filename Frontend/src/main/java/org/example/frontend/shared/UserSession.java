@@ -17,14 +17,6 @@ public class UserSession {
         return instance;
     }
 
-    public void cleanUserSession() {
-        this.token = null;
-        this.userId = null;
-        this.username = null;
-        this.role = null;
-    }
-
-    // Getters and Setters
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
 
@@ -36,4 +28,12 @@ public class UserSession {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public void cleanSession() {
+        this.token = null;
+        this.userId = null;
+        this.username = null;
+        this.role = null;
+    }
 }
+

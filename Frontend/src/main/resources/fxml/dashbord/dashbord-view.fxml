@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.frontend.dashboard.DashboardController"
+           nodeOrientation="RIGHT_TO_LEFT">
+
+    <VBox alignment="CENTER" spacing="20">
+        <Label text="به پنل کاربری خوش آمدید!" style="-fx-font-size: 20px;"/>
+        <Button text="خروج از حساب" onAction="#handleLogout" />
+    </VBox>
+
+</StackPane>
