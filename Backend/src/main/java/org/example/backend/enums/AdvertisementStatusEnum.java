@@ -1,6 +1,6 @@
 package org.example.backend.enums;
 
-public enum AdvertisementStatus {
+public enum AdvertisementStatusEnum {
     PENDING,
     ACTIVE,
     REJECTED,

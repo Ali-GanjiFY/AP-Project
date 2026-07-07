@@ -6,8 +6,8 @@ import org.example.backend.dto.response.AdvertisementSummaryResponse;
 import org.example.backend.entity.AdminReviewEntity;
 import org.example.backend.entity.AdvertisementEntity;
 import org.example.backend.entity.UserEntity;
-import org.example.backend.enums.AdvertisementStatus;
-import org.example.backend.enums.ReviewDecision;
+import org.example.backend.enums.AdvertisementStatusEnum;
+import org.example.backend.enums.ReviewDecisionEnum;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
 import org.example.backend.repository.AdminReviewRepository;
@@ -38,16 +38,16 @@ public class AdminReviewServiceImpl implements AdminReviewService {
         AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
 
         // Only pending advertisements can be reviewed
-        if (advertisement.getStatus() != AdvertisementStatus.PENDING) {
+        if (advertisement.getStatus() != AdvertisementStatusEnum.PENDING) {
             throw new InvalidInputException("فقط آگهی‌های در انتظار بررسی (PENDING) قابل تایید یا رد هستند");
         }
 
         // Map admin decision to target advertisement status
-        ReviewDecision decision = request.getDecision();
-        AdvertisementStatus targetStatus = switch (decision) {
-            case APPROVED -> AdvertisementStatus.ACTIVE;
-            case REJECTED -> AdvertisementStatus.REJECTED;
-            case REMOVED  -> AdvertisementStatus.DELETED;
+        ReviewDecisionEnum decision = request.getDecision();
+        AdvertisementStatusEnum targetStatus = switch (decision) {
+            case APPROVED -> AdvertisementStatusEnum.ACTIVE;
+            case REJECTED -> AdvertisementStatusEnum.REJECTED;
+            case REMOVED  -> AdvertisementStatusEnum.DELETED;
         };
 
         // Find existing review or create new one (allows re-review)

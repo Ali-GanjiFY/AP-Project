@@ -5,7 +5,7 @@ import org.example.backend.dto.response.ChatMessageResponse;
 import org.example.backend.entity.ChatMessageEntity;
 import org.example.backend.entity.ConversationEntity;
 import org.example.backend.entity.UserEntity;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.exception.UnauthorizedException;
 import org.example.backend.repository.ChatMessageRepository;
 import org.example.backend.service.ConversationService;
@@ -35,8 +35,8 @@ public class MessageServiceImpl implements MessageService {
         ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, sender);
 
         // Both buyer and seller must be active (not blocked or deleted)
-        if (conversation.getBuyer().getStatus() != UserStatus.ACTIVE
-                || conversation.getSeller().getStatus() != UserStatus.ACTIVE) {
+        if (conversation.getBuyer().getStatus() != UserStatusEnum.ACTIVE
+                || conversation.getSeller().getStatus() != UserStatusEnum.ACTIVE) {
             throw new UnauthorizedException("امکان ارسال پیام برای کاربر مسدودشده وجود ندارد");
         }
 

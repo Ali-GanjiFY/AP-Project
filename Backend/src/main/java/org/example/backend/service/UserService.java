@@ -4,7 +4,7 @@ import org.example.backend.dto.request.ChangePasswordRequest;
 import org.example.backend.dto.request.UpdateProfileRequest;
 import org.example.backend.dto.response.UserResponse;
 import org.example.backend.entity.UserEntity;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.enums.UserStatusEnum;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface UserService {
     List<UserResponse> getAllUsers();
 
     // Get list of users filtered by status (ACTIVE, BLOCKED, DELETED)
-    List<UserResponse> getUsersByStatus(UserStatus status);
+    List<UserResponse> getUsersByStatus(UserStatusEnum status);
 
     // Block a user (admin only, cannot block other admins)
     UserResponse blockUser(Long userId);

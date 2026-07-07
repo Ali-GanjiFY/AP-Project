@@ -1,6 +1,6 @@
 package org.example.backend.dto.response;
 
-import org.example.backend.enums.AdvertisementStatus;
+import org.example.backend.enums.AdvertisementStatusEnum;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class AdvertisementDetailResponse {
     private final String title;
     private final String description;
     private final Double price;
-    private final AdvertisementStatus status;
+    private final AdvertisementStatusEnum status;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -28,7 +28,7 @@ public class AdvertisementDetailResponse {
     private final boolean ownedByCurrentUser;
 
     public AdvertisementDetailResponse(Long id, String title, String description, Double price,
-                                       AdvertisementStatus status, LocalDateTime createdAt, LocalDateTime updatedAt,
+                                       AdvertisementStatusEnum status, LocalDateTime createdAt, LocalDateTime updatedAt,
                                        CategoryResponse category, CityResponse city,
                                        List<AdvertisementImageResponse> images,
                                        Long ownerId, String ownerFullName, String ownerUsername,
@@ -56,7 +56,7 @@ public class AdvertisementDetailResponse {
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public Double getPrice() { return price; }
-    public AdvertisementStatus getStatus() { return status; }
+    public AdvertisementStatusEnum getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public CategoryResponse getCategory() { return category; }

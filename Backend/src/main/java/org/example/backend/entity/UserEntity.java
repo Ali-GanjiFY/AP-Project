@@ -1,8 +1,8 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
-import org.example.backend.enums.Role;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.enums.RoleEnum;
+import org.example.backend.enums.UserStatusEnum;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,11 +34,11 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private RoleEnum role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status;
+    private UserStatusEnum status;
 
 
 
@@ -57,8 +57,8 @@ public class UserEntity {
         this.password = password;
         this.phone = phone;
         this.email = email;
-        this.role = Role.NORMAL_USER;
-        this.status = UserStatus.ACTIVE;
+        this.role = RoleEnum.NORMAL_USER;
+        this.status = UserStatusEnum.ACTIVE;
     }
 
     // Getters
@@ -86,11 +86,11 @@ public class UserEntity {
         return email;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public UserStatus getStatus() {
+    public UserStatusEnum getStatus() {
         return status;
     }
 
@@ -131,11 +131,11 @@ public class UserEntity {
         this.email = email;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 
-    public void setStatus(UserStatus status) {
+    public void setStatus(UserStatusEnum status) {
         this.status = status;
     }
 

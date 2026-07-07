@@ -1,6 +1,6 @@
 package org.example.backend.enums;
 
-public enum UserStatus {
+public enum UserStatusEnum {
     ACTIVE,
     BLOCKED,
     DELETED

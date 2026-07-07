@@ -1,7 +1,7 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
-import org.example.backend.enums.ReviewDecision;
+import org.example.backend.enums.ReviewDecisionEnum;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +21,7 @@ public class AdminReviewEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReviewDecision decision;
+    private ReviewDecisionEnum decision;
 
     @ManyToOne
     @JoinColumn(name = "admin_id", nullable = false)
@@ -58,10 +58,10 @@ public class AdminReviewEntity {
     public AdvertisementEntity getAdvertisement() { return advertisement; }
     public void setAdvertisement(AdvertisementEntity advertisement) { this.advertisement = advertisement; }
 
-    public ReviewDecision getDecision() {
+    public ReviewDecisionEnum getDecision() {
         return decision;
     }
-    public void setDecision(ReviewDecision decision) {
+    public void setDecision(ReviewDecisionEnum decision) {
         this.decision = decision;
     }
 }

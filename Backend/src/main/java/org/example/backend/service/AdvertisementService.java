@@ -7,7 +7,7 @@ import org.example.backend.dto.response.AdvertisementDetailResponse;
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
 import org.example.backend.entity.AdvertisementEntity;
 import org.example.backend.entity.UserEntity;
-import org.example.backend.enums.AdvertisementStatus;
+import org.example.backend.enums.AdvertisementStatusEnum;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public interface AdvertisementService {
     AdvertisementDetailResponse markAsSold(Long adId, UserEntity currentUser);
 
     // Internal method: change advertisement status (used by AdminReviewService)
-    void changeStatus(AdvertisementEntity ad, AdvertisementStatus newStatus);
+    void changeStatus(AdvertisementEntity ad, AdvertisementStatusEnum newStatus);
 
     // Get full advertisement details with seller ratings
     AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser);

@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.example.backend.dto.request.ChangePasswordRequest;
 import org.example.backend.dto.request.UpdateProfileRequest;
 import org.example.backend.dto.response.UserResponse;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,7 +59,7 @@ public class UserController {
     // GET /api/users -> admin only, list all users (optionally filter by status)
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getUsers(@RequestParam(required = false) UserStatus status) {
+    public ResponseEntity<List<UserResponse>> getUsers(@RequestParam(required = false) UserStatusEnum status) {
         if (status != null) {
             return ResponseEntity.ok(userService.getUsersByStatus(status));
         }

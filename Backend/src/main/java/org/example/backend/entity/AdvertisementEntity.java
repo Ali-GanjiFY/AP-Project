@@ -1,7 +1,7 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
-import org.example.backend.enums.AdvertisementStatus;
+import org.example.backend.enums.AdvertisementStatusEnum;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class AdvertisementEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AdvertisementStatus status = AdvertisementStatus.PENDING;
+    private AdvertisementStatusEnum status = AdvertisementStatusEnum.PENDING;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -79,8 +79,8 @@ public class AdvertisementEntity {
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
 
-    public AdvertisementStatus getStatus() { return status; }
-    public void setStatus(AdvertisementStatus status) { this.status = status; }
+    public AdvertisementStatusEnum getStatus() { return status; }
+    public void setStatus(AdvertisementStatusEnum status) { this.status = status; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

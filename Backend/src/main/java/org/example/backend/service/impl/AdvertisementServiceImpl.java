@@ -14,9 +14,9 @@ import org.example.backend.entity.CategoryEntity;
 import org.example.backend.entity.CityEntity;
 import org.example.backend.entity.SellerRatingEntity;
 import org.example.backend.entity.UserEntity;
-import org.example.backend.enums.AdvertisementStatus;
-import org.example.backend.enums.Role;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.enums.AdvertisementStatusEnum;
+import org.example.backend.enums.RoleEnum;
+import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
 import org.example.backend.exception.UnauthorizedException;
@@ -60,7 +60,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Transactional
     public AdvertisementDetailResponse createAdvertisement(UserEntity owner, CreateAdvertisementRequest request) {
         // Only active users can post advertisements
-        if (owner.getStatus() != UserStatus.ACTIVE) {
+        if (owner.getStatus() != UserStatusEnum.ACTIVE) {
             throw new UnauthorizedException("حساب کاربری شما مسدود است و امکان ثبت آگهی وجود ندارد");
         }
 
@@ -81,7 +81,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         ad.setOwner(owner);
         ad.setCategory(category);
         ad.setCity(city);
-        ad.setStatus(AdvertisementStatus.PENDING); // New ads need admin approval
+        ad.setStatus(AdvertisementStatusEnum.PENDING); // New ads need admin approval
         ad.setCreatedAt(LocalDateTime.now());
 
         AdvertisementEntity saved = advertisementRepository.save(ad);
@@ -111,7 +111,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         if (request.getCityId() != null) ad.setCity(cityService.getCityEntityById(request.getCityId()));
 
         // After editing, needs admin approval again
-        ad.setStatus(AdvertisementStatus.PENDING);
+        ad.setStatus(AdvertisementStatusEnum.PENDING);
         ad.setUpdatedAt(LocalDateTime.now());
         advertisementRepository.save(ad);
 
@@ -124,7 +124,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public void deleteAdvertisement(Long adId, UserEntity currentUser) {
         AdvertisementEntity ad = getAdvertisementEntityById(adId);
         ensureOwnerOrAdmin(ad, currentUser); // Owner or admin can delete
-        ad.setStatus(AdvertisementStatus.DELETED);
+        ad.setStatus(AdvertisementStatusEnum.DELETED);
         ad.setUpdatedAt(LocalDateTime.now());
         advertisementRepository.save(ad);
     }
@@ -137,11 +137,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         ensureOwner(ad, currentUser); // Only owner can mark as sold
 
         // Only active ads can be marked as sold
-        if (ad.getStatus() != AdvertisementStatus.ACTIVE) {
+        if (ad.getStatus() != AdvertisementStatusEnum.ACTIVE) {
             throw new InvalidInputException("فقط آگهی فعال را می‌توان فروخته‌شده علامت زد");
         }
 
-        ad.setStatus(AdvertisementStatus.SOLD);
+        ad.setStatus(AdvertisementStatusEnum.SOLD);
         ad.setUpdatedAt(LocalDateTime.now());
         advertisementRepository.save(ad);
         return getAdvertisementDetail(adId, currentUser);
@@ -150,7 +150,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Internal method: change status (used only by AdminReviewService)
     @Override
     @Transactional
-    public void changeStatus(AdvertisementEntity ad, AdvertisementStatus newStatus) {
+    public void changeStatus(AdvertisementEntity ad, AdvertisementStatusEnum newStatus) {
         ad.setStatus(newStatus);
         ad.setUpdatedAt(LocalDateTime.now());
         advertisementRepository.save(ad);
@@ -173,7 +173,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     @Transactional(readOnly = true)
     public List<AdvertisementSummaryResponse> getAllActiveAds() {
-        return advertisementRepository.findByStatus(AdvertisementStatus.ACTIVE)
+        return advertisementRepository.findByStatus(AdvertisementStatusEnum.ACTIVE)
                 .stream()
                 .map(this::toSummaryResponse)
                 .collect(Collectors.toList());
@@ -188,7 +188,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Get pending advertisements for admin review (oldest first)
     @Override
     public List<AdvertisementSummaryResponse> getPendingAdvertisements() {
-        return advertisementRepository.findByStatusOrderByCreatedAtAsc(AdvertisementStatus.PENDING)
+        return advertisementRepository.findByStatusOrderByCreatedAtAsc(AdvertisementStatusEnum.PENDING)
                 .stream().map(this::toSummaryResponse).toList();
     }
 
@@ -202,7 +202,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
 
         // Start with all active ads
-        List<AdvertisementEntity> ads = advertisementRepository.findByStatus(AdvertisementStatus.ACTIVE);
+        List<AdvertisementEntity> ads = advertisementRepository.findByStatus(AdvertisementStatusEnum.ACTIVE);
 
         // Apply filters using stream (in-memory filtering)
         return ads.stream()
@@ -242,7 +242,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Ensure current user is either owner or admin
     private void ensureOwnerOrAdmin(AdvertisementEntity ad, UserEntity currentUser) {
         boolean isOwner = ad.getOwner().getId().equals(currentUser.getId());
-        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        boolean isAdmin = currentUser.getRole() == RoleEnum.ADMIN;
         if (!isOwner && !isAdmin) {
             throw new UnauthorizedException("شما اجازه‌ی حذف این آگهی را ندارید");
         }

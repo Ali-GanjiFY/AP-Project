@@ -5,7 +5,7 @@ import org.example.backend.entity.AdvertisementEntity;
 import org.example.backend.entity.ChatMessageEntity;
 import org.example.backend.entity.ConversationEntity;
 import org.example.backend.entity.UserEntity;
-import org.example.backend.enums.UserStatus;
+import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
 import org.example.backend.exception.UnauthorizedException;
@@ -40,7 +40,7 @@ public class ConversationServiceImpl implements ConversationService {
         }
 
         // Both buyer and seller must be active
-        if (buyer.getStatus() != UserStatus.ACTIVE || advertisement.getOwner().getStatus() != UserStatus.ACTIVE) {
+        if (buyer.getStatus() != UserStatusEnum.ACTIVE || advertisement.getOwner().getStatus() != UserStatusEnum.ACTIVE) {
             throw new UnauthorizedException("امکان شروع گفتگو برای کاربر مسدودشده وجود ندارد");
         }
 
