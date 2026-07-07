@@ -128,7 +128,7 @@ public class UserEntity {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = (email != null && email.trim().isEmpty()) ? null : email;
     }
 
     public void setRole(RoleEnum role) {
