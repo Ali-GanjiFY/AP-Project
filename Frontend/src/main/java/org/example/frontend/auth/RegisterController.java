@@ -44,12 +44,13 @@ public class RegisterController {
             Platform.runLater(() -> {
                 if ("SUCCESS".equals(result)) {
                     showSuccess("ثبت‌نام با موفقیت انجام شد! در حال انتقال...");
-                    // TODO: در بخش بعد، انتقال مستقیم به داشبورد یا صفحه لاگین را می‌نویسیم
+                    // تغییر به داشبورد
+                    NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
                 } else {
-                    // ترجمه خطاها به فارسی
                     showError(translateErrorMessage(result));
                 }
             });
+
         }).start();
     }
 

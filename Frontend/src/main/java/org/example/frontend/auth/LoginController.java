@@ -31,16 +31,16 @@ public class LoginController {
         new Thread(() -> {
             String result = authService.login(username, password);
 
-            // اعمال تغییرات روی UI باید در Thread اصلی JavaFX انجام شود
             Platform.runLater(() -> {
                 if ("SUCCESS".equals(result)) {
                     showSuccess("ورود موفقیت‌آمیز بود! در حال انتقال...");
-                    // TODO: در مرحله بعد جابجایی به صفحه اصلی (Dashboard) را اینجا می‌نویسیم
+                    // تغییر به داشبورد
+                    NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
                 } else {
-                    // ترجمه خطاها به فارسی
                     showError(translateErrorMessage(result));
                 }
             });
+
         }).start();
     }
 
