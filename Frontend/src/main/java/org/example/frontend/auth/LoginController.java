@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.application.Platform;
 import org.example.frontend.shared.NavigationService;
+import org.example.frontend.shared.UserSession;
 
 public class LoginController {
 
@@ -18,16 +19,13 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // بررسی اعتبارسنجی اولیه در سمت فرانت
         if (username.isEmpty() || password.isEmpty()) {
             showError("لطفاً نام کاربری و رمز عبور را وارد کنید.");
             return;
         }
 
-        // غیرفعال کردن موقت دکمه ورود برای جلوگیری از کلیک‌های مکرر (در صورت تمایل)
         errorLabel.setVisible(false);
 
-        // ارسال درخواست در یک Thread جداگانه تا UI فریز نشود
         new Thread(() -> {
             String result = authService.login(username, password);
 
@@ -35,12 +33,17 @@ public class LoginController {
                 if ("SUCCESS".equals(result)) {
                     showSuccess("ورود موفقیت‌آمیز بود! در حال انتقال...");
 
-                    // اجرای فرآیند تغییر صفحه با کمی تاخیر یا به صورت ایمن روی ترد گرافیکی
                     Platform.runLater(() -> {
                         try {
-                            NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+                            String role = UserSession.getInstance().getRole();
+
+                            if (role != null && role.equalsIgnoreCase("ADMIN")) {
+                                NavigationService.switchScene("/fxml/dashboard/admin-dashboard-view.fxml", "پنل مدیریت");
+                            } else {
+                                NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+                            }
                         } catch (Exception e) {
-                            e.printStackTrace(); // چاپ خطا در کنسول برای پیدا کردن علت دقیق
+                            e.printStackTrace();
                             showError("خطا در بارگذاری صفحه داشبورد: " + e.getMessage());
                         }
                     });
@@ -48,7 +51,6 @@ public class LoginController {
                     showError(translateErrorMessage(result));
                 }
             });
-
 
         }).start();
     }
@@ -58,9 +60,6 @@ public class LoginController {
         NavigationService.switchScene("/fxml/auth/register-view.fxml", "ثبت‌نام در سامانه");
     }
 
-    /**
-     * متد کمکی برای ترجمه خطاهای دریافتی از AuthService به فارسی
-     */
     private String translateErrorMessage(String rawError) {
         if (rawError == null) return "خطای نامشخصی رخ داده است.";
 
@@ -76,7 +75,6 @@ public class LoginController {
             return "برقراری ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.";
         }
 
-        // بازگرداندن خطای اصلی در صورتی که ترجمه‌ای پیدا نشد
         return rawError;
     }
 
