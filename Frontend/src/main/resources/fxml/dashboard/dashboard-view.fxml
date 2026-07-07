@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.Region?>
 
-<StackPane xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.example.frontend.dashboard.DashboardController"
-           nodeOrientation="RIGHT_TO_LEFT">
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.frontend.dashboard.DashboardController"
+            nodeOrientation="RIGHT_TO_LEFT"
+            prefWidth="1280" prefHeight="720">
 
-    <VBox alignment="CENTER" spacing="20">
-        <Label text="به پنل کاربری خوش آمدید!" style="-fx-font-size: 20px;"/>
-        <Button text="خروج از حساب" onAction="#handleLogout" />
-    </VBox>
+    <right>
+        <VBox spacing="15" prefWidth="250"
+              style="-fx-background-color: #1e293b;">
+            <padding>
+                <Insets top="30" right="20" bottom="30" left="20"/>
+            </padding>
 
-</StackPane>
+            <Label text="پنل مدیریت سیستم"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="صفحه اصلی" maxWidth="Infinity"
+                    style="-fx-alignment: center-right; -fx-background-color: transparent; -fx-text-fill: #e2e8f0;"/>
+
+            <Button text="مدیریت بخش‌ها" maxWidth="Infinity"
+                    style="-fx-alignment: center-right; -fx-background-color: transparent; -fx-text-fill: #e2e8f0;"/>
+
+            <!-- spacer واقعی -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="خروج از حساب" onAction="#handleLogout" maxWidth="Infinity"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </VBox>
+    </right>
+
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <VBox alignment="CENTER" spacing="20">
+                <Label text="به پنل کاربری خوش آمدید!"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                <Label text="لطفاً از منوی سمت راست، بخش مورد نظر خود را انتخاب کنید."
+                       style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>
+
+
