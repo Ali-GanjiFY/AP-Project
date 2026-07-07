@@ -37,3 +37,17 @@
 .text-field:focused, .password-field:focused {
     -fx-border-color: -fx-input-focus-border;
 }
+
+.menu-button {
+    -fx-alignment: center-right;
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 15px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: #ffffff;
+}

@@ -2,13 +2,18 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.Region?>
 
+<?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.frontend.dashboard.DashboardController"
             nodeOrientation="RIGHT_TO_LEFT"
             prefWidth="1280" prefHeight="720">
+
+    <stylesheets>
+        <URL value="@../../css/variables.css"/>
+        <URL value="@../../css/main.css"/>
+    </stylesheets>
 
     <right>
         <VBox spacing="15" prefWidth="250"
@@ -22,19 +27,16 @@
 
             <Separator style="-fx-opacity: 0.3;"/>
 
-            <Button text="صفحه اصلی" maxWidth="Infinity"
-                    style="-fx-alignment: center-right; -fx-background-color: transparent; -fx-text-fill: #e2e8f0;"/>
+            <Button text="صفحه اصلی" maxWidth="Infinity" styleClass="menu-button"/>
 
-            <Button text="مدیریت بخش‌ها" maxWidth="Infinity"
-                    style="-fx-alignment: center-right; -fx-background-color: transparent; -fx-text-fill: #e2e8f0;"/>
+            <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"/>
 
-            <!-- spacer واقعی -->
             <Region VBox.vgrow="ALWAYS"/>
 
             <Separator style="-fx-opacity: 0.3;"/>
 
             <Button text="خروج از حساب" onAction="#handleLogout" maxWidth="Infinity"
-                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
         </VBox>
     </right>
 
@@ -43,7 +45,6 @@
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
-
             <VBox alignment="CENTER" spacing="20">
                 <Label text="به پنل کاربری خوش آمدید!"
                        style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
@@ -54,5 +55,3 @@
     </center>
 
 </BorderPane>
-
-
