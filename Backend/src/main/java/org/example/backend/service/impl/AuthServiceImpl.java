@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.example.backend.dto.request.LoginRequest;
 import org.example.backend.dto.request.RegisterRequest;
 import org.example.backend.dto.response.AuthResponse;
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.enums.Role;
 import org.example.backend.enums.UserStatus;
 import org.example.backend.exception.AuthenticationException;
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Create and save new user
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setFullName(request.getFullName());
         user.setUsername(request.getUsername());
         user.setPhone(request.getPhone());
@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequest request) {
         // Find user by username
-        User user = userRepository.findByUsername(request.getUsername())
+        UserEntity user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
 
         // Verify password

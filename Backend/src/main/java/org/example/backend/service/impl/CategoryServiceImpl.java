@@ -2,7 +2,7 @@ package org.example.backend.service.impl;
 
 import org.example.backend.dto.request.CategoryRequest;
 import org.example.backend.dto.response.CategoryResponse;
-import org.example.backend.entity.Category;
+import org.example.backend.entity.CategoryEntity;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DuplicateResourceException("این دسته‌بندی قبلاً ثبت شده است");
         }
 
-        Category category = new Category(request.getName(), request.getDescription());
+        CategoryEntity category = new CategoryEntity(request.getName(), request.getDescription());
         // Default to active if not specified
         category.setActive(request.getActive() == null || request.getActive());
 
@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
-        Category category = getCategoryEntityById(id);
+        CategoryEntity category = getCategoryEntityById(id);
 
         // Check name uniqueness if changed
         if (!category.getName().equals(request.getName())
@@ -83,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(Long id) {
-        Category category = getCategoryEntityById(id);
+        CategoryEntity category = getCategoryEntityById(id);
 
         // Check for subcategories
         long subCategoriesCount = categoryRepository.countByParentCategory(category);
@@ -114,14 +114,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public CategoryResponse getCategoryByName(String name) {
-        Category category = categoryRepository.findByNameIgnoreCase(name)
+        CategoryEntity category = categoryRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new ResourceNotFoundException("دسته‌بندی با نام '" + name + "' یافت نشد"));
         return toResponse(category);
     }
 
     // Get category entity by ID (internal use by other services)
     @Override
-    public Category getCategoryEntityById(Long id) {
+    public CategoryEntity getCategoryEntityById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("دسته‌بندی یافت نشد"));
     }
@@ -133,7 +133,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     // Convert Category entity to CategoryResponse DTO
-    private CategoryResponse toResponse(Category category) {
+    private CategoryResponse toResponse(CategoryEntity category) {
         Long parentId = category.getParentCategory() != null ? category.getParentCategory().getId() : null;
         String parentName = category.getParentCategory() != null ? category.getParentCategory().getName() : null;
 

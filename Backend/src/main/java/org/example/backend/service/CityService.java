@@ -2,7 +2,7 @@ package org.example.backend.service;
 
 import org.example.backend.dto.request.CityRequest;
 import org.example.backend.dto.response.CityResponse;
-import org.example.backend.entity.City;
+import org.example.backend.entity.CityEntity;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface CityService {
     CityResponse getCityByName(String name);
 
     // Get city entity by ID (internal use by other services)
-    City getCityEntityById(Long id);
+    CityEntity getCityEntityById(Long id);
 
     // Get list of all cities
     List<CityResponse> getAllCities();

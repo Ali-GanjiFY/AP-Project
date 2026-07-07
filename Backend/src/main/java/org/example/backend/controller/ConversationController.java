@@ -1,8 +1,8 @@
 package org.example.backend.controller;
 
 import org.example.backend.dto.response.ConversationResponse;
-import org.example.backend.entity.Advertisement;
-import org.example.backend.entity.User;
+import org.example.backend.entity.AdvertisementEntity;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.service.AdvertisementService;
 import org.example.backend.service.ConversationService;
 import org.example.backend.service.UserService;
@@ -30,7 +30,7 @@ public class ConversationController {
     }
 
     // Resolves the authenticated User entity from the JWT-backed Authentication.
-    private User currentUser(Authentication authentication) {
+    private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
@@ -39,7 +39,7 @@ public class ConversationController {
     @PostMapping("/advertisements/{advertisementId}")
     public ResponseEntity<ConversationResponse> startOrGetConversation(
             @PathVariable Long advertisementId, Authentication authentication) {
-        Advertisement advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
+        AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
         ConversationResponse response =
                 conversationService.startOrGetConversation(currentUser(authentication), advertisement);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

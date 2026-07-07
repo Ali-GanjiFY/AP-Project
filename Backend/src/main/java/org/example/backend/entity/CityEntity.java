@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "cities")
-public class City {
+public class CityEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +18,12 @@ public class City {
     private String province;
 
     @OneToMany(mappedBy = "city")
-    private List<Advertisement> advertisements;
+    private List<AdvertisementEntity> advertisements;
 
     // Constructors
-    public City() {}
+    public CityEntity() {}
 
-    public City(String name) {
+    public CityEntity(String name) {
         this.name = name;
     }
 
@@ -34,8 +34,8 @@ public class City {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public List<Advertisement> getAdvertisements() { return advertisements; }
-    public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
+    public List<AdvertisementEntity> getAdvertisements() { return advertisements; }
+    public void setAdvertisements(List<AdvertisementEntity> advertisements) { this.advertisements = advertisements; }
 
     public String getProvince() {
         return province;

@@ -3,7 +3,7 @@ package org.example.backend.service.impl;
 import org.example.backend.dto.request.ChangePasswordRequest;
 import org.example.backend.dto.request.UpdateProfileRequest;
 import org.example.backend.dto.response.UserResponse;
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.enums.Role;
 import org.example.backend.enums.UserStatus;
 import org.example.backend.exception.DuplicateResourceException;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // Prevent operations on soft-deleted users
-    private void validateNotDeleted(User user) {
+    private void validateNotDeleted(UserEntity user) {
         if (user.getStatus() == UserStatus.DELETED) {
             throw new InvalidInputException("این کاربر قبلاً حذف شده است");
         }
@@ -38,14 +38,14 @@ public class UserServiceImpl implements UserService {
 
     // Get user entity by ID (internal use)
     @Override
-    public User getUserEntityById(Long userId) {
+    public UserEntity getUserEntityById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("کاربر یافت نشد"));
     }
 
     // Get user entity by username (internal use)
     @Override
-    public User getUserEntityByUsername(String username) {
+    public UserEntity getUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("کاربر یافت نشد"));
     }
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
 
         // Update full name if provided
         if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(newPhone);
         }
 
-        User updatedUser = userRepository.save(user);
+        UserEntity updatedUser = userRepository.save(user);
         return UserResponse.fromEntity(updatedUser);
     }
 
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(Long userId, ChangePasswordRequest request) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
 
         // Check current password
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse blockUser(Long userId) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
 
         if (user.getRole() == Role.ADMIN) {
             throw new UnauthorizedException("شما نمی‌توانید یک ادمین را مسدود کنید");
@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse unblockUser(Long userId) {
-        User user = getUserEntityById(userId);
+        UserEntity user = getUserEntityById(userId);
         if (user.getStatus() == UserStatus.DELETED) {
             throw new InvalidInputException("حساب کاربری حذف شده قابل فعال‌سازی مجدد نیست");
         }
@@ -166,8 +166,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long currentUserId, Long targetUserId) {
-        User currentUser = getUserEntityById(currentUserId);
-        User targetUser = getUserEntityById(targetUserId);
+        UserEntity currentUser = getUserEntityById(currentUserId);
+        UserEntity targetUser = getUserEntityById(targetUserId);
 
         validateNotDeleted(currentUser);
         validateNotDeleted(targetUser);

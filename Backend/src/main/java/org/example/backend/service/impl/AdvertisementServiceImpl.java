@@ -8,12 +8,12 @@ import org.example.backend.dto.response.AdvertisementImageResponse;
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
 import org.example.backend.dto.response.CategoryResponse;
 import org.example.backend.dto.response.CityResponse;
-import org.example.backend.entity.Advertisement;
-import org.example.backend.entity.AdvertisementImage;
-import org.example.backend.entity.Category;
-import org.example.backend.entity.City;
-import org.example.backend.entity.SellerRating;
-import org.example.backend.entity.User;
+import org.example.backend.entity.AdvertisementEntity;
+import org.example.backend.entity.AdvertisementImageEntity;
+import org.example.backend.entity.CategoryEntity;
+import org.example.backend.entity.CityEntity;
+import org.example.backend.entity.SellerRatingEntity;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.enums.AdvertisementStatus;
 import org.example.backend.enums.Role;
 import org.example.backend.enums.UserStatus;
@@ -58,7 +58,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Create a new advertisement with PENDING status, requires active user and at least one image
     @Override
     @Transactional
-    public AdvertisementDetailResponse createAdvertisement(User owner, CreateAdvertisementRequest request) {
+    public AdvertisementDetailResponse createAdvertisement(UserEntity owner, CreateAdvertisementRequest request) {
         // Only active users can post advertisements
         if (owner.getStatus() != UserStatus.ACTIVE) {
             throw new UnauthorizedException("حساب کاربری شما مسدود است و امکان ثبت آگهی وجود ندارد");
@@ -70,11 +70,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
 
         // Fetch category and city
-        Category category = categoryService.getCategoryEntityById(request.getCategoryId());
-        City city = cityService.getCityEntityById(request.getCityId());
+        CategoryEntity category = categoryService.getCategoryEntityById(request.getCategoryId());
+        CityEntity city = cityService.getCityEntityById(request.getCityId());
 
         // Build and save advertisement
-        Advertisement ad = new Advertisement();
+        AdvertisementEntity ad = new AdvertisementEntity();
         ad.setTitle(request.getTitle());
         ad.setDescription(request.getDescription());
         ad.setPrice(request.getPrice());
@@ -84,12 +84,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         ad.setStatus(AdvertisementStatus.PENDING); // New ads need admin approval
         ad.setCreatedAt(LocalDateTime.now());
 
-        Advertisement saved = advertisementRepository.save(ad);
+        AdvertisementEntity saved = advertisementRepository.save(ad);
 
         // Save all images
         if (request.getImagePaths() != null) {
             for (String path : request.getImagePaths()) {
-                advertisementImageRepository.save(new AdvertisementImage(path, saved));
+                advertisementImageRepository.save(new AdvertisementImageEntity(path, saved));
             }
         }
 
@@ -99,8 +99,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Update advertisement: only owner can edit, returns to PENDING for re-review
     @Override
     @Transactional
-    public AdvertisementDetailResponse updateAdvertisement(Long adId, User currentUser, UpdateAdvertisementRequest request) {
-        Advertisement ad = getAdvertisementEntityById(adId);
+    public AdvertisementDetailResponse updateAdvertisement(Long adId, UserEntity currentUser, UpdateAdvertisementRequest request) {
+        AdvertisementEntity ad = getAdvertisementEntityById(adId);
         ensureOwner(ad, currentUser); // Only owner can edit
 
         // Update only provided fields
@@ -121,8 +121,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Soft delete: owner or admin can delete
     @Override
     @Transactional
-    public void deleteAdvertisement(Long adId, User currentUser) {
-        Advertisement ad = getAdvertisementEntityById(adId);
+    public void deleteAdvertisement(Long adId, UserEntity currentUser) {
+        AdvertisementEntity ad = getAdvertisementEntityById(adId);
         ensureOwnerOrAdmin(ad, currentUser); // Owner or admin can delete
         ad.setStatus(AdvertisementStatus.DELETED);
         ad.setUpdatedAt(LocalDateTime.now());
@@ -132,8 +132,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Mark as SOLD: only owner, only if currently ACTIVE
     @Override
     @Transactional
-    public AdvertisementDetailResponse markAsSold(Long adId, User currentUser) {
-        Advertisement ad = getAdvertisementEntityById(adId);
+    public AdvertisementDetailResponse markAsSold(Long adId, UserEntity currentUser) {
+        AdvertisementEntity ad = getAdvertisementEntityById(adId);
         ensureOwner(ad, currentUser); // Only owner can mark as sold
 
         // Only active ads can be marked as sold
@@ -150,7 +150,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Internal method: change status (used only by AdminReviewService)
     @Override
     @Transactional
-    public void changeStatus(Advertisement ad, AdvertisementStatus newStatus) {
+    public void changeStatus(AdvertisementEntity ad, AdvertisementStatus newStatus) {
         ad.setStatus(newStatus);
         ad.setUpdatedAt(LocalDateTime.now());
         advertisementRepository.save(ad);
@@ -158,13 +158,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     // Get full advertisement details with seller ratings
     @Override
-    public AdvertisementDetailResponse getAdvertisementDetail(Long adId, User currentUser) {
+    public AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser) {
         return toDetailResponse(getAdvertisementEntityById(adId), currentUser);
     }
 
     // Get advertisement entity by ID (internal use by other services)
     @Override
-    public Advertisement getAdvertisementEntityById(Long adId) {
+    public AdvertisementEntity getAdvertisementEntityById(Long adId) {
         return advertisementRepository.findById(adId)
                 .orElseThrow(() -> new ResourceNotFoundException("آگهی یافت نشد"));
     }
@@ -181,7 +181,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     // Get all advertisements owned by a specific user
     @Override
-    public List<AdvertisementSummaryResponse> getMyAdvertisements(User owner) {
+    public List<AdvertisementSummaryResponse> getMyAdvertisements(UserEntity owner) {
         return advertisementRepository.findByOwner(owner).stream().map(this::toSummaryResponse).toList();
     }
 
@@ -202,7 +202,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
 
         // Start with all active ads
-        List<Advertisement> ads = advertisementRepository.findByStatus(AdvertisementStatus.ACTIVE);
+        List<AdvertisementEntity> ads = advertisementRepository.findByStatus(AdvertisementStatus.ACTIVE);
 
         // Apply filters using stream (in-memory filtering)
         return ads.stream()
@@ -224,23 +224,23 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     // Build comparator for sorting based on request
-    private Comparator<Advertisement> buildComparator(AdvertisementSearchRequest request) {
-        Comparator<Advertisement> comparator = "price".equalsIgnoreCase(request.getSortBy())
-                ? Comparator.comparing(Advertisement::getPrice)
-                : Comparator.comparing(Advertisement::getCreatedAt);
+    private Comparator<AdvertisementEntity> buildComparator(AdvertisementSearchRequest request) {
+        Comparator<AdvertisementEntity> comparator = "price".equalsIgnoreCase(request.getSortBy())
+                ? Comparator.comparing(AdvertisementEntity::getPrice)
+                : Comparator.comparing(AdvertisementEntity::getCreatedAt);
 
         return "desc".equalsIgnoreCase(request.getSortDirection()) ? comparator.reversed() : comparator;
     }
 
     // Ensure current user is the owner
-    private void ensureOwner(Advertisement ad, User currentUser) {
+    private void ensureOwner(AdvertisementEntity ad, UserEntity currentUser) {
         if (!ad.getOwner().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("شما اجازه‌ی تغییر این آگهی را ندارید");
         }
     }
 
     // Ensure current user is either owner or admin
-    private void ensureOwnerOrAdmin(Advertisement ad, User currentUser) {
+    private void ensureOwnerOrAdmin(AdvertisementEntity ad, UserEntity currentUser) {
         boolean isOwner = ad.getOwner().getId().equals(currentUser.getId());
         boolean isAdmin = currentUser.getRole() == Role.ADMIN;
         if (!isOwner && !isAdmin) {
@@ -249,7 +249,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     // Convert Advertisement to Summary DTO (for list views)
-    private AdvertisementSummaryResponse toSummaryResponse(Advertisement ad) {
+    private AdvertisementSummaryResponse toSummaryResponse(AdvertisementEntity ad) {
         String mainImage = (ad.getImages() != null && !ad.getImages().isEmpty())
                 ? ad.getImages().get(0).getImagePath() : null;
 
@@ -260,14 +260,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     // Convert Advertisement to Detail DTO with full data and seller ratings
-    private AdvertisementDetailResponse toDetailResponse(Advertisement ad, User currentUser) {
+    private AdvertisementDetailResponse toDetailResponse(AdvertisementEntity ad, UserEntity currentUser) {
         // Fetch real images
         List<AdvertisementImageResponse> images = advertisementImageRepository.findByAdvertisement(ad).stream()
                 .map(img -> new AdvertisementImageResponse(img.getId(), img.getImagePath()))
                 .toList();
 
         // Build category response with parent info
-        Category category = ad.getCategory();
+        CategoryEntity category = ad.getCategory();
         CategoryResponse categoryResponse = new CategoryResponse(
                 category.getId(), category.getName(), category.getDescription(),
                 category.getParentCategory() != null ? category.getParentCategory().getId() : null,
@@ -281,9 +281,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         );
 
         // Calculate seller's average rating and count (real data)
-        User owner = ad.getOwner();
-        List<SellerRating> ratings = sellerRatingRepository.findBySeller(owner);
-        double avgRating = ratings.stream().mapToInt(SellerRating::getScore).average().orElse(0.0);
+        UserEntity owner = ad.getOwner();
+        List<SellerRatingEntity> ratings = sellerRatingRepository.findBySeller(owner);
+        double avgRating = ratings.stream().mapToInt(SellerRatingEntity::getScore).average().orElse(0.0);
         long ratingCount = sellerRatingRepository.countBySeller(owner);
 
         // Check if current user is the owner

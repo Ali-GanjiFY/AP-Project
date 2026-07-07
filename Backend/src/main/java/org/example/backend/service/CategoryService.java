@@ -2,7 +2,7 @@ package org.example.backend.service;
 
 import org.example.backend.dto.request.CategoryRequest;
 import org.example.backend.dto.response.CategoryResponse;
-import org.example.backend.entity.Category;
+import org.example.backend.entity.CategoryEntity;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface CategoryService {
     CategoryResponse getCategoryByName(String name);
 
     // Get category entity by ID (internal use by other services)
-    Category getCategoryEntityById(Long id);
+    CategoryEntity getCategoryEntityById(Long id);
 
     // Get list of all categories
     List<CategoryResponse> getAllCategories();

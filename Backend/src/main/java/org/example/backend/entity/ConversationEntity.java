@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "conversations")
-public class Conversation {
+public class ConversationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,24 +21,24 @@ public class Conversation {
 
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
-    private User buyer;
+    private UserEntity buyer;
 
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
-    private User seller;
+    private UserEntity seller;
 
     @ManyToOne
     @JoinColumn(name = "advertisement_id", nullable = false)
-    private Advertisement advertisement;
+    private AdvertisementEntity advertisement;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     @OrderBy("sentAt ASC")
-    private List<ChatMessage> messages;
+    private List<ChatMessageEntity> messages;
 
     // Constructors
-    public Conversation() {}
+    public ConversationEntity() {}
 
-    public Conversation(User buyer, User seller, Advertisement advertisement) {
+    public ConversationEntity(UserEntity buyer, UserEntity seller, AdvertisementEntity advertisement) {
         this.buyer = buyer;
         this.seller = seller;
         this.advertisement = advertisement;
@@ -54,19 +54,19 @@ public class Conversation {
         return createdAt;
     }
 
-    public User getBuyer() {
+    public UserEntity getBuyer() {
         return buyer;
     }
 
-    public User getSeller() {
+    public UserEntity getSeller() {
         return seller;
     }
 
-    public Advertisement getAdvertisement() {
+    public AdvertisementEntity getAdvertisement() {
         return advertisement;
     }
 
-    public List<ChatMessage> getMessages() {
+    public List<ChatMessageEntity> getMessages() {
         return messages;
     }
 
@@ -83,19 +83,19 @@ public class Conversation {
         this.createdAt = createdAt;
     }
 
-    public void setBuyer(User buyer) {
+    public void setBuyer(UserEntity buyer) {
         this.buyer = buyer;
     }
 
-    public void setSeller(User seller) {
+    public void setSeller(UserEntity seller) {
         this.seller = seller;
     }
 
-    public void setAdvertisement(Advertisement advertisement) {
+    public void setAdvertisement(AdvertisementEntity advertisement) {
         this.advertisement = advertisement;
     }
 
-    public void setMessages(List<ChatMessage> messages) {
+    public void setMessages(List<ChatMessageEntity> messages) {
         this.messages = messages;
     }
 

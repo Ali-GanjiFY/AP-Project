@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,15 +43,15 @@ public class User {
 
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Advertisement> advertisements;
+    private List<AdvertisementEntity> advertisements;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Favorite> favorites;
+    private List<FavoriteEntity> favorites;
 
     // Constructors
-    public User() {}
+    public UserEntity() {}
 
-    public User(String fullName, String username, String password, String phone, String email) {
+    public UserEntity(String fullName, String username, String password, String phone, String email) {
         this.fullName = fullName;
         this.username = username;
         this.password = password;
@@ -94,11 +94,11 @@ public class User {
         return status;
     }
 
-    public List<Advertisement> getAdvertisements() {
+    public List<AdvertisementEntity> getAdvertisements() {
         return advertisements;
     }
 
-    public List<Favorite> getFavorites() {
+    public List<FavoriteEntity> getFavorites() {
         return favorites;
     }
 
@@ -139,11 +139,11 @@ public class User {
         this.status = status;
     }
 
-    public void setAdvertisements(List<Advertisement> advertisements) {
+    public void setAdvertisements(List<AdvertisementEntity> advertisements) {
         this.advertisements = advertisements;
     }
 
-    public void setFavorites(List<Favorite> favorites) {
+    public void setFavorites(List<FavoriteEntity> favorites) {
         this.favorites = favorites;
     }
 

@@ -1,6 +1,6 @@
 package org.example.backend.dto.response;
 
-import org.example.backend.entity.User;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.enums.Role;
 import org.example.backend.enums.UserStatus;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ public class UserResponse {
         this.createdAt = createdAt;
     }
 
-    public static UserResponse fromEntity(User user) {
+    public static UserResponse fromEntity(UserEntity user) {
         return new UserResponse(
                 user.getId(), user.getFullName(), user.getUsername(),
                 user.getPhone(), user.getEmail(), user.getRole(),

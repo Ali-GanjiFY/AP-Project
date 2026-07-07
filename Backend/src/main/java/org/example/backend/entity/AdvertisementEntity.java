@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "advertisements")
-public class Advertisement {
+public class AdvertisementEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,36 +35,36 @@ public class Advertisement {
     // رابطه با صاحب آگهی
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    private UserEntity owner;
 
     // رابطه با دسته‌بندی
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    private CategoryEntity category;
 
     // رابطه با شهر
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
-    private City city;
+    private CityEntity city;
 
     // رابطه با تصاویر
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private List<AdvertisementImage> images;
+    private List<AdvertisementImageEntity> images;
 
     // رابطه با گفتگوها
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private List<Conversation> conversations;
+    private List<ConversationEntity> conversations;
 
     // رابطه با علاقه‌مندی‌ها
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private List<Favorite> favorites;
+    private List<FavoriteEntity> favorites;
 
     // رابطه با امتیازها
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private List<SellerRating> ratings;
+    private List<SellerRatingEntity> ratings;
 
     // Constructors
-    public Advertisement() {}
+    public AdvertisementEntity() {}
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -88,26 +88,24 @@ public class Advertisement {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public User getOwner() { return owner; }
-    public void setOwner(User owner) { this.owner = owner; }
+    public UserEntity getOwner() { return owner; }
+    public void setOwner(UserEntity owner) { this.owner = owner; }
 
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
+    public CategoryEntity getCategory() { return category; }
+    public void setCategory(CategoryEntity category) { this.category = category; }
 
-    public City getCity() { return city; }
-    public void setCity(City city) { this.city = city; }
+    public CityEntity getCity() { return city; }
+    public void setCity(CityEntity city) { this.city = city; }
 
-    public List<AdvertisementImage> getImages() { return images; }
-    public void setImages(List<AdvertisementImage> images) { this.images = images; }
+    public List<AdvertisementImageEntity> getImages() { return images; }
+    public void setImages(List<AdvertisementImageEntity> images) { this.images = images; }
 
-    public List<Conversation> getConversations() { return conversations; }
-    public void setConversations(List<Conversation> conversations) { this.conversations = conversations; }
+    public List<ConversationEntity> getConversations() { return conversations; }
+    public void setConversations(List<ConversationEntity> conversations) { this.conversations = conversations; }
 
-    public List<Favorite> getFavorites() { return favorites; }
-    public void setFavorites(List<Favorite> favorites) { this.favorites = favorites; }
+    public List<FavoriteEntity> getFavorites() { return favorites; }
+    public void setFavorites(List<FavoriteEntity> favorites) { this.favorites = favorites; }
 
-    public List<SellerRating> getRatings() { return ratings; }
-    public void setRatings(List<SellerRating> ratings) { this.ratings = ratings; }
+    public List<SellerRatingEntity> getRatings() { return ratings; }
+    public void setRatings(List<SellerRatingEntity> ratings) { this.ratings = ratings; }
 }
-
-

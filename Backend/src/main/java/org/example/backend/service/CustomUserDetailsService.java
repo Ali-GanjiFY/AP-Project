@@ -1,4 +1,5 @@
 package org.example.backend.service;
+import org.example.backend.entity.UserEntity;
 import org.springframework.lang.NonNull;
 import org.example.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public @NonNull UserDetails loadUserByUsername(@NonNull String username)
             throws UsernameNotFoundException {
 
-        org.example.backend.entity.User user =
+        UserEntity user =
                 userRepository.findByUsername(username)
                         .orElseThrow(() ->
                                 new UsernameNotFoundException("User not found"));

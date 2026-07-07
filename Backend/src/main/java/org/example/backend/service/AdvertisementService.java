@@ -5,8 +5,8 @@ import org.example.backend.dto.request.CreateAdvertisementRequest;
 import org.example.backend.dto.request.UpdateAdvertisementRequest;
 import org.example.backend.dto.response.AdvertisementDetailResponse;
 import org.example.backend.dto.response.AdvertisementSummaryResponse;
-import org.example.backend.entity.Advertisement;
-import org.example.backend.entity.User;
+import org.example.backend.entity.AdvertisementEntity;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.enums.AdvertisementStatus;
 
 import java.util.List;
@@ -14,31 +14,31 @@ import java.util.List;
 public interface AdvertisementService {
 
     // Create a new advertisement with PENDING status and at least one image
-    AdvertisementDetailResponse createAdvertisement(User owner, CreateAdvertisementRequest request);
+    AdvertisementDetailResponse createAdvertisement(UserEntity owner, CreateAdvertisementRequest request);
 
     // Update existing advertisement, returns to PENDING status for admin review
-    AdvertisementDetailResponse updateAdvertisement(Long adId, User currentUser, UpdateAdvertisementRequest request);
+    AdvertisementDetailResponse updateAdvertisement(Long adId, UserEntity currentUser, UpdateAdvertisementRequest request);
 
     // Soft delete advertisement (owner or admin only)
-    void deleteAdvertisement(Long adId, User currentUser);
+    void deleteAdvertisement(Long adId, UserEntity currentUser);
 
     // Mark active advertisement as SOLD (owner only)
-    AdvertisementDetailResponse markAsSold(Long adId, User currentUser);
+    AdvertisementDetailResponse markAsSold(Long adId, UserEntity currentUser);
 
     // Internal method: change advertisement status (used by AdminReviewService)
-    void changeStatus(Advertisement ad, AdvertisementStatus newStatus);
+    void changeStatus(AdvertisementEntity ad, AdvertisementStatus newStatus);
 
     // Get full advertisement details with seller ratings
-    AdvertisementDetailResponse getAdvertisementDetail(Long adId, User currentUser);
+    AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser);
 
     // Get advertisement entity by ID (internal use by other services)
-    Advertisement getAdvertisementEntityById(Long adId);
+    AdvertisementEntity getAdvertisementEntityById(Long adId);
 
     // Get all active advertisements for public browsing
     List<AdvertisementSummaryResponse> getAllActiveAds();
 
     // Get all advertisements owned by a specific user
-    List<AdvertisementSummaryResponse> getMyAdvertisements(User owner);
+    List<AdvertisementSummaryResponse> getMyAdvertisements(UserEntity owner);
 
     // Get pending advertisements for admin review (oldest first)
     List<AdvertisementSummaryResponse> getPendingAdvertisements();

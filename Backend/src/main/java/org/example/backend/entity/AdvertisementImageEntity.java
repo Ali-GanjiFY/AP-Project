@@ -1,12 +1,10 @@
-
-
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "advertisement_images")
-public class AdvertisementImage {
+public class AdvertisementImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,12 +15,12 @@ public class AdvertisementImage {
 
     @ManyToOne
     @JoinColumn(name = "advertisement_id", nullable = false)
-    private Advertisement advertisement;
+    private AdvertisementEntity advertisement;
 
     // Constructors
-    public AdvertisementImage() {}
+    public AdvertisementImageEntity() {}
 
-    public AdvertisementImage(String imagePath, Advertisement advertisement) {
+    public AdvertisementImageEntity(String imagePath, AdvertisementEntity advertisement) {
         this.imagePath = imagePath;
         this.advertisement = advertisement;
     }
@@ -34,7 +32,6 @@ public class AdvertisementImage {
     public String getImagePath() { return imagePath; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 
-    public Advertisement getAdvertisement() { return advertisement; }
-    public void setAdvertisement(Advertisement advertisement) { this.advertisement = advertisement; }
+    public AdvertisementEntity getAdvertisement() { return advertisement; }
+    public void setAdvertisement(AdvertisementEntity advertisement) { this.advertisement = advertisement; }
 }
-

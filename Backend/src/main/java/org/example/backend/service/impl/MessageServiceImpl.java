@@ -2,9 +2,9 @@ package org.example.backend.service.impl;
 
 import org.example.backend.dto.request.SendMessageRequest;
 import org.example.backend.dto.response.ChatMessageResponse;
-import org.example.backend.entity.ChatMessage;
-import org.example.backend.entity.Conversation;
-import org.example.backend.entity.User;
+import org.example.backend.entity.ChatMessageEntity;
+import org.example.backend.entity.ConversationEntity;
+import org.example.backend.entity.UserEntity;
 import org.example.backend.enums.UserStatus;
 import org.example.backend.exception.UnauthorizedException;
 import org.example.backend.repository.ChatMessageRepository;
@@ -30,9 +30,9 @@ public class MessageServiceImpl implements MessageService {
     // Send a message: validate participant and user status, update conversation timestamp
     @Override
     @Transactional
-    public ChatMessageResponse sendMessage(Long conversationId, User sender, SendMessageRequest request) {
+    public ChatMessageResponse sendMessage(Long conversationId, UserEntity sender, SendMessageRequest request) {
         // Verify sender is a participant in this conversation
-        Conversation conversation = conversationService.getConversationEntityById(conversationId, sender);
+        ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, sender);
 
         // Both buyer and seller must be active (not blocked or deleted)
         if (conversation.getBuyer().getStatus() != UserStatus.ACTIVE
@@ -41,8 +41,8 @@ public class MessageServiceImpl implements MessageService {
         }
 
         // Create and save the message
-        ChatMessage message = new ChatMessage(request.getContent(), sender, conversation);
-        ChatMessage saved = chatMessageRepository.save(message);
+        ChatMessageEntity message = new ChatMessageEntity(request.getContent(), sender, conversation);
+        ChatMessageEntity saved = chatMessageRepository.save(message);
 
         // Update the conversation's last message timestamp
         conversationService.touchLastMessageAt(conversation, saved.getSentAt());
@@ -52,9 +52,9 @@ public class MessageServiceImpl implements MessageService {
 
     // Get all messages in a conversation with access control
     @Override
-    public List<ChatMessageResponse> getConversationMessages(Long conversationId, User currentUser) {
+    public List<ChatMessageResponse> getConversationMessages(Long conversationId, UserEntity currentUser) {
         // Verify current user is a participant
-        Conversation conversation = conversationService.getConversationEntityById(conversationId, currentUser);
+        ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, currentUser);
         // Return messages in chronological order
         return chatMessageRepository.findByConversationOrderBySentAtAsc(conversation).stream()
                 .map(this::toResponse)
@@ -64,13 +64,13 @@ public class MessageServiceImpl implements MessageService {
     // Mark all unseen messages as seen (only messages from other users)
     @Override
     @Transactional
-    public void markMessagesAsSeen(Long conversationId, User currentUser) {
+    public void markMessagesAsSeen(Long conversationId, UserEntity currentUser) {
         // Verify current user is a participant
-        Conversation conversation = conversationService.getConversationEntityById(conversationId, currentUser);
-        List<ChatMessage> unseen = chatMessageRepository.findByConversationAndSeenFalse(conversation);
+        ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, currentUser);
+        List<ChatMessageEntity> unseen = chatMessageRepository.findByConversationAndSeenFalse(conversation);
 
         // Mark messages from others as seen, keep own messages unseen
-        for (ChatMessage message : unseen) {
+        for (ChatMessageEntity message : unseen) {
             if (!message.getSender().getId().equals(currentUser.getId())) {
                 message.setSeen(true);
             }
@@ -79,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     // Convert ChatMessage entity to ChatMessageResponse DTO
-    private ChatMessageResponse toResponse(ChatMessage message) {
+    private ChatMessageResponse toResponse(ChatMessageEntity message) {
         return new ChatMessageResponse(
                 message.getId(), message.getContent(), message.getSentAt(), message.isSeen(),
                 message.getSender().getId(), message.getSender().getUsername()
