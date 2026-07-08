@@ -1,0 +1,221 @@
+
+.scroll-container {
+    -fx-background-color: -fx-color-bg-dark;
+    -fx-background: -fx-color-bg-dark;
+    -fx-padding: 0;
+}
+
+.scroll-container > .viewport {
+    -fx-background-color: -fx-color-bg-dark;
+}
+
+.auth-container {
+    -fx-background-color: -fx-color-bg-light;
+    -fx-padding: 32px 36px 32px 36px;
+    -fx-background-radius: 16px;
+    -fx-border-color: -fx-color-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 18, 0, 0, 6);
+    -fx-max-width: 460px;
+    -fx-min-width: 460px;
+}
+
+.auth-container-wide {
+    -fx-max-width: 560px;
+    -fx-min-width: 560px;
+}
+
+.auth-title {
+    -fx-text-fill: -fx-color-text-heading;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.sub-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: -fx-color-text-sub;
+    -fx-font-weight: 600;
+}
+
+.text-field,
+.password-field {
+    -fx-background-color: -fx-color-input-bg;
+    -fx-text-fill: -fx-color-text;
+    -fx-prompt-text-fill: -fx-color-input-placeholder;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 16px;
+    -fx-pref-height: 46px;
+    -fx-padding: 0 14px 0 14px;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: -fx-color-input-focus;
+    -fx-border-width: 1.5px;
+    -fx-background-insets: 0;
+}
+
+
+.text-area {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 16px;
+    -fx-padding: 1px;
+    -fx-text-fill: -fx-color-text !important;
+}
+
+.text-area .content {
+    -fx-background-color: -fx-color-input-bg;
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+    -fx-text-fill: -fx-color-text !important;
+}
+
+.text-area .content .text,
+.text-area .content .text-node,
+.text-area .text {
+    -fx-fill: -fx-color-text !important;
+}
+
+.text-area .placeholder {
+    -fx-text-fill: -fx-color-input-placeholder !important;
+}
+
+.text-area:focused {
+    -fx-border-color: -fx-color-input-focus;
+    -fx-border-width: 1.5px;
+    -fx-background-insets: 0;
+}
+
+.text-area:focused .placeholder {
+    -fx-visible: true !important;
+}
+
+.combo-box {
+    -fx-background-color: -fx-color-input-bg;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 16px;
+    -fx-pref-height: 46px;
+    -fx-padding: 0;
+    -fx-mark-color: -fx-color-text-sub;
+}
+
+.combo-box:focused {
+    -fx-border-color: -fx-color-input-focus;
+    -fx-border-width: 1.5px;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-text;
+    -fx-padding: 0 14px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -fx-color-input-bg;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: -fx-color-primary;
+    -fx-text-fill: white;
+}
+
+
+.button {
+    -fx-background-color: -fx-color-primary;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 46px;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: -fx-color-primary-hover;
+}
+
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-text-sub;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-pref-height: 44px;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-color-primary;
+    -fx-text-fill: -fx-color-text;
+}
+
+
+.danger-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-text-sub;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-pref-height: 44px;
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: -fx-color-danger;
+    -fx-border-color: -fx-color-danger;
+    -fx-text-fill: white;
+}
+
+
+.hint-text {
+    -fx-text-fill: -fx-color-text-sub;
+    -fx-font-size: 12px;
+}
+
+
+.image-chip {
+    -fx-background-color: -fx-color-input-bg;
+    -fx-border-color: -fx-color-input-border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 4px 12px;
+    -fx-text-fill: -fx-color-text-sub;
+    -fx-font-size: 12px;
+}
+
+
+.error-text {
+    -fx-text-fill: -fx-color-danger;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.success-text {
+    -fx-text-fill: -fx-color-success;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
