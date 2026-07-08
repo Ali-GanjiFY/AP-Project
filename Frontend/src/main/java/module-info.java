@@ -9,6 +9,7 @@ module org.example.frontend {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires java.net.http;
+    requires com.google.gson;
 
     // باز کردن پکیج اصلی برای بارگذاری FXMLهای عمومی
     opens org.example.frontend to javafx.fxml;
@@ -21,6 +22,9 @@ module org.example.frontend {
 
     // اضافه شده: باز کردن پکیج داشبورد برای بارگذاری FXML و کنترلر آن توسط JavaFX
     opens org.example.frontend.dashboard to javafx.fxml;
+
+    // اضافه شده: باز کردن پکیج آگهی‌ها به Gson تا بتواند با Reflection فیلدهای private را پر کند
+    opens org.example.frontend.advertisement to com.google.gson;
 
     // اکسپورت کردن پکیج‌ها جهت استفاده و دسترسی ران‌تایم جاوااف‌ایکس
     exports org.example.frontend;
