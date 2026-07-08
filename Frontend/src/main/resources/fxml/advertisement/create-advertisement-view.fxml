@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.frontend.advertisement.CreateAdvertisementController"
+           nodeOrientation="RIGHT_TO_LEFT"
+           styleClass="scroll-container">
+
+
+    <children>
+        <ImageView fitWidth="160.0"
+                   preserveRatio="true"
+                   StackPane.alignment="TOP_CENTER">
+            <StackPane.margin>
+                <Insets top="30.0" bottom="30.0"/>
+            </StackPane.margin>
+            <Image url="@../../images/splash.png"/>
+        </ImageView>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;"
+                    StackPane.alignment="CENTER">
+            <VBox alignment="TOP_CENTER" style="-fx-padding: 140px 0 40px 0;">
+                <VBox alignment="CENTER"
+                      spacing="16.0"
+                      styleClass="auth-container, auth-container-wide"
+                      maxWidth="-Infinity"
+                      maxHeight="-Infinity">
+
+                    <padding>
+                        <Insets top="30.0" right="36.0" bottom="30.0" left="36.0"/>
+                    </padding>
+
+                    <Label text="ثبت آگهی جدید" styleClass="auth-title"/>
+
+                    <VBox spacing="6.0" alignment="CENTER_LEFT">
+                        <Label text="عنوان آگهی:" styleClass="sub-label"/>
+                        <TextField fx:id="titleField"
+                                   promptText="مثلاً: گوشی موبایل سالم"
+                                   styleClass="text-field"
+                                   prefWidth="460.0"/>
+                    </VBox>
+
+                    <VBox spacing="6.0" alignment="CENTER_LEFT">
+                        <Label text="توضیحات:" styleClass="sub-label"/>
+                        <TextArea fx:id="descriptionField"
+                                  promptText="توضیحات کامل آگهی..."
+                                  wrapText="true"
+                                  prefRowCount="4"
+                                  prefWidth="460.0"
+                                  styleClass="text-area"/>
+                    </VBox>
+
+                    <VBox spacing="6.0" alignment="CENTER_LEFT">
+                        <Label text="قیمت (تومان):" styleClass="sub-label"/>
+                        <TextField fx:id="priceField"
+                                   promptText="مثلاً: 1500000"
+                                   styleClass="text-field"
+                                   prefWidth="460.0"/>
+                    </VBox>
+
+                    <HBox spacing="16.0">
+                        <VBox spacing="6.0" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                            <Label text="دسته‌بندی:" styleClass="sub-label"/>
+                            <ComboBox fx:id="categoryComboBox"
+                                      promptText="انتخاب کنید"
+                                      styleClass="combo-box"
+                                      maxWidth="Infinity"/>
+                        </VBox>
+
+                        <VBox spacing="6.0" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                            <Label text="شهر:" styleClass="sub-label"/>
+                            <ComboBox fx:id="cityComboBox"
+                                      promptText="انتخاب کنید"
+                                      styleClass="combo-box"
+                                      maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="8.0" alignment="CENTER_LEFT">
+                        <Label text="تصاویر آگهی:" styleClass="sub-label"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Button text="انتخاب عکس"
+                                    onAction="#handleChooseImages"
+                                    styleClass="secondary-button"
+                                    prefWidth="150"/>
+                            <Label fx:id="imagesCountLabel"
+                                   text="هیچ عکسی انتخاب نشده"
+                                   styleClass="hint-text"/>
+                        </HBox>
+                        <FlowPane fx:id="imagesPreviewContainer" hgap="8" vgap="8"/>
+                    </VBox>
+
+                    <Label fx:id="statusLabel"
+                           text=""
+                           styleClass="error-text"
+                           visible="false"
+                           wrapText="true"
+                           maxWidth="460"/>
+
+                    <HBox spacing="12.0" alignment="CENTER">
+                        <Button text="ثبت آگهی"
+                                onAction="#handleSubmit"
+                                styleClass="button"
+                                prefWidth="220"/>
+                        <Button text="انصراف"
+                                onAction="#handleCancel"
+                                styleClass="danger-button"
+                                prefWidth="150"/>
+                    </HBox>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </children>
+</StackPane>
