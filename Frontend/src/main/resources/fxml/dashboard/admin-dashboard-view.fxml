@@ -22,7 +22,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             <StackPane.margin>
-                <Insets right="250.0"/>
+                <Insets left="250.0"/>
             </StackPane.margin>
 
             <VBox alignment="CENTER" spacing="20">
@@ -35,10 +35,9 @@
 
         <VBox spacing="15" prefWidth="250.0" maxWidth="250.0"
               style="-fx-background-color: #0f172a;"
-              StackPane.alignment="CENTER_RIGHT">
-            <padding>
-                <Insets top="30" right="20" bottom="30" left="20"/>
-            </padding>
+              StackPane.alignment="CENTER_LEFT"> <padding>
+            <Insets top="30" right="20" bottom="30" left="20"/>
+        </padding>
 
             <Label text="پنل مدیریت (ادمین)"
                    style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
