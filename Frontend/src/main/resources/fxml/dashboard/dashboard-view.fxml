@@ -20,7 +20,7 @@
                    StackPane.alignment="CENTER"
                    style="-fx-padding: 20;">
             <StackPane.margin>
-                <Insets right="250.0"/>
+                <Insets left="250.0"/>
             </StackPane.margin>
 
             <VBox spacing="15">
@@ -43,7 +43,7 @@
 
         <VBox spacing="15" prefWidth="250.0" maxWidth="250.0"
               style="-fx-background-color: #1e293b;"
-              StackPane.alignment="CENTER_RIGHT">
+              StackPane.alignment="CENTER_LEFT">
             <padding>
                 <Insets top="30" right="20" bottom="30" left="20"/>
             </padding>

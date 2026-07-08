@@ -34,7 +34,7 @@ public class NavigationService {
             }
 
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            Parent root = loader.load(); // اگر کنترلر داشبورد در initialize خطا بدهد، اینجا Exception پرتاب می‌شود.
+            Parent root = loader.load();
 
             Scene currentScene = primaryStage.getScene();
             if (currentScene == null) {
@@ -44,16 +44,13 @@ public class NavigationService {
                 currentScene.setRoot(root);
             }
 
-            // پاک کردن استایل‌های قبلی
             currentScene.getStylesheets().clear();
 
-            // اعمال استایل‌های پایه (variables.css)
             URL variablesUri = NavigationService.class.getResource("/css/variables.css");
             if (variablesUri != null) {
                 currentScene.getStylesheets().add(variablesUri.toExternalForm());
             }
 
-            // اعمال استایل اختصاصی بر اساس صفحه ای که لود می‌شود
             if (fxmlPath.contains("/auth/")) {
                 URL authUri = NavigationService.class.getResource("/css/auth.css");
                 if (authUri != null) {
@@ -65,7 +62,6 @@ public class NavigationService {
                 currentScene.getStylesheets().add(advertisementUri.toExternalForm());
             }
             } else if (fxmlPath.contains("/dashboard/")) {
-                // اگر فایل css مخصوص داشبورد دارید (مثلا dashboard.css) آن را اینجا لود کنید:
                 URL dashboardUri = NavigationService.class.getResource("/css/dashboard.css");
                 if (dashboardUri != null) {
                     currentScene.getStylesheets().add(dashboardUri.toExternalForm());
@@ -81,7 +77,7 @@ public class NavigationService {
 
         } catch (Throwable t) {
             System.err.println("!!! خطا در حین انتقال صفحه به " + fxmlPath + " !!!");
-            t.printStackTrace(); // چاپ کامل StackTrace شامل خطاهای NullPointer یا خطای کنترلر مقصد
+            t.printStackTrace();
         }
     }
 }
