@@ -39,7 +39,7 @@
 }
 
 .menu-button {
-    -fx-alignment: center-right;
+    -fx-alignment: center-left;
     -fx-background-color: transparent;
     -fx-text-fill: #e2e8f0;
     -fx-font-size: 14px;
