@@ -23,11 +23,21 @@
                 <Insets right="250.0"/>
             </StackPane.margin>
 
-            <VBox alignment="CENTER" spacing="20">
-                <Label text="به پنل کاربری خوش آمدید!"
-                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
-                <Label text="لطفاً از منوی سمت راست، بخش مورد نظر خود را انتخاب کنید."
-                       style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+            <VBox spacing="15">
+                <Label text="آگهی‌های اخیر"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+
+                <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
+                            VBox.vgrow="ALWAYS">
+                    <FlowPane fx:id="adsListContainer" hgap="15" vgap="15">
+                        <padding>
+                            <Insets top="5" right="5" bottom="5" left="5"/>
+                        </padding>
+                    </FlowPane>
+                </ScrollPane>
             </VBox>
         </StackPane>
 
