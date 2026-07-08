@@ -146,4 +146,12 @@ public class DashboardController implements javafx.fxml.Initializable {
         UserSession.getInstance().cleanSession();
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
+
+    @FXML
+    private void handleCreateAdvertisement() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+        NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
+    }
 }

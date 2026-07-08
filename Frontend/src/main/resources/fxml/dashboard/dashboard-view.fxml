@@ -55,6 +55,10 @@
 
             <Button text="صفحه اصلی" maxWidth="Infinity" styleClass="menu-button"/>
 
+            <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
+                    maxWidth="Infinity" styleClass="menu-button"
+                    style="-fx-text-fill: #4ade80;"/>
+
             <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
