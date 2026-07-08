@@ -50,4 +50,45 @@ public class AdvertisementService {
             return Collections.emptyList();
         }
     }
+
+
+    public String createAdvertisement(String token, String title, String description,
+                                      Double price, Long categoryId, Long cityId,
+                                      List<String> imagePaths) {
+        try {
+            JsonObject body = new JsonObject();
+            body.addProperty("title", title);
+            body.addProperty("description", description);
+            body.addProperty("price", price);
+            body.addProperty("categoryId", categoryId);
+            body.addProperty("cityId", cityId);
+            body.add("imagePaths", gson.toJsonTree(imagePaths));
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(body)))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return "SUCCESS";
+            } else {
+                try {
+                    JsonObject err = gson.fromJson(response.body(), JsonObject.class);
+                    if (err != null && err.has("message")) {
+                        return err.get("message").getAsString();
+                    }
+                } catch (Exception ignored) { }
+                return "خطا در ثبت آگهی!" + response.statusCode();
+            }
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اَند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
+        }
+    }
 }
