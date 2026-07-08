@@ -23,6 +23,6 @@ public class AdminDashboardController {
 
     @FXML
     private void handleReviewAds() {
-        // TODO: بارگذاری صفحه بررسی/تایید آگهی‌ها در contentArea
+        NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
     }
 }

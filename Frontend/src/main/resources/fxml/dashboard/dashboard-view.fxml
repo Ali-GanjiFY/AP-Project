@@ -57,7 +57,7 @@
 
             <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
                     maxWidth="Infinity" styleClass="menu-button"
-                    style="-fx-text-fill: #4ade80;"/>
+                    style="-fx-text-fill: #ffffff;"/>
 
             <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"/>
 
