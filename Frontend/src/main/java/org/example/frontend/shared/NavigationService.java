@@ -18,11 +18,7 @@ public class NavigationService {
         return primaryStage;
     }
 
-    /**
-     * تغییر صفحه فعلی به یک FXML جدید
-     * @param fxmlPath مسیر فایل FXML (مثلاً "/fxml/dashboard/dashboard-view.fxml")
-     * @param title عنوان پنجره
-     */
+
     public static void switchScene(String fxmlPath, String title) {
         if (primaryStage == null) {
             System.err.println("خطا: PrimaryStage مقداردهی نشده است! ابتدا setPrimaryStage را صدا بزنید.");
@@ -63,6 +59,11 @@ public class NavigationService {
                 if (authUri != null) {
                     currentScene.getStylesheets().add(authUri.toExternalForm());
                 }
+            }  else if (fxmlPath.contains("/advertisement/")) {
+            URL advertisementUri = NavigationService.class.getResource("/css/advertisement.css");
+            if (advertisementUri != null) {
+                currentScene.getStylesheets().add(advertisementUri.toExternalForm());
+            }
             } else if (fxmlPath.contains("/dashboard/")) {
                 // اگر فایل css مخصوص داشبورد دارید (مثلا dashboard.css) آن را اینجا لود کنید:
                 URL dashboardUri = NavigationService.class.getResource("/css/dashboard.css");
