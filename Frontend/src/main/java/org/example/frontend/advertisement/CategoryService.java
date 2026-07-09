@@ -1,6 +1,5 @@
 package org.example.frontend.advertisement;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,6 +26,22 @@ public class CategoryService {
 
     // GET /api/categories
     public List<CategoryOption> getAllCategories() {
+        List<CategoryOption> all = fetchAll();
+        List<CategoryOption> result = new ArrayList<>();
+        for (CategoryOption c : all) {
+            if (c.isActive()) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
+
+    // GET /api/categories
+    public List<CategoryOption> getAllCategoriesForAdmin() {
+        return fetchAll();
+    }
+
+    private List<CategoryOption> fetchAll() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL))
@@ -41,12 +56,16 @@ public class CategoryService {
                 JsonArray arr = JsonParser.parseString(response.body()).getAsJsonArray();
                 for (int i = 0; i < arr.size(); i++) {
                     JsonObject obj = arr.get(i).getAsJsonObject();
-                    boolean active = !obj.has("active") || obj.get("active").getAsBoolean();
-                    if (!active)
-                        continue;
                     Long id = obj.get("id").getAsLong();
                     String name = obj.get("name").getAsString();
-                    result.add(new CategoryOption(id, name));
+                    String description = (obj.has("description") && !obj.get("description").isJsonNull())
+                            ? obj.get("description").getAsString() : null;
+                    Long parentId = (obj.has("parentCategoryId") && !obj.get("parentCategoryId").isJsonNull())
+                            ? obj.get("parentCategoryId").getAsLong() : null;
+                    String parentName = (obj.has("parentCategoryName") && !obj.get("parentCategoryName").isJsonNull())
+                            ? obj.get("parentCategoryName").getAsString() : null;
+                    boolean active = !obj.has("active") || obj.get("active").getAsBoolean();
+                    result.add(new CategoryOption(id, name, description, parentId, parentName, active));
                 }
                 return result;
             } else {
@@ -56,6 +75,65 @@ public class CategoryService {
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+
+    // POST /api/categories -> admin only
+    public String createCategory(String token, String name, String description, Long parentCategoryId) {
+        try {
+            JsonObject body = new JsonObject();
+            body.addProperty("name", name);
+            if (description != null && !description.isBlank()) {
+                body.addProperty("description", description);
+            }
+            if (parentCategoryId != null) {
+                body.addProperty("parentCategoryID", parentCategoryId);
+            }
+            body.addProperty("active", true);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 201 || response.statusCode() == 200) {
+                return "SUCCESS";
+            } else {
+                return "خطا در افزودن دسته‌بندی! کد: " + response.statusCode();
+            }
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
+        }
+    }
+
+    // DELETE /api/categories/{id} -> admin only
+    public String deleteCategory(String token, Long id) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Authorization", "Bearer " + token)
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 204 || response.statusCode() == 200) {
+                return "SUCCESS";
+            } else {
+                return "خطا در حذف دسته‌بندی! کد: " + response.statusCode();
+            }
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
         }
     }
 }
