@@ -180,6 +180,11 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
     }
 
     @FXML
+    private void handleManageSections() {
+        NavigationService.switchScene("/fxml/dashboard/manage-sections-view.fxml", "مدیریت بخش‌ها");
+    }
+
+    @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
