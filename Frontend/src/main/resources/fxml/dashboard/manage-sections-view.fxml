@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.frontend.dashboard.ManageSectionsController"
+           nodeOrientation="RIGHT_TO_LEFT"
+           prefWidth="1280" prefHeight="720">
+
+    <stylesheets>
+        <URL value="@../../css/variables.css"/>
+        <URL value="@../../css/main.css"/>
+    </stylesheets>
+
+    <children>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc;"
+                   StackPane.alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <StackPane.margin>
+                <Insets left="250.0"/>
+            </StackPane.margin>
+
+            <VBox spacing="15">
+                <Label text="مدیریت بخش‌ها (شهرها و دسته‌بندی‌ها)"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+
+                <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+                    <Tab text="شهرها">
+                        <VBox spacing="12">
+                            <padding>
+                                <Insets top="15" right="5" bottom="5" left="5"/>
+                            </padding>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <TextField fx:id="cityNameField" promptText="نام شهر" prefWidth="200"/>
+                                <TextField fx:id="cityProvinceField" promptText="استان (اختیاری)" prefWidth="200"/>
+                                <Button text="افزودن شهر" onAction="#handleAddCity"
+                                        style="-fx-background-color: #16a34a; -fx-text-fill: white; -fx-cursor: hand;"/>
+                            </HBox>
+
+                            <Label fx:id="cityStatusLabel" text="در حال بارگذاری شهرها..."
+                                   style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+
+                            <TableView fx:id="cityTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="cityNameColumn" text="نام شهر" prefWidth="250"/>
+                                    <TableColumn fx:id="cityProvinceColumn" text="استان" prefWidth="200"/>
+                                    <TableColumn fx:id="cityActionColumn" text="عملیات" prefWidth="120"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </Tab>
+
+                    <Tab text="دسته‌بندی‌ها">
+                        <VBox spacing="12">
+                            <padding>
+                                <Insets top="15" right="5" bottom="5" left="5"/>
+                            </padding>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <TextField fx:id="categoryNameField" promptText="نام دسته‌بندی" prefWidth="180"/>
+                                <TextField fx:id="categoryDescriptionField" promptText="توضیحات (اختیاری)" prefWidth="200"/>
+                                <ComboBox fx:id="categoryParentCombo" promptText="دسته‌بندی والد (اختیاری)" prefWidth="200"/>
+                                <Button text="افزودن دسته‌بندی" onAction="#handleAddCategory"
+                                        style="-fx-background-color: #16a34a; -fx-text-fill: white; -fx-cursor: hand;"/>
+                            </HBox>
+
+                            <Label fx:id="categoryStatusLabel" text="در حال بارگذاری دسته‌بندی‌ها..."
+                                   style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+
+                            <TableView fx:id="categoryTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="categoryNameColumn" text="نام دسته‌بندی" prefWidth="200"/>
+                                    <TableColumn fx:id="categoryParentColumn" text="والد" prefWidth="150"/>
+                                    <TableColumn fx:id="categoryActiveColumn" text="فعال" prefWidth="80"/>
+                                    <TableColumn fx:id="categoryActionColumn" text="عملیات" prefWidth="120"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </Tab>
+
+                </TabPane>
+            </VBox>
+        </StackPane>
+
+        <VBox spacing="15" prefWidth="250.0" maxWidth="250.0"
+              style="-fx-background-color: #0f172a;"
+              StackPane.alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="30" right="20" bottom="30" left="20"/>
+            </padding>
+
+            <Label text="پنل مدیریت (ادمین)"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="بازگشت به داشبورد" onAction="#handleBackToDashboard"
+                    maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="مدیریت کاربران" onAction="#handleManageUsers" maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="بررسی آگهی‌ها" onAction="#handleReviewAds" maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"
+                    style="-fx-text-fill: #ffffff; -fx-background-color: #334155;"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="خروج از حساب" onAction="#handleLogout" maxWidth="Infinity"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </VBox>
+    </children>
+
+</StackPane>
