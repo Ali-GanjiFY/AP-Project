@@ -52,6 +52,29 @@ public class AdvertisementService {
     }
 
 
+    public AdvertisementDetail getAdvertisementDetail(Long id) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return gson.fromJson(response.body(), AdvertisementDetail.class);
+            } else {
+                System.err.println("خطا در دریافت جزئیات آگهی!" + response.statusCode());
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public String createAdvertisement(String token, String title, String description,
                                       Double price, Long categoryId, Long cityId,
                                       List<String> imagePaths) {
