@@ -17,6 +17,7 @@ import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -38,6 +39,7 @@ public class DashboardController implements javafx.fxml.Initializable {
     private final AdvertisementService advertisementService = new AdvertisementService();
 
     private Timeline autoRefreshTimeline;
+    private volatile boolean loading;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -47,29 +49,53 @@ public class DashboardController implements javafx.fxml.Initializable {
 
     private void startAutoRefresh() {
         autoRefreshTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(10), event -> loadAdvertisements())
+                new KeyFrame(Duration.seconds(10), event -> {
+                    if (!loading) {
+                        loadAdvertisements();
+                    }
+                })
         );
         autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
         autoRefreshTimeline.play();
     }
 
     private void loadAdvertisements() {
-        new Thread(() -> {
-            List<Advertisement> ads = advertisementService.getAllActiveAds();
+        loading = true;
+        statusLabel.setText("در حال بارگذاری آگهی‌ها...");
 
+        new Thread(() -> {
+            List<Advertisement> ads;
+            try {
+                ads = advertisementService.getAllActiveAds();
+                if (ads == null) {
+                    ads = Collections.emptyList();
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    statusLabel.setText("خطا در دریافت آگهی‌ها.");
+                    adsListContainer.getChildren().clear();
+                    loading = false;
+                });
+                return;
+            }
+
+            List<Advertisement> finalAds = ads;
             Platform.runLater(() -> {
                 adsListContainer.getChildren().clear();
 
-                if (ads.isEmpty()) {
+                if (finalAds.isEmpty()) {
                     statusLabel.setText("در حال حاضر هیچ آگهی فعالی برای نمایش وجود ندارد.");
+                    loading = false;
                     return;
                 }
 
-                statusLabel.setText("تعداد " + ads.size() + " آگهی یافت شد.");
+                statusLabel.setText("تعداد " + finalAds.size() + " آگهی یافت شد.");
 
-                for (Advertisement ad : ads) {
+                for (Advertisement ad : finalAds) {
                     adsListContainer.getChildren().add(buildAdCard(ad));
                 }
+
+                loading = false;
             });
         }).start();
     }
@@ -87,7 +113,6 @@ public class DashboardController implements javafx.fxml.Initializable {
                         "-fx-cursor: hand;"
         );
 
-        // picture
         StackPane imageArea = new StackPane();
         imageArea.setPrefSize(CARD_WIDTH, IMAGE_AREA_HEIGHT);
         imageArea.setMinHeight(IMAGE_AREA_HEIGHT);
@@ -111,28 +136,28 @@ public class DashboardController implements javafx.fxml.Initializable {
             imageArea.getChildren().add(noImageLabel);
         }
 
-        // details
         VBox infoArea = new VBox(4);
         infoArea.setPadding(new Insets(10));
         infoArea.setAlignment(Pos.TOP_RIGHT);
 
-        Label titleLabel = new Label(ad.getTitle() != null ? ad.getTitle() : "بدون عنوان");
+        Label titleLabel = new Label(ad.getTitle() != null && !ad.getTitle().isBlank() ? ad.getTitle() : "بدون عنوان");
         titleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e293b;");
         titleLabel.setWrapText(true);
         titleLabel.setMaxWidth(CARD_WIDTH - 20);
 
-        String priceText = String.format("%,.0f تومان", ad.getPrice());
+        String priceText = ad.getPrice() != null
+                ? String.format("%,.0f تومان", ad.getPrice())
+                : "توافقی";
         Label priceLabel = new Label(priceText);
         priceLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #16a34a; -fx-font-weight: bold;");
 
         String metaText = String.format("%s | %s",
-                ad.getCategoryName() != null ? ad.getCategoryName() : "-",
-                ad.getCityName() != null ? ad.getCityName() : "-");
+                ad.getCategoryName() != null && !ad.getCategoryName().isBlank() ? ad.getCategoryName() : "-",
+                ad.getCityName() != null && !ad.getCityName().isBlank() ? ad.getCityName() : "-");
         Label metaLabel = new Label(metaText);
         metaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #64748b;");
 
         infoArea.getChildren().addAll(titleLabel, priceLabel, metaLabel);
-
         card.getChildren().addAll(imageArea, infoArea);
 
         return card;
@@ -140,18 +165,20 @@ public class DashboardController implements javafx.fxml.Initializable {
 
     @FXML
     private void handleLogout() {
-        if (autoRefreshTimeline != null) {
-            autoRefreshTimeline.stop();
-        }
+        stopAutoRefresh();
         UserSession.getInstance().cleanSession();
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
 
     @FXML
     private void handleCreateAdvertisement() {
+        stopAutoRefresh();
+        NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
+    }
+
+    private void stopAutoRefresh() {
         if (autoRefreshTimeline != null) {
             autoRefreshTimeline.stop();
         }
-        NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
     }
 }
