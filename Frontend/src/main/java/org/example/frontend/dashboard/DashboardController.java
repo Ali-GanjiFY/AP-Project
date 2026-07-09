@@ -12,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.frontend.advertisement.Advertisement;
+import org.example.frontend.advertisement.AdvertisementDetail;
 import org.example.frontend.advertisement.AdvertisementService;
 import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
@@ -135,7 +136,35 @@ public class DashboardController implements javafx.fxml.Initializable {
 
         card.getChildren().addAll(imageArea, infoArea);
 
+        card.setOnMouseClicked(event -> openAdDetail(ad));
+
         return card;
+    }
+
+    private void openAdDetail(Advertisement ad) {
+        if (ad.getId() == null) {
+            return;
+        }
+
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+
+        // Fetch the full detail in the background;
+        // the dashboard list only carries the summary fields.
+        new Thread(() -> {
+            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(ad.getId());
+
+            Platform.runLater(() -> {
+                if (detail == null) {
+                    statusLabel.setText("خطا در دریافت جزئیات آگهی. لطفاً دوباره تلاش کنید.");
+                    startAutoRefresh();
+                    return;
+                }
+                AdDetailController.setSelectedAdvertisement(detail);
+                NavigationService.switchScene("/fxml/dashboard/ad-detail-view.fxml", "جزئیات آگهی");
+            });
+        }).start();
     }
 
     @FXML
