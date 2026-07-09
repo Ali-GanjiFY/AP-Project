@@ -80,6 +80,30 @@ public class CityService {
         }
     }
 
+    public String deleteCity(String token, Long id) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Authorization", "Bearer " + token)
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 204 || response.statusCode() == 200) {
+                return "SUCCESS";
+            } else {
+                return "خطا در حذف شهر! کد: " + response.statusCode();
+            }
+
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
+        }
+    }
+
     private List<CityOption> parseCityListFromJson(String jsonBody) {
         List<CityOption> result = new ArrayList<>();
         JsonArray jsonArray = JsonParser.parseString(jsonBody).getAsJsonArray();
