@@ -25,4 +25,9 @@ public class AdminDashboardController {
     private void handleReviewAds() {
         NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
     }
+
+    @FXML
+    private void handleManageSections() {
+        NavigationService.switchScene("/fxml/dashboard/manage-sections-view.fxml", "مدیریت بخش‌ها");
+    }
 }
