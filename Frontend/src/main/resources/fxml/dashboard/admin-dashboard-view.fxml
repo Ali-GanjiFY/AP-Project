@@ -48,7 +48,7 @@
 
             <Button text="بررسی آگهی‌ها" onAction="#handleReviewAds" maxWidth="Infinity" styleClass="menu-button"/>
 
-            <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"/>
+            <Button text="مدیریت بخش‌ها" onAction="#handleManageSections" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 
