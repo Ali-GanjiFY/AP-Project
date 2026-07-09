@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.example.frontend.dashboard.AdDetailController;
+
+
 public class DashboardController implements javafx.fxml.Initializable {
 
     private static final double CARD_WIDTH = 220;
@@ -181,4 +184,12 @@ public class DashboardController implements javafx.fxml.Initializable {
             autoRefreshTimeline.stop();
         }
     }
+    private void openAdDetails(Advertisement ad) {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+        AdDetailController.setSelectedAdvertisement(ad);
+        NavigationService.switchScene("/fxml/dashboard/ad-detail-view.fxml", "جزئیات آگهی");
+    }
+
 }
