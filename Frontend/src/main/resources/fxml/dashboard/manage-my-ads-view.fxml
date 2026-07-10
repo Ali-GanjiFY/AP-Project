@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.frontend.dashboard.ManageMyAdsController"
+           nodeOrientation="RIGHT_TO_LEFT"
+           prefWidth="1280" prefHeight="720">
+
+    <stylesheets>
+        <URL value="@../../css/variables.css"/>
+        <URL value="@../../css/main.css"/>
+    </stylesheets>
+
+    <children>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc;"
+                   StackPane.alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <StackPane.margin>
+                <Insets left="250.0"/>
+            </StackPane.margin>
+
+            <VBox spacing="15">
+                <Label text="مدیریت آگهی‌های من"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+
+                <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
+                            VBox.vgrow="ALWAYS">
+                    <FlowPane fx:id="adsListContainer" hgap="15" vgap="15">
+                        <padding>
+                            <Insets top="5" right="5" bottom="5" left="5"/>
+                        </padding>
+                    </FlowPane>
+                </ScrollPane>
+            </VBox>
+        </StackPane>
+
+        <VBox spacing="15" prefWidth="250.0" maxWidth="250.0"
+              style="-fx-background-color: #1e293b;"
+              StackPane.alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="30" right="20" bottom="30" left="20"/>
+            </padding>
+
+            <Label text="پنل کاربری"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="بازگشت به داشبورد" onAction="#handleBackToDashboard"
+                    maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
+                    maxWidth="Infinity" styleClass="menu-button"
+                    style="-fx-text-fill: #ffffff;"/>
+
+            <Button text="مدیریت آگهی‌ها" onAction="#handleRefresh"
+                    maxWidth="Infinity" styleClass="menu-button"
+                    style="-fx-text-fill: #ffffff; -fx-background-color: #334155;"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="خروج از حساب" onAction="#handleLogout" maxWidth="Infinity"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </VBox>
+    </children>
+
+</StackPane>
