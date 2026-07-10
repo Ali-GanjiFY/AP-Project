@@ -98,6 +98,34 @@ public class AdvertisementService {
         }
     }
 
+    public String markAsSold(String token, Long id) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + id + "/sold"))
+                    .header("Authorization", "Bearer " + token)
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return "SUCCESS";
+            }
+            try {
+                JsonObject err = gson.fromJson(response.body(), JsonObject.class);
+                if (err != null && err.has("message")) {
+                    return err.get("message").getAsString();
+                }
+            } catch (Exception ignored) { }
+            return "خطا در تغییر وضعیت آگهی! کد: " + response.statusCode();
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
+        }
+    }
+
     public AdvertisementDetail getAdvertisementDetail(Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
