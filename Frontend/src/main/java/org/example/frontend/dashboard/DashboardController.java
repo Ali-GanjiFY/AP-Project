@@ -183,4 +183,12 @@ public class DashboardController implements javafx.fxml.Initializable {
         }
         NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
     }
+
+    @FXML
+    private void handleManageMyAds() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+        NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
+    }
 }
