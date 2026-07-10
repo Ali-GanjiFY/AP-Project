@@ -51,6 +51,31 @@ public class AdvertisementService {
         }
     }
 
+    public List<Advertisement> getMyAdvertisements(String token) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/mine"))
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                Type listType = new TypeToken<List<Advertisement>>() {}.getType();
+                List<Advertisement> ads = gson.fromJson(response.body(), listType);
+                return ads != null ? ads : Collections.emptyList();
+            } else {
+                System.err.println("خطا در دریافت آگهی‌های من!" + response.statusCode());
+                return Collections.emptyList();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
 
     public AdvertisementDetail getAdvertisementDetail(Long id) {
         try {
