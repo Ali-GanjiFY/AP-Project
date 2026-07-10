@@ -59,7 +59,7 @@
                     maxWidth="Infinity" styleClass="menu-button"
                     style="-fx-text-fill: #ffffff;"/>
 
-            <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"/>
+            <Button text="مدیریت آگهی‌ها" onAction="#handleManageMyAds" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 
