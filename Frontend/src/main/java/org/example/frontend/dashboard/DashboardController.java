@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -26,6 +28,7 @@ public class DashboardController implements javafx.fxml.Initializable {
     private static final double CARD_WIDTH = 220;
     private static final double CARD_HEIGHT = 260;
     private static final double IMAGE_AREA_HEIGHT = 140;
+    private static final String SERVER_BASE_URL = "http://localhost:8080";
 
     @FXML
     private StackPane contentArea;
@@ -103,13 +106,31 @@ public class DashboardController implements javafx.fxml.Initializable {
                 && !ad.getMainImagePath().equalsIgnoreCase("string");
 
         if (hasImage) {
-            Label imgPlaceholder = new Label("🖼");
-            imgPlaceholder.setStyle("-fx-font-size: 32px;");
-            imageArea.getChildren().add(imgPlaceholder);
+            String imageUrl = ad.getMainImagePath().startsWith("http")
+                    ? ad.getMainImagePath()
+                    : SERVER_BASE_URL + ad.getMainImagePath();
+
+            ImageView imageView = new ImageView();
+            imageView.setFitWidth(CARD_WIDTH);
+            imageView.setFitHeight(IMAGE_AREA_HEIGHT);
+            imageView.setPreserveRatio(false);
+
+            try {
+                Image image = new Image(imageUrl, CARD_WIDTH, IMAGE_AREA_HEIGHT, false, true, true);
+                imageView.setImage(image);
+
+                image.errorProperty().addListener((obs, wasError, isError) -> {
+                    if (isError) {
+                        imageArea.getChildren().setAll(buildNoImageLabel());
+                    }
+                });
+            } catch (Exception e) {
+                imageArea.getChildren().add(buildNoImageLabel());
+            }
+
+            imageArea.getChildren().add(imageView);
         } else {
-            Label noImageLabel = new Label("بدون تصویر");
-            noImageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
-            imageArea.getChildren().add(noImageLabel);
+            imageArea.getChildren().add(buildNoImageLabel());
         }
 
         // details
@@ -139,6 +160,12 @@ public class DashboardController implements javafx.fxml.Initializable {
         card.setOnMouseClicked(event -> openAdDetail(ad));
 
         return card;
+    }
+
+    private Label buildNoImageLabel() {
+        Label noImageLabel = new Label("بدون تصویر");
+        noImageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
+        return noImageLabel;
     }
 
     private void openAdDetail(Advertisement ad) {
