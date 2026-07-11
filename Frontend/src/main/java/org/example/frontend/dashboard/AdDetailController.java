@@ -3,11 +3,11 @@ package org.example.frontend.dashboard;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import org.example.frontend.advertisement.AdvertisementDetail;
 import org.example.frontend.shared.NavigationService;
 
@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 public class AdDetailController implements Initializable {
 
     private static final String SERVER_BASE_URL = "http://localhost:8080";
-    private static final double THUMB_SIZE = 160;
 
     private static AdvertisementDetail selectedAdvertisement;
 
@@ -41,13 +40,25 @@ public class AdDetailController implements Initializable {
     private Label imageStatusLabel;
 
     @FXML
-    private FlowPane imagesGalleryContainer;
+    private ImageView mainImageView;
+
+    @FXML
+    private Label imageCounterLabel;
+
+    @FXML
+    private Button prevImageButton;
+
+    @FXML
+    private Button nextImageButton;
 
     @FXML
     private Label ownerLabel;
 
     @FXML
     private TextArea descriptionArea;
+
+    private List<AdvertisementDetail.ImageInfo> adImages;
+    private int currentImageIndex = 0;
 
 
     public static void setSelectedAdvertisement(AdvertisementDetail advertisement) {
@@ -79,10 +90,16 @@ public class AdDetailController implements Initializable {
         boolean hasImage = selectedAdvertisement.hasImages();
         if (hasImage) {
             imageStatusLabel.setVisible(false);
-            renderImageGallery(selectedAdvertisement.getImages());
+            adImages = selectedAdvertisement.getImages();
+            currentImageIndex = 0;
+            showCurrentImage();
         } else {
             imageStatusLabel.setVisible(true);
             imageStatusLabel.setText("برای این آگهی تصویری ثبت نشده");
+            mainImageView.setVisible(false);
+            prevImageButton.setVisible(false);
+            nextImageButton.setVisible(false);
+            imageCounterLabel.setText("");
         }
 
         descriptionArea.setText(safeText(selectedAdvertisement.getDescription(),
@@ -103,27 +120,40 @@ public class AdDetailController implements Initializable {
         alert.showAndWait();
     }
 
-    private void renderImageGallery(List<AdvertisementDetail.ImageInfo> images) {
-        imagesGalleryContainer.getChildren().clear();
-
-        for (AdvertisementDetail.ImageInfo imageInfo : images) {
-            String path = imageInfo.getImagePath();
-            if (path == null || path.isBlank()) {
-                continue;
-            }
-
-            String imageUrl = path.startsWith("http") ? path : SERVER_BASE_URL + path;
-
-            ImageView imageView = new ImageView();
-            imageView.setFitWidth(THUMB_SIZE);
-            imageView.setFitHeight(THUMB_SIZE);
-            imageView.setPreserveRatio(false);
-
-            Image image = new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true);
-            imageView.setImage(image);
-
-            imagesGalleryContainer.getChildren().add(imageView);
+    private void showCurrentImage() {
+        if (adImages == null || adImages.isEmpty()) {
+            return;
         }
+
+        String path = adImages.get(currentImageIndex).getImagePath();
+        if (path != null && !path.isBlank()) {
+            String imageUrl = path.startsWith("http") ? path : SERVER_BASE_URL + path;
+            mainImageView.setImage(new Image(imageUrl, 500, 300, true, true, true));
+        }
+
+        imageCounterLabel.setText((currentImageIndex + 1) + " / " + adImages.size());
+
+        boolean multipleImages = adImages.size() > 1;
+        prevImageButton.setVisible(multipleImages);
+        nextImageButton.setVisible(multipleImages);
+    }
+
+    @FXML
+    private void handlePrevImage() {
+        if (adImages == null || adImages.isEmpty()) {
+            return;
+        }
+        currentImageIndex = (currentImageIndex - 1 + adImages.size()) % adImages.size();
+        showCurrentImage();
+    }
+
+    @FXML
+    private void handleNextImage() {
+        if (adImages == null || adImages.isEmpty()) {
+            return;
+        }
+        currentImageIndex = (currentImageIndex + 1) % adImages.size();
+        showCurrentImage();
     }
 
     private String safeText(String value, String defaultValue) {
