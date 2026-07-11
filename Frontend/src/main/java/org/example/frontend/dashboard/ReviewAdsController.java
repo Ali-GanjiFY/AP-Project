@@ -8,12 +8,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.example.frontend.admin.AdminReviewService;
 import org.example.frontend.advertisement.Advertisement;
+import org.example.frontend.advertisement.AdvertisementDetail;
+import org.example.frontend.advertisement.AdvertisementService;
 import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
 
@@ -24,6 +28,8 @@ import java.util.ResourceBundle;
 public class ReviewAdsController implements javafx.fxml.Initializable {
 
     private static final double CARD_WIDTH = 240;
+    private static final String SERVER_BASE_URL = "http://localhost:8080";
+    private static final double THUMB_SIZE = 60;
 
     @FXML
     private StackPane contentArea;
@@ -35,6 +41,7 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
     private Label statusLabel;
 
     private final AdminReviewService adminReviewService = new AdminReviewService();
+    private final AdvertisementService advertisementService = new AdvertisementService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -105,6 +112,11 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         Label metaLabel = new Label(metaText);
         metaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #64748b;");
 
+        // image gallery
+        FlowPane imagesRow = new FlowPane(6, 6);
+        imagesRow.setPrefWrapLength(CARD_WIDTH - 24);
+        loadImagesForCard(ad.getId(), imagesRow);
+
         // note
         TextField noteField = new TextField();
         noteField.setPromptText("یادداشت (اختیاری)");
@@ -137,8 +149,36 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
                 + "-fx-border-color: #e2e8f0; -fx-border-radius: 10;";
         card.setStyle(cardStyle);
 
-        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, noteField, actionsRow);
+        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, imagesRow, noteField, actionsRow);
         return card;
+    }
+
+    private void loadImagesForCard(Long adId, FlowPane imagesRow) {
+        new Thread(() -> {
+            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId);
+
+            Platform.runLater(() -> {
+                if (detail == null || detail.getImages() == null || detail.getImages().isEmpty()) {
+                    return;
+                }
+
+                for (AdvertisementDetail.ImageInfo imageInfo : detail.getImages()) {
+                    String path = imageInfo.getImagePath();
+                    if (path == null || path.isBlank()) {
+                        continue;
+                    }
+                    String imageUrl = path.startsWith("http") ? path : SERVER_BASE_URL + path;
+
+                    ImageView imageView = new ImageView();
+                    imageView.setFitWidth(THUMB_SIZE);
+                    imageView.setFitHeight(THUMB_SIZE);
+                    imageView.setPreserveRatio(false);
+                    imageView.setImage(new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true));
+
+                    imagesRow.getChildren().add(imageView);
+                }
+            });
+        }).start();
     }
 
     private void submitDecision(Advertisement ad, String decision, String note, Button approveBtn, Button rejectBtn) {
