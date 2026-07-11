@@ -70,7 +70,8 @@ public class SecurityConfig {
                                 "/api/health",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/docs/**"
+                                "/docs/**",
+                                "/uploads/**"
                         ).permitAll()
 
 
