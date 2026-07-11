@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.frontend.dashboard.DashboardController"
+           nodeOrientation="RIGHT_TO_LEFT"
+           prefWidth="1280" prefHeight="720">
+
+    <stylesheets>
+        <URL value="@../../css/variables.css"/>
+        <URL value="@../../css/main.css"/>
+    </stylesheets>
+
+    <children>
+        <StackPane fx:id="contentArea"
+                   StackPane.alignment="CENTER"
+                   style="-fx-padding: 20;">
+            <StackPane.margin>
+                <Insets left="250.0"/>
+            </StackPane.margin>
+
+            <VBox spacing="15">
+                <Label text="نیازمندی‌ها و آگهی‌های فعال"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+
+                <!-- بخش فیلتر و جست‌وجوی پیشرفته -->
+                <HBox spacing="10" alignment="CENTER_LEFT"
+                      style="-fx-background-color: #f8fafc; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
+
+                    <TextField fx:id="searchField" promptText="جست‌وجو در عنوان و توضیحات..." prefWidth="220"
+                               style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 4; -fx-padding: 6;"/>
+
+                    <ComboBox fx:id="categoryComboBox" promptText="همه دسته‌بندی‌ها" prefWidth="150"
+                              style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-background-radius: 4;"/>
+
+                    <ComboBox fx:id="cityComboBox" promptText="همه شهرها" prefWidth="130"
+                              style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-background-radius: 4;"/>
+
+                    <TextField fx:id="minPriceField" promptText="حداقل قیمت" prefWidth="100"
+                               style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 4; -fx-padding: 6;"/>
+
+                    <TextField fx:id="maxPriceField" promptText="حداکثر قیمت" prefWidth="100"
+                               style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 4; -fx-padding: 6;"/>
+
+                    <ComboBox fx:id="sortByComboBox" promptText="مرتب‌سازی" prefWidth="130"
+                              style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-background-radius: 4;"/>
+
+                    <Button text="اعمال فیلتر" onAction="#handleApplyFilters"
+                            style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
+
+                    <Button text="حذف فیلترها" onAction="#handleResetFilters"
+                            style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-padding: 6 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                </HBox>
+
+                <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
+                            VBox.vgrow="ALWAYS">
+                    <FlowPane fx:id="adsListContainer" hgap="15" vgap="15">
+                        <padding>
+                            <Insets top="5" right="5" bottom="5" left="5"/>
+                        </padding>
+                    </FlowPane>
+                </ScrollPane>
+            </VBox>
+        </StackPane>
+
+        <VBox spacing="15" prefWidth="250.0" maxWidth="250.0"
+              style="-fx-background-color: #1e293b;"
+              StackPane.alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="30" right="20" bottom="30" left="20"/>
+            </padding>
+
+            <Label text="پنل مدیریت سیستم"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="صفحه اصلی" maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
+                    maxWidth="Infinity" styleClass="menu-button"
+                    style="-fx-text-fill: #ffffff;"/>
+
+            <Button text="مدیریت بخش‌ها" maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <Button text="خروج از حساب" onAction="#handleLogout" maxWidth="Infinity"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </VBox>
+    </children>
+
+</StackPane>

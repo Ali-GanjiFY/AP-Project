@@ -6,23 +6,22 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.frontend.advertisement.Advertisement;
+import org.example.frontend.advertisement.AdvertisementDetail;
 import org.example.frontend.advertisement.AdvertisementService;
 import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import org.example.frontend.dashboard.AdDetailController;
-
 
 public class DashboardController implements javafx.fxml.Initializable {
 
@@ -39,21 +38,59 @@ public class DashboardController implements javafx.fxml.Initializable {
     @FXML
     private Label statusLabel;
 
-    private final AdvertisementService advertisementService = new AdvertisementService();
+    // متغیرهای فیلتر پیشرفته متصل به FXML
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<AdvertisementService.CategoryDto> categoryComboBox;
+    @FXML
+    private ComboBox<AdvertisementService.CityDto> cityComboBox;
+    @FXML
+    private TextField minPriceField;
+    @FXML
+    private TextField maxPriceField;
+    @FXML
+    private ComboBox<String> sortByComboBox;
 
+    private final AdvertisementService advertisementService = new AdvertisementService();
     private Timeline autoRefreshTimeline;
-    private volatile boolean loading;
+    private boolean isFilteredMode = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initFilters();
         loadAdvertisements();
         startAutoRefresh();
     }
 
+    private void initFilters() {
+        // پر کردن فیلترهای مرتب‌سازی
+        sortByComboBox.getItems().addAll(
+                "جدیدترین آگهی‌ها",
+                "ارزان‌ترین",
+                "گران‌ترین"
+        );
+
+        // واکشی شهرها و دسته‌بندی‌ها به صورت ناهمگام (Async)
+        new Thread(() -> {
+            List<AdvertisementService.CityDto> cities = advertisementService.getAllCities();
+            List<AdvertisementService.CategoryDto> categories = advertisementService.getAllCategories();
+
+            Platform.runLater(() -> {
+                cityComboBox.getItems().clear();
+                cityComboBox.getItems().addAll(cities);
+
+                categoryComboBox.getItems().clear();
+                categoryComboBox.getItems().addAll(categories);
+            });
+        }).start();
+    }
+
     private void startAutoRefresh() {
+        // رفرش خودکار فقط زمانی کار می‌کند که فیلتری اعمال نشده باشد
         autoRefreshTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(10), event -> {
-                    if (!loading) {
+                    if (!isFilteredMode) {
                         loadAdvertisements();
                     }
                 })
@@ -63,44 +100,101 @@ public class DashboardController implements javafx.fxml.Initializable {
     }
 
     private void loadAdvertisements() {
-        loading = true;
-        statusLabel.setText("در حال بارگذاری آگهی‌ها...");
-
         new Thread(() -> {
-            List<Advertisement> ads;
-            try {
-                ads = advertisementService.getAllActiveAds();
-                if (ads == null) {
-                    ads = Collections.emptyList();
-                }
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    statusLabel.setText("خطا در دریافت آگهی‌ها.");
-                    adsListContainer.getChildren().clear();
-                    loading = false;
-                });
+            List<Advertisement> ads = advertisementService.getAllActiveAds();
+            updateAdsContainer(ads);
+        }).start();
+    }
+
+    private void updateAdsContainer(List<Advertisement> ads) {
+        Platform.runLater(() -> {
+            adsListContainer.getChildren().clear();
+
+            if (ads == null || ads.isEmpty()) {
+                statusLabel.setText("در حال حاضر هیچ آگهی منطبق با شرایط یافت نشد.");
                 return;
             }
 
-            List<Advertisement> finalAds = ads;
-            Platform.runLater(() -> {
-                adsListContainer.getChildren().clear();
+            statusLabel.setText("تعداد " + ads.size() + " آگهی یافت شد.");
 
-                if (finalAds.isEmpty()) {
-                    statusLabel.setText("در حال حاضر هیچ آگهی فعالی برای نمایش وجود ندارد.");
-                    loading = false;
-                    return;
-                }
+            for (Advertisement ad : ads) {
+                adsListContainer.getChildren().add(buildAdCard(ad));
+            }
+        });
+    }
 
-                statusLabel.setText("تعداد " + finalAds.size() + " آگهی یافت شد.");
+    @FXML
+    private void handleApplyFilters() {
+        isFilteredMode = true; // غیر فعال کردن رفرش خودکار دوره ای
 
-                for (Advertisement ad : finalAds) {
-                    adsListContainer.getChildren().add(buildAdCard(ad));
-                }
+        String keyword = searchField.getText();
 
-                loading = false;
-            });
+        AdvertisementService.CategoryDto selectedCat = categoryComboBox.getValue();
+        Long categoryId = selectedCat != null ? selectedCat.getId() : null;
+
+        AdvertisementService.CityDto selectedCity = cityComboBox.getValue();
+        Long cityId = selectedCity != null ? selectedCity.getId() : null;
+
+        Double minPrice = null;
+        try {
+            if (minPriceField.getText() != null && !minPriceField.getText().isBlank()) {
+                minPrice = Double.parseDouble(minPriceField.getText().trim());
+            }
+        } catch (NumberFormatException ignored) {}
+
+        Double maxPrice = null;
+        try {
+            if (maxPriceField.getText() != null && !maxPriceField.getText().isBlank()) {
+                maxPrice = Double.parseDouble(maxPriceField.getText().trim());
+            }
+        } catch (NumberFormatException ignored) {}
+
+        // نگاشت انتخاب مرتب‌سازی به پارامترهای سمت بک‌اند
+        String sortBy = "date";
+        String sortDirection = "desc";
+        String selectedSort = sortByComboBox.getValue();
+        if (selectedSort != null) {
+            switch (selectedSort) {
+                case "ارزان‌ترین":
+                    sortBy = "price";
+                    sortDirection = "asc";
+                    break;
+                case "گران‌ترین":
+                    sortBy = "price";
+                    sortDirection = "desc";
+                    break;
+                default:
+                    sortBy = "date";
+                    sortDirection = "desc";
+            }
+        }
+
+        statusLabel.setText("در حال اعمال فیلترها...");
+
+        final Double finalMin = minPrice;
+        final Double finalMax = maxPrice;
+        final String finalSortBy = sortBy;
+        final String finalSortDir = sortDirection;
+
+        new Thread(() -> {
+            List<Advertisement> filteredAds = advertisementService.searchAdvertisements(
+                    keyword, categoryId, cityId, finalMin, finalMax, finalSortBy, finalSortDir
+            );
+            updateAdsContainer(filteredAds);
         }).start();
+    }
+
+    @FXML
+    private void handleResetFilters() {
+        searchField.clear();
+        categoryComboBox.setValue(null);
+        cityComboBox.setValue(null);
+        minPriceField.clear();
+        maxPriceField.clear();
+        sortByComboBox.setValue(null);
+
+        isFilteredMode = false;
+        loadAdvertisements();
     }
 
     private VBox buildAdCard(Advertisement ad) {
@@ -116,6 +210,7 @@ public class DashboardController implements javafx.fxml.Initializable {
                         "-fx-cursor: hand;"
         );
 
+        // picture
         StackPane imageArea = new StackPane();
         imageArea.setPrefSize(CARD_WIDTH, IMAGE_AREA_HEIGHT);
         imageArea.setMinHeight(IMAGE_AREA_HEIGHT);
@@ -139,57 +234,73 @@ public class DashboardController implements javafx.fxml.Initializable {
             imageArea.getChildren().add(noImageLabel);
         }
 
+        // details
         VBox infoArea = new VBox(4);
         infoArea.setPadding(new Insets(10));
         infoArea.setAlignment(Pos.TOP_RIGHT);
 
-        Label titleLabel = new Label(ad.getTitle() != null && !ad.getTitle().isBlank() ? ad.getTitle() : "بدون عنوان");
+        Label titleLabel = new Label(ad.getTitle() != null ? ad.getTitle() : "بدون عنوان");
         titleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e293b;");
         titleLabel.setWrapText(true);
         titleLabel.setMaxWidth(CARD_WIDTH - 20);
 
-        String priceText = ad.getPrice() != null
-                ? String.format("%,.0f تومان", ad.getPrice())
-                : "توافقی";
+        String priceText = String.format("%,.0f تومان", ad.getPrice());
         Label priceLabel = new Label(priceText);
         priceLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #16a34a; -fx-font-weight: bold;");
 
         String metaText = String.format("%s | %s",
-                ad.getCategoryName() != null && !ad.getCategoryName().isBlank() ? ad.getCategoryName() : "-",
-                ad.getCityName() != null && !ad.getCityName().isBlank() ? ad.getCityName() : "-");
+                ad.getCategoryName() != null ? ad.getCategoryName() : "-",
+                ad.getCityName() != null ? ad.getCityName() : "-");
         Label metaLabel = new Label(metaText);
         metaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #64748b;");
 
         infoArea.getChildren().addAll(titleLabel, priceLabel, metaLabel);
+
         card.getChildren().addAll(imageArea, infoArea);
+
+        card.setOnMouseClicked(event -> openAdDetail(ad));
 
         return card;
     }
 
+    private void openAdDetail(Advertisement ad) {
+        if (ad.getId() == null) {
+            return;
+        }
+
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+
+        new Thread(() -> {
+            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(ad.getId());
+
+            Platform.runLater(() -> {
+                if (detail == null) {
+                    statusLabel.setText("خطا در دریافت جزئیات آگهی. لطفاً دوباره تلاش کنید.");
+                    startAutoRefresh();
+                    return;
+                }
+                AdDetailController.setSelectedAdvertisement(detail);
+                NavigationService.switchScene("/fxml/dashboard/ad-detail-view.fxml", "جزئیات آگهی");
+            });
+        }).start();
+    }
+
     @FXML
     private void handleLogout() {
-        stopAutoRefresh();
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
         UserSession.getInstance().cleanSession();
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
 
     @FXML
     private void handleCreateAdvertisement() {
-        stopAutoRefresh();
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
         NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
     }
-
-    private void stopAutoRefresh() {
-        if (autoRefreshTimeline != null) {
-            autoRefreshTimeline.stop();
-        }
-    }
-    private void openAdDetails(Advertisement ad) {
-        if (autoRefreshTimeline != null) {
-            autoRefreshTimeline.stop();
-        }
-        AdDetailController.setSelectedAdvertisement(ad);
-        NavigationService.switchScene("/fxml/dashboard/ad-detail-view.fxml", "جزئیات آگهی");
-    }
-
 }
