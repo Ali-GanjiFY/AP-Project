@@ -46,7 +46,7 @@ public class AdminReviewService {
                     result = Arrays.asList(adsArray);
                 }
             } else {
-                System.err.println("خطا در دریافت آگهی‌های در انتظار بررسی! کد: " + response.statusCode());
+                System.err.println("خطا در دریافت آگهی‌های در انتظار بررسی!" + response.statusCode());
             }
 
         } catch (Exception e) {

@@ -69,7 +69,7 @@ public class CityService {
             if (response.statusCode() == 201 || response.statusCode() == 200) {
                 return "SUCCESS";
             } else {
-                return "خطا در افزودن شهر! کد: " + response.statusCode();
+                return "خطا در افزودن شهر!" + response.statusCode();
             }
 
         } catch (java.net.ConnectException e) {
@@ -93,7 +93,7 @@ public class CityService {
             if (response.statusCode() == 204 || response.statusCode() == 200) {
                 return "SUCCESS";
             } else {
-                return "خطا در حذف شهر! کد: " + response.statusCode();
+                return "خطا در حذف شهر!" + response.statusCode();
             }
 
         } catch (java.net.ConnectException e) {

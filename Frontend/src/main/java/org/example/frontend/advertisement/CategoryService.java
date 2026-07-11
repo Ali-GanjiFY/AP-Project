@@ -103,7 +103,7 @@ public class CategoryService {
             if (response.statusCode() == 201 || response.statusCode() == 200) {
                 return "SUCCESS";
             } else {
-                return "خطا در افزودن دسته‌بندی! کد: " + response.statusCode();
+                return "خطا در افزودن دسته‌بندی!" + response.statusCode();
             }
         } catch (java.net.ConnectException e) {
             return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
@@ -127,7 +127,7 @@ public class CategoryService {
             if (response.statusCode() == 204 || response.statusCode() == 200) {
                 return "SUCCESS";
             } else {
-                return "خطا در حذف دسته‌بندی! کد: " + response.statusCode();
+                return "خطا در حذف دسته‌بندی!" + response.statusCode();
             }
         } catch (java.net.ConnectException e) {
             return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";

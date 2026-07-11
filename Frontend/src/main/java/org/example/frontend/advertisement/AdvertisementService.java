@@ -89,7 +89,7 @@ public class AdvertisementService {
             if (response.statusCode() == 204 || response.statusCode() == 200) {
                 return "SUCCESS";
             }
-            return "خطا در حذف آگهی! کد: " + response.statusCode();
+            return "خطا در حذف آگهی!" + response.statusCode();
         } catch (java.net.ConnectException e) {
             return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class AdvertisementService {
                     return err.get("message").getAsString();
                 }
             } catch (Exception ignored) { }
-            return "خطا در تغییر وضعیت آگهی! کد: " + response.statusCode();
+            return "خطا در تغییر وضعیت آگهی!" + response.statusCode();
         } catch (java.net.ConnectException e) {
             return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
         } catch (Exception e) {
