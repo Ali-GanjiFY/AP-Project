@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 public class AdDetailController implements Initializable {
 
     private static final String SERVER_BASE_URL = "http://localhost:8080";
-    private static final double THUMB_SIZE = 120;
+    private static final double THUMB_SIZE = 160;
 
     private static AdvertisementDetail selectedAdvertisement;
 
