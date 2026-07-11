@@ -24,8 +24,37 @@
             </StackPane.margin>
 
             <VBox spacing="15">
-                <Label text="آگهی‌های اخیر"
+                <Label text="نیازمندی‌ها و آگهی‌های فعال"
                        style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+
+                <!-- بخش فیلتر و جست‌وجوی پیشرفته -->
+                <HBox spacing="10" alignment="CENTER_LEFT"
+                      style="-fx-background-color: #f8fafc; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
+
+                    <TextField fx:id="searchField" promptText="جست‌وجو در عنوان و توضیحات..." prefWidth="220"
+                               style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 4; -fx-padding: 6;"/>
+
+                    <ComboBox fx:id="categoryComboBox" promptText="همه دسته‌بندی‌ها" prefWidth="150"
+                              style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-background-radius: 4;"/>
+
+                    <ComboBox fx:id="cityComboBox" promptText="همه شهرها" prefWidth="130"
+                              style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-background-radius: 4;"/>
+
+                    <TextField fx:id="minPriceField" promptText="حداقل قیمت" prefWidth="100"
+                               style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 4; -fx-padding: 6;"/>
+
+                    <TextField fx:id="maxPriceField" promptText="حداکثر قیمت" prefWidth="100"
+                               style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 4; -fx-padding: 6;"/>
+
+                    <ComboBox fx:id="sortByComboBox" promptText="مرتب‌سازی" prefWidth="130"
+                              style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-background-radius: 4;"/>
+
+                    <Button text="اعمال فیلتر" onAction="#handleApplyFilters"
+                            style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
+
+                    <Button text="حذف فیلترها" onAction="#handleResetFilters"
+                            style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-padding: 6 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                </HBox>
 
                 <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
                        style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>

@@ -6,9 +6,11 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.List;
 public class AdvertisementService {
 
     private static final String BASE_URL = "http://localhost:8080/api/advertisements";
+    private static final String CITIES_URL = "http://localhost:8080/api/cities";
+    private static final String CATEGORIES_URL = "http://localhost:8080/api/categories";
+
     private final HttpClient httpClient;
     private final Gson gson;
 
@@ -25,7 +30,6 @@ public class AdvertisementService {
                 .build();
         this.gson = new Gson();
     }
-
 
     public List<Advertisement> getAllActiveAds() {
         try {
@@ -51,6 +55,117 @@ public class AdvertisementService {
         }
     }
 
+    // متد جدید برای جست‌وجو و فیلتر پیشرفته
+    public List<Advertisement> searchAdvertisements(String keyword, Long categoryId, Long cityId,
+                                                    Double minPrice, Double maxPrice,
+                                                    String sortBy, String sortDirection) {
+        try {
+            StringBuilder urlBuilder = new StringBuilder(BASE_URL + "/search?");
+
+            if (keyword != null && !keyword.isBlank()) {
+                urlBuilder.append("keyword=").append(URLEncoder.encode(keyword, StandardCharsets.UTF_8)).append("&");
+            }
+            if (categoryId != null) {
+                urlBuilder.append("categoryId=").append(categoryId).append("&");
+            }
+            if (cityId != null) {
+                urlBuilder.append("cityId=").append(cityId).append("&");
+            }
+            if (minPrice != null) {
+                urlBuilder.append("minPrice=").append(minPrice).append("&");
+            }
+            if (maxPrice != null) {
+                urlBuilder.append("maxPrice=").append(maxPrice).append("&");
+            }
+            if (sortBy != null && !sortBy.isBlank()) {
+                urlBuilder.append("sortBy=").append(sortBy).append("&");
+            }
+            if (sortDirection != null && !sortDirection.isBlank()) {
+                urlBuilder.append("sortDirection=").append(sortDirection).append("&");
+            }
+
+            // حذف & پایانی در صورت وجود
+            String finalUrl = urlBuilder.toString();
+            if (finalUrl.endsWith("&") || finalUrl.endsWith("?")) {
+                finalUrl = finalUrl.substring(0, finalUrl.length() - 1);
+            }
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(finalUrl))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                Type listType = new TypeToken<List<Advertisement>>() {}.getType();
+                List<Advertisement> ads = gson.fromJson(response.body(), listType);
+                return ads != null ? ads : Collections.emptyList();
+            } else {
+                System.err.println("خطا در جست‌وجوی آگهی‌ها! کد وضعیت: " + response.statusCode());
+                return Collections.emptyList();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    // متد دریافت لیست شهرها برای پر کردن ComboBox فیلتر
+    public List<CityDto> getAllCities() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(CITIES_URL))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                Type listType = new TypeToken<List<CityDto>>() {}.getType();
+                return gson.fromJson(response.body(), listType);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
+    // متد دریافت لیست دسته‌بندی‌ها برای پر کردن ComboBox فیلتر
+    public List<CategoryDto> getAllCategories() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(CATEGORIES_URL))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                Type listType = new TypeToken<List<CategoryDto>>() {}.getType();
+                return gson.fromJson(response.body(), listType);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
+    // کلاس‌های کمکی برای پاسخ‌های دریافتی فیلترها
+    public static class CityDto {
+        private Long id;
+        private String name;
+        public Long getId() { return id; }
+        public String getName() { return name; }
+        @Override public String toString() { return name; }
+    }
+
+    public static class CategoryDto {
+        private Long id;
+        private String name;
+        public Long getId() { return id; }
+        public String getName() { return name; }
+        @Override public String toString() { return name; }
+    }
 
     public AdvertisementDetail getAdvertisementDetail(Long id) {
         try {
@@ -73,7 +188,6 @@ public class AdvertisementService {
             return null;
         }
     }
-
 
     public String createAdvertisement(String token, String title, String description,
                                       Double price, Long categoryId, Long cityId,

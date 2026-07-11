@@ -6,7 +6,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -36,19 +38,62 @@ public class DashboardController implements javafx.fxml.Initializable {
     @FXML
     private Label statusLabel;
 
-    private final AdvertisementService advertisementService = new AdvertisementService();
+    // متغیرهای فیلتر پیشرفته متصل به FXML
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<AdvertisementService.CategoryDto> categoryComboBox;
+    @FXML
+    private ComboBox<AdvertisementService.CityDto> cityComboBox;
+    @FXML
+    private TextField minPriceField;
+    @FXML
+    private TextField maxPriceField;
+    @FXML
+    private ComboBox<String> sortByComboBox;
 
+    private final AdvertisementService advertisementService = new AdvertisementService();
     private Timeline autoRefreshTimeline;
+    private boolean isFilteredMode = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initFilters();
         loadAdvertisements();
         startAutoRefresh();
     }
 
+    private void initFilters() {
+        // پر کردن فیلترهای مرتب‌سازی
+        sortByComboBox.getItems().addAll(
+                "جدیدترین آگهی‌ها",
+                "ارزان‌ترین",
+                "گران‌ترین"
+        );
+
+        // واکشی شهرها و دسته‌بندی‌ها به صورت ناهمگام (Async)
+        new Thread(() -> {
+            List<AdvertisementService.CityDto> cities = advertisementService.getAllCities();
+            List<AdvertisementService.CategoryDto> categories = advertisementService.getAllCategories();
+
+            Platform.runLater(() -> {
+                cityComboBox.getItems().clear();
+                cityComboBox.getItems().addAll(cities);
+
+                categoryComboBox.getItems().clear();
+                categoryComboBox.getItems().addAll(categories);
+            });
+        }).start();
+    }
+
     private void startAutoRefresh() {
+        // رفرش خودکار فقط زمانی کار می‌کند که فیلتری اعمال نشده باشد
         autoRefreshTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(10), event -> loadAdvertisements())
+                new KeyFrame(Duration.seconds(10), event -> {
+                    if (!isFilteredMode) {
+                        loadAdvertisements();
+                    }
+                })
         );
         autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
         autoRefreshTimeline.play();
@@ -57,22 +102,99 @@ public class DashboardController implements javafx.fxml.Initializable {
     private void loadAdvertisements() {
         new Thread(() -> {
             List<Advertisement> ads = advertisementService.getAllActiveAds();
-
-            Platform.runLater(() -> {
-                adsListContainer.getChildren().clear();
-
-                if (ads.isEmpty()) {
-                    statusLabel.setText("در حال حاضر هیچ آگهی فعالی برای نمایش وجود ندارد.");
-                    return;
-                }
-
-                statusLabel.setText("تعداد " + ads.size() + " آگهی یافت شد.");
-
-                for (Advertisement ad : ads) {
-                    adsListContainer.getChildren().add(buildAdCard(ad));
-                }
-            });
+            updateAdsContainer(ads);
         }).start();
+    }
+
+    private void updateAdsContainer(List<Advertisement> ads) {
+        Platform.runLater(() -> {
+            adsListContainer.getChildren().clear();
+
+            if (ads == null || ads.isEmpty()) {
+                statusLabel.setText("در حال حاضر هیچ آگهی منطبق با شرایط یافت نشد.");
+                return;
+            }
+
+            statusLabel.setText("تعداد " + ads.size() + " آگهی یافت شد.");
+
+            for (Advertisement ad : ads) {
+                adsListContainer.getChildren().add(buildAdCard(ad));
+            }
+        });
+    }
+
+    @FXML
+    private void handleApplyFilters() {
+        isFilteredMode = true; // غیر فعال کردن رفرش خودکار دوره ای
+
+        String keyword = searchField.getText();
+
+        AdvertisementService.CategoryDto selectedCat = categoryComboBox.getValue();
+        Long categoryId = selectedCat != null ? selectedCat.getId() : null;
+
+        AdvertisementService.CityDto selectedCity = cityComboBox.getValue();
+        Long cityId = selectedCity != null ? selectedCity.getId() : null;
+
+        Double minPrice = null;
+        try {
+            if (minPriceField.getText() != null && !minPriceField.getText().isBlank()) {
+                minPrice = Double.parseDouble(minPriceField.getText().trim());
+            }
+        } catch (NumberFormatException ignored) {}
+
+        Double maxPrice = null;
+        try {
+            if (maxPriceField.getText() != null && !maxPriceField.getText().isBlank()) {
+                maxPrice = Double.parseDouble(maxPriceField.getText().trim());
+            }
+        } catch (NumberFormatException ignored) {}
+
+        // نگاشت انتخاب مرتب‌سازی به پارامترهای سمت بک‌اند
+        String sortBy = "date";
+        String sortDirection = "desc";
+        String selectedSort = sortByComboBox.getValue();
+        if (selectedSort != null) {
+            switch (selectedSort) {
+                case "ارزان‌ترین":
+                    sortBy = "price";
+                    sortDirection = "asc";
+                    break;
+                case "گران‌ترین":
+                    sortBy = "price";
+                    sortDirection = "desc";
+                    break;
+                default:
+                    sortBy = "date";
+                    sortDirection = "desc";
+            }
+        }
+
+        statusLabel.setText("در حال اعمال فیلترها...");
+
+        final Double finalMin = minPrice;
+        final Double finalMax = maxPrice;
+        final String finalSortBy = sortBy;
+        final String finalSortDir = sortDirection;
+
+        new Thread(() -> {
+            List<Advertisement> filteredAds = advertisementService.searchAdvertisements(
+                    keyword, categoryId, cityId, finalMin, finalMax, finalSortBy, finalSortDir
+            );
+            updateAdsContainer(filteredAds);
+        }).start();
+    }
+
+    @FXML
+    private void handleResetFilters() {
+        searchField.clear();
+        categoryComboBox.setValue(null);
+        cityComboBox.setValue(null);
+        minPriceField.clear();
+        maxPriceField.clear();
+        sortByComboBox.setValue(null);
+
+        isFilteredMode = false;
+        loadAdvertisements();
     }
 
     private VBox buildAdCard(Advertisement ad) {
@@ -150,8 +272,6 @@ public class DashboardController implements javafx.fxml.Initializable {
             autoRefreshTimeline.stop();
         }
 
-        // Fetch the full detail in the background;
-        // the dashboard list only carries the summary fields.
         new Thread(() -> {
             AdvertisementDetail detail = advertisementService.getAdvertisementDetail(ad.getId());
 
