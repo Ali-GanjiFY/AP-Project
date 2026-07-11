@@ -28,6 +28,7 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
     private final CategoryService categoryService = new CategoryService();
     private final CityService cityService = new CityService();
     private final AdvertisementService advertisementService = new AdvertisementService();
+    private final ImageUploadService imageUploadService = new ImageUploadService();
 
     // فعلاً چون بک‌اند آپلود واقعی فایل نداره، فقط مسیر لوکال فایل‌های انتخابی رو نگه می‌داریم
     private final List<File> selectedImages = new ArrayList<>();
@@ -122,18 +123,22 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
             return;
         }
 
-        List<String> imagePaths = new ArrayList<>();
-        for (File file : selectedImages) {
-            imagePaths.add(file.getAbsolutePath());
-        }
-
         statusLabel.setText("در حال ثبت آگهی...");
         statusLabel.setStyle("-fx-text-fill: #64748b;");
 
         Long categoryId = category.getId();
         Long cityId = city.getId();
+        List<File> imagesToUpload = new ArrayList<>(selectedImages);
 
         new Thread(() -> {
+            // /uploads/xxx.jpg
+            List<String> imagePaths = imageUploadService.uploadImages(token, imagesToUpload);
+
+            if (!imagesToUpload.isEmpty() && imagePaths.isEmpty()) {
+                Platform.runLater(() -> showError("آپلود عکس‌ها ناموفق بود. لطفاً دوباره تلاش کنید."));
+                return;
+            }
+
             String result = advertisementService.createAdvertisement(
                     token, title, description, price, categoryId, cityId, imagePaths
             );
