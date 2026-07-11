@@ -10,6 +10,7 @@ module org.example.frontend {
     requires org.kordamp.bootstrapfx.core;
     requires java.net.http;
     requires com.google.gson;
+    requires java.desktop;
 
     opens org.example.frontend to javafx.fxml;
 
