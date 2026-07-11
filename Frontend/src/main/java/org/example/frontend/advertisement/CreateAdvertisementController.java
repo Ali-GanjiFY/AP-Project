@@ -30,7 +30,6 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
     private final AdvertisementService advertisementService = new AdvertisementService();
     private final ImageUploadService imageUploadService = new ImageUploadService();
 
-    // فعلاً چون بک‌اند آپلود واقعی فایل نداره، فقط مسیر لوکال فایل‌های انتخابی رو نگه می‌داریم
     private final List<File> selectedImages = new ArrayList<>();
 
     @Override
@@ -67,7 +66,6 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
 
         List<File> files = fileChooser.showOpenMultipleDialog(NavigationService.getPrimaryStage());
         if (files != null && !files.isEmpty()) {
-            selectedImages.clear();
             selectedImages.addAll(files);
 
             imagesCountLabel.setText(selectedImages.size() + " عکس انتخاب شد");
@@ -131,7 +129,6 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         List<File> imagesToUpload = new ArrayList<>(selectedImages);
 
         new Thread(() -> {
-            // /uploads/xxx.jpg
             List<String> imagePaths = imageUploadService.uploadImages(token, imagesToUpload);
 
             if (!imagesToUpload.isEmpty() && imagePaths.isEmpty()) {
