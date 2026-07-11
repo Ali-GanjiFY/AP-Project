@@ -18,7 +18,7 @@
     <children>
         <StackPane fx:id="contentArea"
                    StackPane.alignment="CENTER"
-                   style="-fx-padding: 20;">
+                   style="-fx-padding: 20; -fx-background-color: #0f172a;">
             <StackPane.margin>
                 <Insets left="250.0"/>
             </StackPane.margin>
@@ -30,8 +30,9 @@
                 <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
                        style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
 
-                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
-                            VBox.vgrow="ALWAYS">
+                <ScrollPane fitToWidth="true"
+                             style="-fx-background-color: transparent; -fx-background: transparent;"
+                             VBox.vgrow="ALWAYS">
                     <FlowPane fx:id="adsListContainer" hgap="15" vgap="15">
                         <padding>
                             <Insets top="5" right="5" bottom="5" left="5"/>

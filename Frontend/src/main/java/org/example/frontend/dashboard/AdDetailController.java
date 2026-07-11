@@ -5,13 +5,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import org.example.frontend.advertisement.AdvertisementDetail;
 import org.example.frontend.shared.NavigationService;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdDetailController implements Initializable {
+
+    private static final String SERVER_BASE_URL = "http://localhost:8080";
+    private static final double THUMB_SIZE = 120;
 
     private static AdvertisementDetail selectedAdvertisement;
 
@@ -32,6 +39,9 @@ public class AdDetailController implements Initializable {
 
     @FXML
     private Label imageStatusLabel;
+
+    @FXML
+    private FlowPane imagesGalleryContainer;
 
     @FXML
     private Label ownerLabel;
@@ -67,7 +77,13 @@ public class AdDetailController implements Initializable {
                 safeText(selectedAdvertisement.getOwnerUsername(), "-")));
 
         boolean hasImage = selectedAdvertisement.hasImages();
-        imageStatusLabel.setText(hasImage ? "این آگهی تصویر دارد" : "برای این آگهی تصویری ثبت نشده");
+        if (hasImage) {
+            imageStatusLabel.setVisible(false);
+            renderImageGallery(selectedAdvertisement.getImages());
+        } else {
+            imageStatusLabel.setVisible(true);
+            imageStatusLabel.setText("برای این آگهی تصویری ثبت نشده");
+        }
 
         descriptionArea.setText(safeText(selectedAdvertisement.getDescription(),
                 "توضیحاتی برای این آگهی ثبت نشده است."));
@@ -85,6 +101,29 @@ public class AdDetailController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText("قابلیت گفتگو با فروشنده به‌زودی اضافه می‌شود.");
         alert.showAndWait();
+    }
+
+    private void renderImageGallery(List<AdvertisementDetail.ImageInfo> images) {
+        imagesGalleryContainer.getChildren().clear();
+
+        for (AdvertisementDetail.ImageInfo imageInfo : images) {
+            String path = imageInfo.getImagePath();
+            if (path == null || path.isBlank()) {
+                continue;
+            }
+
+            String imageUrl = path.startsWith("http") ? path : SERVER_BASE_URL + path;
+
+            ImageView imageView = new ImageView();
+            imageView.setFitWidth(THUMB_SIZE);
+            imageView.setFitHeight(THUMB_SIZE);
+            imageView.setPreserveRatio(false);
+
+            Image image = new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true);
+            imageView.setImage(image);
+
+            imagesGalleryContainer.getChildren().add(imageView);
+        }
     }
 
     private String safeText(String value, String defaultValue) {
