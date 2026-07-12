@@ -85,7 +85,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/advertisements/**",
                                 "/api/cities/**",
-                                "/api/categories/**"
+                                "/api/categories/**",
+                                "/api/ratings/advertisements/**"
                         ).permitAll()
 
                         // admin-only endpoints
