@@ -29,6 +29,30 @@
                 <Label text="مدیریت آگهی‌های من"
                        style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
 
+                <VBox spacing="10"
+                      style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-padding: 18;">
+                    <Label text="امتیازهای دریافتی شما به‌عنوان فروشنده"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+
+                    <HBox spacing="24" alignment="CENTER_RIGHT">
+                        <Label fx:id="ratingsAverageLabel" text="میانگین امتیاز: -"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #d97706;"/>
+                        <Label fx:id="ratingsCountLabel" text="تعداد نظرات: -"
+                               style="-fx-font-size: 14px; -fx-text-fill: #334155;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="toggleRatingsButton" text="نمایش نظرات"
+                                onAction="#handleToggleRatingsComments"
+                                style="-fx-background-color: #e2e8f0; -fx-text-fill: #0f172a; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                    </HBox>
+
+                    <VBox fx:id="ratingsCommentsContainer" spacing="10" visible="false" managed="false">
+                        <Separator/>
+                        <Label fx:id="ratingsCommentsStatusLabel" text=""
+                               style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <VBox fx:id="ratingsCommentsList" spacing="8"/>
+                    </VBox>
+                </VBox>
+
                 <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
                        style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
 
