@@ -426,14 +426,12 @@ public class ChatController {
         controllerActive = false;
         stopMessagePolling();
 
-        /*
-         * این مسیر را در صورت متفاوت بودن مسیر داشبوردت اصلاح کن.
-         */
         NavigationService.switchScene(
-                "/fxml/dashboard/dashboard-view.fxml",
-                "داشبورد"
+                "/fxml/chat/conversation-list-view.fxml",
+                "چت‌ها"
         );
     }
+
 
     private void updateSendButtonState() {
         boolean invalidConversation =

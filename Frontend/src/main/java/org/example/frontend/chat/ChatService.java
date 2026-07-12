@@ -27,6 +27,28 @@ public class ChatService {
     }
 
     /**
+     * دریافت لیست گفتگوهای کاربر فعلی.
+     */
+    public List<ConversationResponse> getMyConversations()
+            throws IOException, InterruptedException {
+
+        HttpRequest request = requestBuilder(BASE_URL)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = send(request);
+        ensureSuccessful(response, "دریافت لیست گفتگوها");
+
+        Type listType =
+                new TypeToken<List<ConversationResponse>>() {}.getType();
+
+        List<ConversationResponse> conversations =
+                gson.fromJson(response.body(), listType);
+
+        return conversations == null ? List.of() : conversations;
+    }
+
+    /**
      * شروع گفتگو یا دریافت گفتگوی موجود برای یک آگهی.
      */
     public ConversationResponse startOrGetConversation(Long advertisementId)

@@ -66,6 +66,17 @@ public class DashboardController implements javafx.fxml.Initializable {
         loadAdvertisements();
         startAutoRefresh();
     }
+    @FXML
+    private void handleOpenChats() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+
+        NavigationService.switchScene(
+                "/fxml/chat/conversation-list-view.fxml",
+                "چت‌ها"
+        );
+    }
 
     private void initFilters() {
         // پر کردن فیلترهای مرتب‌سازی

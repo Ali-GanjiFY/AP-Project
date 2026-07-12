@@ -91,6 +91,10 @@
 
             <Button text="مدیریت آگهی‌ها" onAction="#handleManageMyAds" maxWidth="Infinity" styleClass="menu-button"/>
 
+            <Button text="چت‌ها" onAction="#handleOpenChats"
+                    maxWidth="Infinity" styleClass="menu-button"/>
+
+
             <Region VBox.vgrow="ALWAYS"/>
 
             <Separator style="-fx-opacity: 0.3;"/>
