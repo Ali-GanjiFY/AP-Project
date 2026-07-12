@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.example.frontend.advertisement.Advertisement;
 import org.example.frontend.advertisement.AdvertisementService;
+import org.example.frontend.advertisement.RatingService;
 import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
 
@@ -35,11 +36,123 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private Label ratingsAverageLabel;
+
+    @FXML
+    private Label ratingsCountLabel;
+
+    @FXML
+    private Button toggleRatingsButton;
+
+    @FXML
+    private VBox ratingsCommentsContainer;
+
+    @FXML
+    private Label ratingsCommentsStatusLabel;
+
+    @FXML
+    private VBox ratingsCommentsList;
+
     private final AdvertisementService advertisementService = new AdvertisementService();
+    private final RatingService ratingService = new RatingService();
+    private boolean ratingsCommentsLoaded = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadMyAdvertisements();
+        loadRatingsSummary();
+    }
+
+    private void loadRatingsSummary() {
+        String token = UserSession.getInstance().getToken();
+        new Thread(() -> {
+            RatingService.RatingSummaryDto summary = ratingService.getMyRatingSummary(token);
+            Platform.runLater(() -> {
+                if (summary == null) {
+                    ratingsAverageLabel.setText("میانگین امتیاز: -");
+                    ratingsCountLabel.setText("تعداد نظرات: -");
+                    return;
+                }
+                ratingsAverageLabel.setText(String.format("میانگین امتیاز: %.1f از ۵", summary.getAverageScore()));
+                ratingsCountLabel.setText("تعداد نظرات: " + summary.getTotalCount());
+            });
+        }).start();
+    }
+
+    @FXML
+    private void handleToggleRatingsComments() {
+        boolean showing = ratingsCommentsContainer.isVisible();
+        if (showing) {
+            ratingsCommentsContainer.setVisible(false);
+            ratingsCommentsContainer.setManaged(false);
+            toggleRatingsButton.setText("نمایش نظرات");
+            return;
+        }
+
+        ratingsCommentsContainer.setVisible(true);
+        ratingsCommentsContainer.setManaged(true);
+        toggleRatingsButton.setText("پنهان کردن نظرات");
+
+        if (!ratingsCommentsLoaded) {
+            loadRatingsComments();
+        }
+    }
+
+    private void loadRatingsComments() {
+        ratingsCommentsStatusLabel.setText("در حال بارگذاری نظرات...");
+        String token = UserSession.getInstance().getToken();
+
+        new Thread(() -> {
+            List<RatingService.RatingDto> ratings = ratingService.getMyReceivedRatings(token);
+            Platform.runLater(() -> {
+                ratingsCommentsLoaded = true;
+                ratingsCommentsList.getChildren().clear();
+
+                if (ratings.isEmpty()) {
+                    ratingsCommentsStatusLabel.setText("هنوز هیچ نظری برای شما ثبت نشده است.");
+                    return;
+                }
+
+                ratingsCommentsStatusLabel.setText("تعداد " + ratings.size() + " نظر ثبت‌شده:");
+                for (RatingService.RatingDto rating : ratings) {
+                    ratingsCommentsList.getChildren().add(buildRatingCard(rating));
+                }
+            });
+        }).start();
+    }
+
+    private VBox buildRatingCard(RatingService.RatingDto rating) {
+        VBox card = new VBox(6);
+        card.setPadding(new Insets(10));
+        card.setStyle("-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;");
+
+        HBox headerRow = new HBox(10);
+        headerRow.setAlignment(Pos.CENTER_RIGHT);
+
+        Label scoreLabel = new Label("امتیاز: " + rating.getScore() + " / ۵");
+        scoreLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #d97706;");
+
+        Label buyerLabel = new Label("از طرف: " + safeText(rating.getBuyerUsername(), "کاربر"));
+        buyerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #64748b;");
+
+        headerRow.getChildren().addAll(scoreLabel, buyerLabel);
+
+        card.getChildren().add(headerRow);
+
+        String comment = rating.getComment();
+        if (comment != null && !comment.isBlank()) {
+            Label commentLabel = new Label(comment);
+            commentLabel.setWrapText(true);
+            commentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #334155;");
+            card.getChildren().add(commentLabel);
+        }
+
+        return card;
+    }
+
+    private String safeText(String value, String defaultValue) {
+        return value == null || value.isBlank() ? defaultValue : value;
     }
 
     private void loadMyAdvertisements() {
@@ -209,6 +322,11 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     @FXML
     private void handleRefresh() {
         loadMyAdvertisements();
+        loadRatingsSummary();
+        ratingsCommentsLoaded = false;
+        if (ratingsCommentsContainer.isVisible()) {
+            loadRatingsComments();
+        }
     }
 
     @FXML
