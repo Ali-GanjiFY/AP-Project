@@ -1,12 +1,15 @@
 package org.example.frontend.chat;
 
 public class ConversationResponse {
+
     private Long id;
     private Long advertisementId;
-    private Long buyerId;
-    private Long sellerId;
+    private String advertisementTitle;
+    private Long otherUserId;
+    private String otherUserUsername;
+    private String lastMessageAt;
+    private String lastMessagePreview;
 
-    // Getters (Setters هم اگر لازم باشد)
     public Long getId() {
         return id;
     }
@@ -15,11 +18,23 @@ public class ConversationResponse {
         return advertisementId;
     }
 
-    public Long getBuyerId() {
-        return buyerId;
+    public String getAdvertisementTitle() {
+        return advertisementTitle;
     }
 
-    public Long getSellerId() {
-        return sellerId;
+    public Long getOtherUserId() {
+        return otherUserId;
+    }
+
+    public String getOtherUserUsername() {
+        return otherUserUsername;
+    }
+
+    public String getLastMessageAt() {
+        return lastMessageAt;
+    }
+
+    public String getLastMessagePreview() {
+        return lastMessagePreview;
     }
 }

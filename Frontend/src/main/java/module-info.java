@@ -34,4 +34,5 @@ module org.example.frontend {
     exports org.example.frontend.dashboard;
 
     exports org.example.frontend.advertisement;
+
 }

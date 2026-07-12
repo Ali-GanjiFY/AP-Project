@@ -300,10 +300,12 @@ public class AdDetailController implements Initializable {
                         NavigationService.switchScene(
                                 "/fxml/chat/chat-view.fxml",
                                 "گفتگو",
-                                (org.example.frontend.chat.ChatController controller) -> {
-                                    controller.setConversationId(conversation.getId());
-                                }
+                                (org.example.frontend.chat.ChatController controller) ->
+                                        controller.setConversationId(
+                                                conversation.getId()
+                                        )
                         );
+
 
                         showInfo("موفق", "گفتگو با موفقیت آغاز شد. در حال انتقال به صفحه چت...");
                     } else {
