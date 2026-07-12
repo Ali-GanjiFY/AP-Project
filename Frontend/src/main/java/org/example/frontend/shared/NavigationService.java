@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.net.URL;
+import java.util.function.Consumer;
 
 public class NavigationService {
 
@@ -18,8 +19,13 @@ public class NavigationService {
         return primaryStage;
     }
 
-
+    // متد استاندارد قدیمی برای سازگاری با بقیه بخش‌های برنامه
     public static void switchScene(String fxmlPath, String title) {
+        switchScene(fxmlPath, title, null);
+    }
+
+    // متد جنریک جدید برای ارسال داده‌ها و کنترلر به صفحه مقصد
+    public static <T> void switchScene(String fxmlPath, String title, Consumer<T> controllerInitializer) {
         if (primaryStage == null) {
             System.err.println("خطا: PrimaryStage مقداردهی نشده است! ابتدا setPrimaryStage را صدا بزنید.");
             return;
@@ -35,6 +41,12 @@ public class NavigationService {
 
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
+
+            // اگر نیاز به مقداردهی اولیه کنترلر باشد
+            if (controllerInitializer != null) {
+                T controller = loader.getController();
+                controllerInitializer.accept(controller);
+            }
 
             Scene currentScene = primaryStage.getScene();
             if (currentScene == null) {
@@ -56,15 +68,21 @@ public class NavigationService {
                 if (authUri != null) {
                     currentScene.getStylesheets().add(authUri.toExternalForm());
                 }
-            }  else if (fxmlPath.contains("/advertisement/")) {
-            URL advertisementUri = NavigationService.class.getResource("/css/advertisement.css");
-            if (advertisementUri != null) {
-                currentScene.getStylesheets().add(advertisementUri.toExternalForm());
-            }
+            } else if (fxmlPath.contains("/advertisement/")) {
+                URL advertisementUri = NavigationService.class.getResource("/css/advertisement.css");
+                if (advertisementUri != null) {
+                    currentScene.getStylesheets().add(advertisementUri.toExternalForm());
+                }
             } else if (fxmlPath.contains("/dashboard/")) {
                 URL dashboardUri = NavigationService.class.getResource("/css/dashboard.css");
                 if (dashboardUri != null) {
                     currentScene.getStylesheets().add(dashboardUri.toExternalForm());
+                }
+            } else if (fxmlPath.contains("/chat/")) {
+                // در صورت تمایل به داشتن استایل اختصاصی چت، این فایل را بعداً می‌توانید بسازید
+                URL chatUri = NavigationService.class.getResource("/css/chat.css");
+                if (chatUri != null) {
+                    currentScene.getStylesheets().add(chatUri.toExternalForm());
                 }
             }
 

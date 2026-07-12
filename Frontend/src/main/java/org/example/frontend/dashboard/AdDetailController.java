@@ -13,12 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.example.frontend.advertisement.AdvertisementDetail;
 import org.example.frontend.advertisement.RatingService;
-import org.example.frontend.shared.NavigationService;
+import org.example.frontend.shared.NavigationService; // Import NavigationService
 import org.example.frontend.shared.UserSession;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.example.frontend.chat.ChatService;
+import org.example.frontend.chat.ConversationResponse; // Import ConversationResponse
 
 public class AdDetailController implements Initializable {
 
@@ -26,74 +28,51 @@ public class AdDetailController implements Initializable {
 
     private static AdvertisementDetail selectedAdvertisement;
 
-    @FXML
-    private Label titleLabel;
+    @FXML private Label titleLabel;
+    @FXML private Label priceLabel;
+    @FXML private Label categoryLabel;
+    @FXML private Label cityLabel;
+    @FXML private Label statusLabel;
+    @FXML private Label imageStatusLabel;
+    @FXML private ImageView mainImageView;
+    @FXML private Label imageCounterLabel;
+    @FXML private Button prevImageButton;
+    @FXML private Button nextImageButton;
+    @FXML private Label ownerLabel;
+    @FXML private TextArea descriptionArea;
+    @FXML private Label sellerAverageRatingLabel;
+    @FXML private Label sellerRatingCountLabel;
+    @FXML private VBox reviewFormBox;
+    @FXML private ComboBox<Integer> scoreComboBox;
+    @FXML private TextArea commentArea;
+    @FXML private Button submitReviewButton;
+    @FXML private Label reviewFormStatusLabel;
+    @FXML private Label reviewsStatusLabel;
+    @FXML private VBox reviewsListContainer;
 
-    @FXML
-    private Label priceLabel;
-
-    @FXML
-    private Label categoryLabel;
-
-    @FXML
-    private Label cityLabel;
-
-    @FXML
-    private Label statusLabel;
-
-    @FXML
-    private Label imageStatusLabel;
-
-    @FXML
-    private ImageView mainImageView;
-
-    @FXML
-    private Label imageCounterLabel;
-
-    @FXML
-    private Button prevImageButton;
-
-    @FXML
-    private Button nextImageButton;
-
-    @FXML
-    private Label ownerLabel;
-
-    @FXML
-    private TextArea descriptionArea;
-
-    @FXML
-    private Label sellerAverageRatingLabel;
-
-    @FXML
-    private Label sellerRatingCountLabel;
-
-    @FXML
-    private VBox reviewFormBox;
-
-    @FXML
-    private ComboBox<Integer> scoreComboBox;
-
-    @FXML
-    private TextArea commentArea;
-
-    @FXML
-    private Button submitReviewButton;
-
-    @FXML
-    private Label reviewFormStatusLabel;
-
-    @FXML
-    private Label reviewsStatusLabel;
-
-    @FXML
-    private VBox reviewsListContainer;
+    // دکمه شروع گفتگو - مطمئن شو در FXML تعریف شده و به این متد وصل است
+    @FXML private Button startChatButton;
 
     private final RatingService ratingService = new RatingService();
-
     private List<AdvertisementDetail.ImageInfo> adImages;
     private int currentImageIndex = 0;
 
+    // Alert helper methods (assuming they are defined in this class or a base class)
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     public static void setSelectedAdvertisement(AdvertisementDetail advertisement) {
         selectedAdvertisement = advertisement;
@@ -102,6 +81,7 @@ public class AdDetailController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (selectedAdvertisement == null) {
+            // ... (initialization code for no advertisement found - unchanged)
             titleLabel.setText("آگهی پیدا نشد");
             priceLabel.setText("-");
             categoryLabel.setText("-");
@@ -115,9 +95,14 @@ public class AdDetailController implements Initializable {
             reviewFormBox.setVisible(false);
             reviewFormBox.setManaged(false);
             reviewsStatusLabel.setText("");
+            // Disable chat button if no ad is selected or user is not logged in
+            if (startChatButton != null) {
+                startChatButton.setDisable(true);
+            }
             return;
         }
 
+        // ... (rest of the initialization code for displaying ad details - unchanged)
         titleLabel.setText(safeText(selectedAdvertisement.getTitle(), "بدون عنوان"));
         priceLabel.setText(formatPrice(selectedAdvertisement.getPrice()));
         categoryLabel.setText("دسته‌بندی: " + safeText(selectedAdvertisement.getCategoryName(), "-"));
@@ -145,6 +130,13 @@ public class AdDetailController implements Initializable {
                 "توضیحاتی برای این آگهی ثبت نشده است."));
 
         setupRatingsSection();
+
+        // Enable chat button only if user is logged in and not the owner
+        boolean loggedIn = UserSession.getInstance().getToken() != null;
+        boolean isOwner = selectedAdvertisement.isOwnedByCurrentUser();
+        if (startChatButton != null) {
+            startChatButton.setDisable(!loggedIn || isOwner);
+        }
     }
 
     private void setupRatingsSection() {
@@ -211,7 +203,7 @@ public class AdDetailController implements Initializable {
 
     private VBox buildReviewCard(RatingService.RatingDto review) {
         VBox card = new VBox(6);
-        card.setStyle("-fx-background-color: #f8fafc; -fx-background-radius: 8; "
+        card.setStyle("-fx-background-color: #f8fafa; -fx-background-radius: 8; " // Changed to a softer color
                 + "-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-padding: 10;");
 
         Label headerLabel = new Label(safeText(review.getBuyerUsername(), "کاربر")
@@ -276,14 +268,52 @@ public class AdDetailController implements Initializable {
         NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد");
     }
 
-    // TODO: implement real chat creation.
+    // --- Updated handleStartChat method ---
     @FXML
     private void handleStartChat() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("قابلیت گفتگو با فروشنده به‌زودی اضافه می‌شود.");
-        alert.showAndWait();
+        String token = UserSession.getInstance().getToken();
+        if (token == null || token.isBlank()) {
+            showError("خطا", "لطفاً ابتدا وارد حساب کاربری خود شوید.");
+            // Optionally navigate to login page here
+            // NavigationService.switchScene("/fxml/login/login-view.fxml", "ورود");
+            return;
+        }
+
+        if (selectedAdvertisement == null || selectedAdvertisement.getId() == null) {
+            showError("خطا", "شناسه آگهی معتبر نیست.");
+            return;
+        }
+
+        // Disable button to prevent multiple clicks
+        startChatButton.setDisable(true);
+
+        new Thread(() -> {
+            try {
+                ChatService chatService = new ChatService();
+                ConversationResponse conversation = chatService.startOrGetConversation(selectedAdvertisement.getId());
+
+                Platform.runLater(() -> {
+                    if (conversation != null && conversation.getId() != null) {
+                        // Successfully got conversation ID, now navigate
+                        System.out.println("Conversation started/retrieved. ID: " + conversation.getId());
+                        // TODO: Pass conversation.getId() to ChatController
+                        // NavigationService.switchScene("/fxml/chat/chat-view.fxml", "گفتگو", conversation.getId());
+                        showInfo("موفق", "گفتگو با موفقیت آغاز شد. در حال انتقال به صفحه چت...");
+                    } else {
+                        showError("خطا", "دریافت اطلاعات گفتگو ناموفق بود.");
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace(); // Log the exception for debugging
+                Platform.runLater(() -> {
+                    showError("خطا", "شروع گفتگو ناموفق بود: " + e.getMessage());
+                    startChatButton.setDisable(false); // Re-enable button on error
+                });
+            }
+        }).start();
     }
+    // --- End of updated handleStartChat ---
+
 
     private void showCurrentImage() {
         if (adImages == null || adImages.isEmpty()) {

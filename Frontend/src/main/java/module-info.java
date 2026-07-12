@@ -14,6 +14,9 @@ module org.example.frontend {
 
     opens org.example.frontend to javafx.fxml;
 
+    opens org.example.frontend.chat to com.google.gson;
+
+
     opens org.example.frontend.auth to javafx.fxml;
 
     opens org.example.frontend.shared to javafx.fxml;

@@ -62,6 +62,8 @@ public class HelloApplication extends Application {
         // انیمیشن محو شدن (Fade Out)
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), splashRoot);
         fadeOut.setFromValue(1);
+
+
         fadeOut.setToValue(0);
 
         // مدیریت زنجیره اجرای انیمیشن‌ها

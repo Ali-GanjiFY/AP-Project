@@ -89,10 +89,13 @@
                                text="فروشنده: -"
                                style="-fx-font-size: 14px; -fx-text-fill: #334155;"/>
 
-                        <Button text="شروع گفتگو با فروشنده"
+                        <!-- این بخش را در فایل FXML پیدا کنید و fx:id را اضافه کنید -->
+                        <Button fx:id="startChatButton"
+                                text="شروع گفتگو با فروشنده"
                                 onAction="#handleStartChat"
                                 maxWidth="Infinity"
                                 style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10 16 10 16; -fx-background-radius: 8;"/>
+
                     </VBox>
 
                     <VBox spacing="10"
