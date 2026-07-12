@@ -297,7 +297,14 @@ public class AdDetailController implements Initializable {
                         // Successfully got conversation ID, now navigate
                         System.out.println("Conversation started/retrieved. ID: " + conversation.getId());
                         // TODO: Pass conversation.getId() to ChatController
-                        // NavigationService.switchScene("/fxml/chat/chat-view.fxml", "گفتگو", conversation.getId());
+                        NavigationService.switchScene(
+                                "/fxml/chat/chat-view.fxml",
+                                "گفتگو",
+                                (org.example.frontend.chat.ChatController controller) -> {
+                                    controller.setConversationId(conversation.getId());
+                                }
+                        );
+
                         showInfo("موفق", "گفتگو با موفقیت آغاز شد. در حال انتقال به صفحه چت...");
                     } else {
                         showError("خطا", "دریافت اطلاعات گفتگو ناموفق بود.");
