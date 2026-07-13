@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.frontend.dashboard.UserManagementController"
+      nodeOrientation="RIGHT_TO_LEFT"
+      spacing="15" style="-fx-background-color: #f8fafc;">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header Section -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="مدیریت کاربران"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+            <Label text="در این بخش می‌توانید وضعیت مسدودیت کاربران را مشاهده و تغییر دهید."
+                   style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+        </VBox>
+        <Button text="بروزرسانی لیست" onAction="#loadUsers"
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Table of Users -->
+    <TableView fx:id="usersTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
+        <columns>
+            <TableColumn fx:id="idCol" prefWidth="60" text="شناسه"/>
+            <TableColumn fx:id="fullNameCol" prefWidth="180" text="نام و نام خانوادگی"/>
+            <TableColumn fx:id="usernameCol" prefWidth="140" text="نام کاربری"/>
+            <TableColumn fx:id="phoneCol" prefWidth="130" text="تلفن تماس"/>
+            <TableColumn fx:id="emailCol" prefWidth="180" text="ایمیل"/>
+            <TableColumn fx:id="roleCol" prefWidth="100" text="نقش"/>
+            <TableColumn fx:id="statusCol" prefWidth="100" text="وضعیت"/>
+            <TableColumn fx:id="actionsCol" prefWidth="150" text="عملیات"/>
+        </columns>
+        <placeholder>
+            <Label text="هیچ کاربری یافت نشد." style="-fx-text-fill: #94a3b8;"/>
+        </placeholder>
+    </TableView>
+</VBox>
+

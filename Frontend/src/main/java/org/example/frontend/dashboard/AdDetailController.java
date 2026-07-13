@@ -73,6 +73,47 @@ public class AdDetailController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    private String getFriendlyChatError(Throwable error) {
+        String message = error != null && error.getMessage() != null ? error.getMessage() : "";
+        String lowerMessage = message.toLowerCase();
+
+        if (message.contains("آگهی خودتان")
+                || message.contains("خودتان گفتگو")
+                || lowerMessage.contains("your own")
+                || lowerMessage.contains("yourself")) {
+            return "امکان ارسال پیام برای آگهی خودتان وجود ندارد.";
+        }
+
+        if (message.contains("مسدود")
+                || lowerMessage.contains("blocked")
+                || lowerMessage.contains("disabled")
+                || lowerMessage.contains("inactive")) {
+            return "به دلیل مسدود بودن یکی از کاربران، امکان شروع گفتگو وجود ندارد.";
+        }
+
+        if (message.contains("دسترسی")
+                || lowerMessage.contains("unauthorized")
+                || lowerMessage.contains("forbidden")
+                || lowerMessage.contains("401")
+                || lowerMessage.contains("403")) {
+            return "برای انجام این عملیات دسترسی ندارید. لطفاً دوباره وارد حساب کاربری خود شوید.";
+        }
+
+        if (message.contains("یافت نشد")
+                || lowerMessage.contains("not found")
+                || lowerMessage.contains("404")) {
+            return "آگهی یا گفتگو موردنظر پیدا نشد.";
+        }
+
+        if (lowerMessage.contains("connection")
+                || lowerMessage.contains("connect")
+                || lowerMessage.contains("timeout")
+                || lowerMessage.contains("refused")) {
+            return "ارتباط با سرور برقرار نشد. لطفاً اتصال خود را بررسی کنید.";
+        }
+
+        return "شروع گفتگو انجام نشد. لطفاً دوباره تلاش کنید.";
+    }
 
     public static void setSelectedAdvertisement(AdvertisementDetail advertisement) {
         selectedAdvertisement = advertisement;
@@ -269,13 +310,12 @@ public class AdDetailController implements Initializable {
     }
 
     // --- Updated handleStartChat method ---
+
     @FXML
     private void handleStartChat() {
         String token = UserSession.getInstance().getToken();
         if (token == null || token.isBlank()) {
             showError("خطا", "لطفاً ابتدا وارد حساب کاربری خود شوید.");
-            // Optionally navigate to login page here
-            // NavigationService.switchScene("/fxml/login/login-view.fxml", "ورود");
             return;
         }
 
@@ -284,8 +324,9 @@ public class AdDetailController implements Initializable {
             return;
         }
 
-        // Disable button to prevent multiple clicks
-        startChatButton.setDisable(true);
+        if (startChatButton != null) {
+            startChatButton.setDisable(true);
+        }
 
         new Thread(() -> {
             try {
@@ -294,33 +335,32 @@ public class AdDetailController implements Initializable {
 
                 Platform.runLater(() -> {
                     if (conversation != null && conversation.getId() != null) {
-                        // Successfully got conversation ID, now navigate
-                        System.out.println("Conversation started/retrieved. ID: " + conversation.getId());
-                        // TODO: Pass conversation.getId() to ChatController
                         NavigationService.switchScene(
                                 "/fxml/chat/chat-view.fxml",
                                 "گفتگو",
                                 (org.example.frontend.chat.ChatController controller) ->
-                                        controller.setConversationId(
-                                                conversation.getId()
-                                        )
+                                        controller.setConversationId(conversation.getId())
                         );
-
-
-                        showInfo("موفق", "گفتگو با موفقیت آغاز شد. در حال انتقال به صفحه چت...");
                     } else {
                         showError("خطا", "دریافت اطلاعات گفتگو ناموفق بود.");
+                        if (startChatButton != null) {
+                            startChatButton.setDisable(false);
+                        }
                     }
                 });
             } catch (Exception e) {
-                e.printStackTrace(); // Log the exception for debugging
+                e.printStackTrace();
+
                 Platform.runLater(() -> {
-                    showError("خطا", "شروع گفتگو ناموفق بود: " + e.getMessage());
-                    startChatButton.setDisable(false); // Re-enable button on error
+                    showError("خطا", getFriendlyChatError(e));
+                    if (startChatButton != null) {
+                        startChatButton.setDisable(false);
+                    }
                 });
             }
         }).start();
     }
+
     // --- End of updated handleStartChat ---
 
 
