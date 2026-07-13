@@ -27,7 +27,7 @@
                 <Label text="آگهی‌های اخیر"
                        style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
 
-                <!-- بخش فیلتر و جست‌وجوی پیشرفته -->
+                <!--    Search-->
                 <HBox spacing="10" alignment="CENTER_LEFT"
                       style="-fx-background-color: #f8fafc; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;">
 
@@ -83,7 +83,7 @@
 
             <Separator style="-fx-opacity: 0.3;"/>
 
-            <Button text="صفحه اصلی" maxWidth="Infinity" styleClass="menu-button"/>
+            <Button text="علاقه‌مندی‌ها" onAction="#handleShowFavorites" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
                     maxWidth="Infinity" styleClass="menu-button"
