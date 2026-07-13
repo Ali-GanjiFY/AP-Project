@@ -41,7 +41,7 @@ public class DashboardController implements javafx.fxml.Initializable {
     @FXML
     private Label statusLabel;
 
-    // متغیرهای فیلتر پیشرفته متصل به FXML
+    // FXML
     @FXML
     private TextField searchField;
     @FXML
@@ -79,14 +79,12 @@ public class DashboardController implements javafx.fxml.Initializable {
     }
 
     private void initFilters() {
-        // پر کردن فیلترهای مرتب‌سازی
         sortByComboBox.getItems().addAll(
                 "جدیدترین آگهی‌ها",
                 "ارزان‌ترین",
                 "گران‌ترین"
         );
 
-        // واکشی شهرها و دسته‌بندی‌ها به صورت ناهمگام (Async)
         new Thread(() -> {
             List<AdvertisementService.CityDto> cities = advertisementService.getAllCities();
             List<AdvertisementService.CategoryDto> categories = advertisementService.getAllCategories();
@@ -348,5 +346,13 @@ public class DashboardController implements javafx.fxml.Initializable {
             autoRefreshTimeline.stop();
         }
         NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
+    }
+
+    @FXML
+    private void handleShowFavorites() {
+        if (autoRefreshTimeline != null) {
+            autoRefreshTimeline.stop();
+        }
+        NavigationService.switchScene("/fxml/dashboard/my-favorites-view.fxml", "علاقه‌مندی‌های من");
     }
 }
