@@ -1,39 +1,39 @@
 /* ===========================
    CSS Variables for JavaFX App
-   GitHub Dark Theme (Fixed Names)
+   Unified Slate / Blue Theme (matches user dashboard)
    =========================== */
 
 .root {
-    /* Primary (Green) */
-    -fx-color-primary: #238636;
-    -fx-color-primary-hover: #2ea043;
+    /* Primary (Blue) */
+    -fx-color-primary: #2563eb;
+    -fx-color-primary-hover: #1d4ed8;
 
     /* Accent / Link */
-    -fx-color-accent: #2f81f7;
-    -fx-color-accent-hover: #58a6ff;
+    -fx-color-accent: #3b82f6;
+    -fx-color-accent-hover: #60a5fa;
 
     /* Text Colors */
-    -fx-color-text: #f0f6fc;
-    -fx-color-text-sub: #8b949e;
-    -fx-color-text-heading: #ffffff;
+    -fx-color-text: #334155;
+    -fx-color-text-sub: #64748b;
+    -fx-color-text-heading: #0f172a;
 
     /* Backgrounds */
-    -fx-color-bg-light: #161b22;
-    -fx-color-bg-dark: #0d1117;
-    -fx-color-bg-muted: #21262d;
+    -fx-color-bg-light: #f8fafc;
+    -fx-color-bg-dark: #0f172a;
+    -fx-color-bg-muted: #e2e8f0;
 
     /* Borders */
-    -fx-color-border: #30363d;
-    -fx-color-border-hover: #484f58;
+    -fx-color-border: #cbd5e1;
+    -fx-color-border-hover: #94a3b8;
 
     /* Status Colors */
-    -fx-color-success: #3fb950;
-    -fx-color-warning: #d29922;
-    -fx-color-danger: #f85149;
+    -fx-color-success: #16a34a;
+    -fx-color-warning: #d97706;
+    -fx-color-danger: #ef4444;
 
     /* Input Styling */
-    -fx-color-input-bg: #0d1117;
-    -fx-color-input-border: #30363d;
-    -fx-color-input-placeholder: #8b949e;
-    -fx-color-input-focus: #2f81f7;
+    -fx-color-input-bg: #ffffff;
+    -fx-color-input-border: #cbd5e1;
+    -fx-color-input-placeholder: #94a3b8;
+    -fx-color-input-focus: #2563eb;
 }
