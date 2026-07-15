@@ -159,7 +159,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Get full advertisement details with seller ratings
     @Override
     public AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser) {
-        return toDetailResponse(getAdvertisementEntityById(adId), currentUser);
+        AdvertisementEntity ad = getAdvertisementEntityById(adId);
+
+        // Non-active ads (PENDING/REJECTED/DELETED/SOLD... except SOLD which stays
+        // visible) must only be visible to their owner or an admin. Otherwise any
+        // guest or user could view someone else's unreviewed/rejected ad just by
+        // guessing its numeric id via GET /api/advertisements/{id}.
+        boolean isOwner = currentUser != null && ad.getOwner().getId().equals(currentUser.getId());
+        boolean isAdmin = currentUser != null && currentUser.getRole() == RoleEnum.ADMIN;
+        boolean publiclyVisible = ad.getStatus() == AdvertisementStatusEnum.ACTIVE || ad.getStatus() == AdvertisementStatusEnum.SOLD;
+
+        if (!publiclyVisible && !isOwner && !isAdmin) {
+            throw new ResourceNotFoundException("آگهی یافت نشد");
+        }
+
+        return toDetailResponse(ad, currentUser);
     }
 
     // Get advertisement entity by ID (internal use by other services)
