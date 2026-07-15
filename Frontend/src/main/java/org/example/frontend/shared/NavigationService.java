@@ -19,19 +19,12 @@ public class NavigationService {
         return primaryStage;
     }
 
-    private static void addStylesheetIfExists(Scene scene, String cssPath) {
-        URL uri = NavigationService.class.getResource(cssPath);
-        if (uri != null) {
-            scene.getStylesheets().add(uri.toExternalForm());
-        } else {
-            System.err.println("[Navigation] هشدار: فایل CSS پیدا نشد: " + cssPath);
-        }
-    }
-
+    // متد استاندارد قدیمی برای سازگاری با بقیه بخش‌های برنامه
     public static void switchScene(String fxmlPath, String title) {
         switchScene(fxmlPath, title, null);
     }
 
+    // متد جنریک جدید برای ارسال داده‌ها و کنترلر به صفحه مقصد
     public static <T> void switchScene(String fxmlPath, String title, Consumer<T> controllerInitializer) {
         if (primaryStage == null) {
             System.err.println("خطا: PrimaryStage مقداردهی نشده است! ابتدا setPrimaryStage را صدا بزنید.");
@@ -49,6 +42,7 @@ public class NavigationService {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
 
+            // اگر نیاز به مقداردهی اولیه کنترلر باشد
             if (controllerInitializer != null) {
                 T controller = loader.getController();
                 controllerInitializer.accept(controller);
@@ -64,14 +58,32 @@ public class NavigationService {
 
             currentScene.getStylesheets().clear();
 
-
-            addStylesheetIfExists(currentScene, "/css/variables.css");
-            addStylesheetIfExists(currentScene, "/css/main.css");
+            URL variablesUri = NavigationService.class.getResource("/css/variables.css");
+            if (variablesUri != null) {
+                currentScene.getStylesheets().add(variablesUri.toExternalForm());
+            }
 
             if (fxmlPath.contains("/auth/")) {
-                addStylesheetIfExists(currentScene, "/css/auth.css");
+                URL authUri = NavigationService.class.getResource("/css/auth.css");
+                if (authUri != null) {
+                    currentScene.getStylesheets().add(authUri.toExternalForm());
+                }
             } else if (fxmlPath.contains("/advertisement/")) {
-                addStylesheetIfExists(currentScene, "/css/advertisement.css");
+                URL advertisementUri = NavigationService.class.getResource("/css/advertisement.css");
+                if (advertisementUri != null) {
+                    currentScene.getStylesheets().add(advertisementUri.toExternalForm());
+                }
+            } else if (fxmlPath.contains("/dashboard/")) {
+                URL dashboardUri = NavigationService.class.getResource("/css/dashboard.css");
+                if (dashboardUri != null) {
+                    currentScene.getStylesheets().add(dashboardUri.toExternalForm());
+                }
+            } else if (fxmlPath.contains("/chat/")) {
+                // در صورت تمایل به داشتن استایل اختصاصی چت، این فایل را بعداً می‌توانید بسازید
+                URL chatUri = NavigationService.class.getResource("/css/chat.css");
+                if (chatUri != null) {
+                    currentScene.getStylesheets().add(chatUri.toExternalForm());
+                }
             }
 
             primaryStage.setTitle(title);
