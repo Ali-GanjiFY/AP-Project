@@ -89,7 +89,7 @@
                     maxWidth="Infinity" styleClass="menu-button"
                     style="-fx-text-fill: #ffffff;"/>
 
-            <Button text="مدیریت آگهی‌ها" onAction="#handleManageMyAds" maxWidth="Infinity" styleClass="menu-button"/>
+            <Button text="مدیریت آگهی‌های من" onAction="#handleManageMyAds" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Button text="چت‌ها" onAction="#handleOpenChats"
                     maxWidth="Infinity" styleClass="menu-button"/>

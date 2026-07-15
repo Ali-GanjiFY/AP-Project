@@ -26,7 +26,6 @@ public class AdminDashboardController {
             );
             javafx.scene.Parent view = loader.load();
 
-            // پاکسازی محتوای قبلی و نمایش بخش جدید
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
