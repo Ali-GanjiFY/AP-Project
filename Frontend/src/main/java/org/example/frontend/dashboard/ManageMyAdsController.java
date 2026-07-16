@@ -340,6 +340,16 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     }
 
     @FXML
+    private void handleShowFavorites() {
+        NavigationService.switchScene("/fxml/dashboard/my-favorites-view.fxml", "علاقه‌مندی‌های من");
+    }
+
+    @FXML
+    private void handleOpenChats() {
+        NavigationService.switchScene("/fxml/chat/conversation-list-view.fxml", "چت‌ها");
+    }
+
+    @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
