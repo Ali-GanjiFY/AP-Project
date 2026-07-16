@@ -10,7 +10,7 @@
             fx:controller="org.example.frontend.dashboard.AdDetailController"
             nodeOrientation="RIGHT_TO_LEFT"
             prefWidth="1280" prefHeight="720"
-            style="-fx-background-color: #f8fafc;">
+            style="-fx-background-color: #0f172a;">
 
     <stylesheets>
         <URL value="@../../css/variables.css"/>
@@ -19,12 +19,12 @@
 
     <top>
         <HBox alignment="CENTER_RIGHT" spacing="12"
-              style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-padding: 18 24 18 24;">
+              style="-fx-background-color: #1e293b; -fx-padding: 18 24 18 24;">
             <Button text="بازگشت"
                     onAction="#handleBack"
-                    style="-fx-background-color: #e2e8f0; -fx-text-fill: #0f172a; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                    style="-fx-background-color: #334155; -fx-text-fill: #f1f5f9; -fx-font-weight: bold; -fx-cursor: hand;"/>
             <Label text="جزئیات آگهی"
-                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9;"/>
         </HBox>
     </top>
 

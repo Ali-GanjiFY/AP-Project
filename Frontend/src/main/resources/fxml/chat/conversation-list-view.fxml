@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0"
-            style="-fx-background-color: #f1f5f9;"
+            style="-fx-background-color: #0f172a;"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.frontend.chat.ConversationListController">
@@ -26,9 +26,9 @@
             <!-- Header -->
             <HBox alignment="CENTER_RIGHT"
                   prefHeight="65.0"
-                  style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);">
+                  style="-fx-background-color: #1e293b; -fx-background-radius: 12;">
                 <children>
-                    <Label text="لیست گفتگوهای من" textFill="#1e293b">
+                    <Label text="لیست گفتگوهای من" textFill="#f1f5f9">
                         <font>
                             <Font name="System Bold" size="18.0"/>
                         </font>
@@ -60,7 +60,7 @@
 
             <!-- Status -->
             <Label fx:id="statusLabel" text="در حال بارگذاری گفتگوها..."
-                   style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                   style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
 
             <!-- List -->
             <ScrollPane fitToWidth="true"

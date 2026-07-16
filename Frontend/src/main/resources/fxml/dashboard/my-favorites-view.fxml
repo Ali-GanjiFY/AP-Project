@@ -16,21 +16,18 @@
     </stylesheets>
 
     <children>
-        <StackPane fx:id="contentArea" style="-fx-background-color: #f8fafc;"
+        <StackPane fx:id="contentArea" style="-fx-padding: 20; -fx-background-color: #0f172a;"
                    StackPane.alignment="CENTER">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
             <StackPane.margin>
                 <Insets left="250.0"/>
             </StackPane.margin>
 
             <VBox spacing="15">
                 <Label text="علاقه‌مندی‌های من"
-                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9;"/>
 
                 <Label fx:id="statusLabel" text="در حال بارگذاری..."
-                       style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                       style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
 
                 <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
                             VBox.vgrow="ALWAYS">

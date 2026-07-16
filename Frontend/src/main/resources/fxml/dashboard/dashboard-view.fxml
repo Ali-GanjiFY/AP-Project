@@ -25,7 +25,8 @@
 
             <VBox spacing="15">
                 <Label text="آگهی‌های اخیر"
-                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #334155;"/>
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9;"/>
+
 
                 <!--    Search-->
                 <HBox spacing="10" alignment="CENTER_LEFT"
@@ -56,8 +57,9 @@
                             style="-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-padding: 6 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                 </HBox>
 
-                <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
-                       style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                <Label fx:id="statusLabel"
+                       text="در حال بارگذاری آگهی‌ها..." style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
+
 
                 <ScrollPane fitToWidth="true"
                              style="-fx-background-color: transparent; -fx-background: transparent;"

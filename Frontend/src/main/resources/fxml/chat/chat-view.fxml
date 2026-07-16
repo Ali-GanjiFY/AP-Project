@@ -10,22 +10,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #f1f5f9;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.frontend.chat.ChatController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0f172a;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.frontend.chat.ChatController">
     <children>
         <!-- بخش اصلی چت با عرض محدود در وسط صفحه جهت زیبایی و خوانایی بیشتر در صفحات عریض -->
         <VBox alignment="TOP_CENTER" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="10.0">
             <children>
                 <!-- هدر چت -->
-                <HBox alignment="CENTER_RIGHT" prefHeight="65.0" prefWidth="1080.0" style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);">
+                <HBox alignment="CENTER_RIGHT" prefHeight="65.0" prefWidth="1080.0" style="-fx-background-color: #1e293b; -fx-background-radius: 12;">
                     <children>
                         <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                             <children>
-                                <Label fx:id="chatTitleLabel" text="گفتگو درباره آگهی" textFill="#1e293b">
+                                <Label fx:id="chatTitleLabel" text="گفتگو درباره آگهی" textFill="#f1f5f9">
                                     <font>
                                         <Font name="System Bold" size="16.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="chatSubtitleLabel" text="در حال اتصال..." textFill="#64748b">
+                                <Label fx:id="chatSubtitleLabel" text="در حال اتصال..." textFill="#94a3b8">
                                     <font>
                                         <Font size="12.0" />
                                     </font>
@@ -53,7 +53,7 @@
                 </HBox>
 
                 <!-- کادر گفتگوها -->
-                <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="530.0" style="-fx-background-color: transparent; -fx-background: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-background-radius: 12;" VBox.vgrow="ALWAYS">
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="530.0" style="-fx-background-color: transparent; -fx-background: #1e293b; -fx-border-color: #334155; -fx-border-radius: 12; -fx-background-radius: 12;" VBox.vgrow="ALWAYS">
                     <content>
                         <VBox fx:id="messageContainer" spacing="12.0">
                             <padding>
@@ -71,7 +71,7 @@
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </Button>
-                        <TextField fx:id="messageTextField" onAction="#handleSendMessage" prefHeight="45.0" promptText="پیام خود را در اینجا بنویسید..." style="-fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #cbd5e1; -fx-padding: 0 20 0 20; -fx-alignment: center-right;" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="messageTextField" onAction="#handleSendMessage" prefHeight="45.0" promptText="پیام خود را در اینجا بنویسید..." style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #cbd5e1; -fx-padding: 0 20 0 20; -fx-alignment: center-right;" HBox.hgrow="ALWAYS">
                             <font>
                                 <Font size="14.0" />
                             </font>

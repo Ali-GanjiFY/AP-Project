@@ -125,16 +125,16 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     private VBox buildRatingCard(RatingService.RatingDto rating) {
         VBox card = new VBox(6);
         card.setPadding(new Insets(10));
-        card.setStyle("-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;");
+        card.setStyle("-fx-background-color: #0f172a; -fx-background-radius: 8; -fx-border-color: #334155; -fx-border-radius: 8;");
 
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(Pos.CENTER_RIGHT);
 
         Label scoreLabel = new Label("امتیاز: " + rating.getScore() + " / ۵");
-        scoreLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #d97706;");
+        scoreLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;");
 
         Label buyerLabel = new Label("از طرف: " + safeText(rating.getBuyerUsername(), "کاربر"));
-        buyerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #64748b;");
+        buyerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
 
         headerRow.getChildren().addAll(scoreLabel, buyerLabel);
 
@@ -144,7 +144,7 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         if (comment != null && !comment.isBlank()) {
             Label commentLabel = new Label(comment);
             commentLabel.setWrapText(true);
-            commentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #334155;");
+            commentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e2e8f0;");
             card.getChildren().add(commentLabel);
         }
 
