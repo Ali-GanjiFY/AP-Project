@@ -213,6 +213,16 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
     }
 
     @FXML
+    private void handleCreateAdvertisement() {
+        NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
+    }
+
+    @FXML
+    private void handleOpenChats() {
+        NavigationService.switchScene("/fxml/chat/conversation-list-view.fxml", "چت‌ها");
+    }
+
+    @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");

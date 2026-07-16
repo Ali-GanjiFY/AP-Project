@@ -58,7 +58,14 @@
             <Button text="بازگشت به داشبورد" onAction="#handleBackToDashboard"
                     maxWidth="Infinity" styleClass="menu-button"/>
 
+            <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
+                    maxWidth="Infinity" styleClass="menu-button"
+                    style="-fx-text-fill: #ffffff;"/>
+
             <Button text="مدیریت آگهی‌های من" onAction="#handleManageMyAds"
+                    maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="چت‌ها" onAction="#handleOpenChats"
                     maxWidth="Infinity" styleClass="menu-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
