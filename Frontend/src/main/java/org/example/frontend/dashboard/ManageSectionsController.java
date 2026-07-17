@@ -37,6 +37,7 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
     @FXML private Label categoryStatusLabel;
     @FXML private TableView<CategoryOption> categoryTable;
     @FXML private TableColumn<CategoryOption, String> categoryNameColumn;
+    @FXML private TableColumn<CategoryOption, String> categoryDescriptionColumn;
     @FXML private TableColumn<CategoryOption, String> categoryParentColumn;
     @FXML private TableColumn<CategoryOption, String> categoryActiveColumn;
     @FXML private TableColumn<CategoryOption, Void> categoryActionColumn;
@@ -51,6 +52,10 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         addCityDeleteButton();
 
         categoryNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        categoryDescriptionColumn.setCellValueFactory(cellData -> {
+            String description = cellData.getValue().getDescription();
+            return new javafx.beans.property.SimpleStringProperty(description != null ? description : "-");
+        });
         categoryParentColumn.setCellValueFactory(cellData -> {
             String parentName = cellData.getValue().getParentCategoryName();
             return new javafx.beans.property.SimpleStringProperty(parentName != null ? parentName : "-");
