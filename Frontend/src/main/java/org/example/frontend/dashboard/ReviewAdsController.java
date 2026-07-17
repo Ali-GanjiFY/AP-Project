@@ -137,6 +137,20 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         approveBtn.setOnAction(e -> submitDecision(ad, "APPROVED", noteField.getText(), approveBtn, rejectBtn));
         rejectBtn.setOnAction(e -> submitDecision(ad, "REJECTED", noteField.getText(), approveBtn, rejectBtn));
 
+        // VIEW DETAILS
+        Button viewDetailsBtn = new Button("مشاهده جزئیات");
+        String viewDetailsStyle = "-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; "
+                + "-fx-background-radius: 6; -fx-cursor: hand;";
+        viewDetailsBtn.setStyle(viewDetailsStyle);
+        viewDetailsBtn.setMaxWidth(Double.MAX_VALUE);
+        viewDetailsBtn.setOnAction(e -> {
+            AdReviewDetailController.setSelectedAdvertisementId(ad.getId());
+            NavigationService.switchScene(
+                    "/fxml/dashboard/ad-review-detail-view.fxml",
+                    "جزئیات آگهی (بررسی ادمین)"
+            );
+        });
+
         HBox actionsRow = new HBox(8, approveBtn, rejectBtn);
         actionsRow.setAlignment(Pos.CENTER_RIGHT);
 
@@ -149,7 +163,8 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
                 + "-fx-border-color: #e2e8f0; -fx-border-radius: 10;";
         card.setStyle(cardStyle);
 
-        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, imagesRow, noteField, actionsRow);
+        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, imagesRow,
+                viewDetailsBtn, noteField, actionsRow);
         return card;
     }
 
