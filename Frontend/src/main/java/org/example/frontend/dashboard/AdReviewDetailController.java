@@ -72,7 +72,8 @@ public class AdReviewDetailController implements Initializable {
         setButtonsDisabled(true);
 
         new Thread(() -> {
-            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId);
+            String token = UserSession.getInstance().getToken();
+            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId, token);
 
             Platform.runLater(() -> {
                 if (detail == null) {

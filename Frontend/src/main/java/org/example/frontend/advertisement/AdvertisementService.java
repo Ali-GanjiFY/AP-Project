@@ -191,16 +191,26 @@ public class AdvertisementService {
     }
 
     public AdvertisementDetail getAdvertisementDetail(Long id) {
+        return getAdvertisementDetail(id, null);
+    }
+
+    public AdvertisementDetail getAdvertisementDetail(Long id, String token) {
         try {
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
                     .header("Accept", "application/json")
-                    .GET()
-                    .build();
+                    .GET();
+
+            if (token != null && !token.isBlank()) {
+                builder.header("Authorization", "Bearer " + token);
+            }
+
+            HttpRequest request = builder.build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {return gson.fromJson(response.body(), AdvertisementDetail.class);
+            if (response.statusCode() == 200) {
+                return gson.fromJson(response.body(), AdvertisementDetail.class);
             } else {
                 System.err.println("خطا در دریافت جزئیات آگهی! " + response.statusCode());
                 return null;
