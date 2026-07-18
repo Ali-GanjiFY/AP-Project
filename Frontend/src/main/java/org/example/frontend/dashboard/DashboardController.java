@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -317,10 +318,42 @@ public class DashboardController implements javafx.fxml.Initializable {
                     startAutoRefresh();
                     return;
                 }
+
+                String status = detail.getStatus();
+                if (status != null && (status.equals("DELETED")
+                        || status.equals("PENDING")
+                        || status.equals("SOLD")
+                        || status.equals("REJECTED"))) {
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("عدم دسترسی");
+                    alert.setHeaderText(null);
+                    alert.setContentText(mapStatusToMessage(status));
+                    alert.showAndWait();
+
+                    startAutoRefresh();
+                    return;
+                }
+
                 AdDetailController.setSelectedAdvertisement(detail);
                 NavigationService.switchScene("/fxml/dashboard/ad-detail-view.fxml", "جزئیات آگهی");
             });
         }).start();
+    }
+
+    private String mapStatusToMessage(String status) {
+        switch (status) {
+            case "DELETED":
+                return "این آگهی توسط کاربر یا مدیر حذف شده است.";
+            case "PENDING":
+                return "این آگهی در حال حاضر در انتظار تایید است و قابل مشاهده نیست.";
+            case "SOLD":
+                return "این آگهی قبلاً فروخته شده و دیگر در دسترس نیست.";
+            case "REJECTED":
+                return "این آگهی توسط مدیر رد شده است.";
+            default:
+                return "این آگهی دیگر در دسترس نیست.";
+        }
     }
 
     @FXML

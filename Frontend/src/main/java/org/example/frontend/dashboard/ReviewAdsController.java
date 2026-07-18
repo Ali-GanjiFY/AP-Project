@@ -170,7 +170,19 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
 
     private void loadImagesForCard(Long adId, FlowPane imagesRow) {
         new Thread(() -> {
-            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId);
+            String token = UserSession.getInstance().getToken();
+            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId, token);
+
+            if (detail == null) {
+                System.err.println("[ReviewAds] آگهی " + adId + ": دریافت جزئیات ناموفق (detail=null)");
+            } else if (detail.getImages() == null || detail.getImages().isEmpty()) {
+                System.err.println("[ReviewAds] آگهی " + adId + ": هیچ عکسی در پاسخ سرور نیست (images خالی/null است)");
+            } else {
+                System.out.println("[ReviewAds] آگهی " + adId + ": " + detail.getImages().size() + " عکس دریافت شد");
+                for (AdvertisementDetail.ImageInfo imageInfo : detail.getImages()) {
+                    System.out.println("    -> imagePath = [" + imageInfo.getImagePath() + "]");
+                }
+            }
 
             Platform.runLater(() -> {
                 if (detail == null || detail.getImages() == null || detail.getImages().isEmpty()) {
@@ -188,7 +200,13 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
                     imageView.setFitWidth(THUMB_SIZE);
                     imageView.setFitHeight(THUMB_SIZE);
                     imageView.setPreserveRatio(false);
-                    imageView.setImage(new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true));
+                    Image img = new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true);
+                    img.errorProperty().addListener((obs, wasError, isError) -> {
+                        if (isError) {
+                            System.err.println("[ReviewAds] آگهی " + adId + ": خطا در لود عکس از " + imageUrl);
+                        }
+                    });
+                    imageView.setImage(img);
 
                     imagesRow.getChildren().add(imageView);
                 }
@@ -231,27 +249,8 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
 
     @FXML
     private void handleManageUsers() {
-        try {
-            System.out.println("[AdminDashboard] Loading User Management View...");
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                    getClass().getResource("/fxml/dashboard/user-management-view.fxml")
-            );
-            javafx.scene.Parent view = loader.load();
-
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(view);
-
-            System.out.println("[AdminDashboard] User Management View Loaded Successfully!");
-        } catch (Exception e) {
-            System.err.println("!!! خطا در لود صفحه مدیریت کاربران !!!");
-            e.printStackTrace();
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("خطا");
-            alert.setHeaderText("بارگذاری صفحه با خطا مواجه شد.");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }    }
+        NavigationService.switchScene("/fxml/dashboard/user-management-view.fxml", "مدیریت کاربران");
+    }
 
     @FXML
     private void handleManageSections() {

@@ -259,27 +259,8 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
 
     @FXML
     private void handleManageUsers() {
-        try {
-            System.out.println("[AdminDashboard] Loading User Management View...");
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                    getClass().getResource("/fxml/dashboard/user-management-view.fxml")
-            );
-            javafx.scene.Parent view = loader.load();
-
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(view);
-
-            System.out.println("[AdminDashboard] User Management View Loaded Successfully!");
-        } catch (Exception e) {
-            System.err.println("!!! خطا در لود صفحه مدیریت کاربران !!!");
-            e.printStackTrace();
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("خطا");
-            alert.setHeaderText("بارگذاری صفحه با خطا مواجه شد.");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }    }
+        NavigationService.switchScene("/fxml/dashboard/user-management-view.fxml", "مدیریت کاربران");
+    }
 
     @FXML
     private void handleReviewAds() {

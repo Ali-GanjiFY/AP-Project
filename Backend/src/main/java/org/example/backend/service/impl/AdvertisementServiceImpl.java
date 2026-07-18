@@ -31,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -206,7 +208,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .stream().map(this::toSummaryResponse).toList();
     }
 
-    // Search and filter active advertisements
     @Override
     public List<AdvertisementSummaryResponse> searchAdvertisements(AdvertisementSearchRequest request) {
         // Validate price range
@@ -218,14 +219,30 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         // Start with all active ads
         List<AdvertisementEntity> ads = advertisementRepository.findByStatus(AdvertisementStatusEnum.ACTIVE);
 
+        // اگر یک کتگوری برای فیلتر انتخاب شده، باید هم خودش و هم زیرمجموعه‌هاش (اگر والد باشه) در نظر گرفته بشه
+        Set<Long> allowedCategoryIds = null;
+        if (request.getCategoryId() != null) {
+            CategoryEntity selectedCategory = categoryService.getCategoryEntityById(request.getCategoryId());
+            allowedCategoryIds = new HashSet<>();
+            allowedCategoryIds.add(selectedCategory.getId());
+
+            // اگر این کتگوری، خودش والد یک یا چند زیرمجموعه است، آی‌دی همه‌ی فرزندانش هم اضافه می‌شود
+            if (selectedCategory.getSubCategories() != null) {
+                for (CategoryEntity child : selectedCategory.getSubCategories()) {
+                    allowedCategoryIds.add(child.getId());
+                }
+            }
+        }
+        final Set<Long> finalAllowedCategoryIds = allowedCategoryIds;
+
         // Apply filters using stream (in-memory filtering)
         return ads.stream()
                 // Keyword search: title or description
                 .filter(ad -> request.getKeyword() == null || request.getKeyword().isBlank()
                         || ad.getTitle().toLowerCase().contains(request.getKeyword().toLowerCase())
                         || ad.getDescription().toLowerCase().contains(request.getKeyword().toLowerCase()))
-                // Category filter
-                .filter(ad -> request.getCategoryId() == null || ad.getCategory().getId().equals(request.getCategoryId()))
+                // Category filter (شامل زیرمجموعه‌ها هم می‌شود)
+                .filter(ad -> finalAllowedCategoryIds == null || finalAllowedCategoryIds.contains(ad.getCategory().getId()))
                 // City filter
                 .filter(ad -> request.getCityId() == null || ad.getCity().getId().equals(request.getCityId()))
                 // Price range filter

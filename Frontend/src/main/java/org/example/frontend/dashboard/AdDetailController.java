@@ -260,7 +260,7 @@ public class AdDetailController implements Initializable {
         Double avg = selectedAdvertisement.getSellerAverageRating();
         Long count = selectedAdvertisement.getSellerRatingCount();
         sellerAverageRatingLabel.setText(avg != null
-                ? String.format("میانگین امتیاز فروشنده: %.1f از ۵", avg)
+                ? String.format("میانگین امتیاز فروشنده: %.1f از 5", avg)
                 : "میانگین امتیاز فروشنده: بدون امتیاز");
         sellerRatingCountLabel.setText("تعداد نظرات: " + (count != null ? count : 0));
 
@@ -324,7 +324,7 @@ public class AdDetailController implements Initializable {
                 + "-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-padding: 10;");
 
         Label headerLabel = new Label(safeText(review.getBuyerUsername(), "کاربر")
-                + "  —  امتیاز: " + review.getScore() + " / ۵");
+                + "  —  امتیاز: " + review.getScore() + " / 5");
         headerLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #d97706;");
         card.getChildren().add(headerLabel);
 

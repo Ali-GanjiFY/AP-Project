@@ -74,7 +74,7 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
                     ratingsCountLabel.setText("تعداد نظرات: -");
                     return;
                 }
-                ratingsAverageLabel.setText(String.format("میانگین امتیاز: %.1f از ۵", summary.getAverageScore()));
+                ratingsAverageLabel.setText(String.format("میانگین امتیاز: %.1f از 5", summary.getAverageScore()));
                 ratingsCountLabel.setText("تعداد نظرات: " + summary.getTotalCount());
             });
         }).start();
@@ -130,7 +130,7 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(Pos.CENTER_RIGHT);
 
-        Label scoreLabel = new Label("امتیاز: " + rating.getScore() + " / ۵");
+        Label scoreLabel = new Label("امتیاز: " + rating.getScore() + " / 5");
         scoreLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;");
 
         Label buyerLabel = new Label("از طرف: " + safeText(rating.getBuyerUsername(), "کاربر"));

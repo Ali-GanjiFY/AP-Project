@@ -98,7 +98,7 @@ public class AdReviewDetailController implements Initializable {
         ownerLabel.setText("فروشنده: " + safeText(ad.getOwnerFullName(), safeText(ad.getOwnerUsername(), "-")));
 
         if (ad.getSellerAverageRating() != null) {
-            sellerAverageRatingLabel.setText(String.format("میانگین امتیاز فروشنده: %.1f از ۵ (%d نظر)",
+            sellerAverageRatingLabel.setText(String.format("میانگین امتیاز فروشنده: %.1f از 5 (%d نظر)",
                     ad.getSellerAverageRating(),
                     ad.getSellerRatingCount() != null ? ad.getSellerRatingCount() : 0));
         } else {
