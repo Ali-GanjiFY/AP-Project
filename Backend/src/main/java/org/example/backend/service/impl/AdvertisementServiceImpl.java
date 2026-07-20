@@ -112,6 +112,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         if (request.getCategoryId() != null) ad.setCategory(categoryService.getCategoryEntityById(request.getCategoryId()));
         if (request.getCityId() != null) ad.setCity(cityService.getCityEntityById(request.getCityId()));
 
+        // If the client sent an image list, it must be the full final list (existing + new),
+        // and it fully replaces the current set of images for this ad.
+        if (request.getImagePaths() != null) {
+            if (request.getImagePaths().isEmpty()) {
+                throw new InvalidInputException("آگهی باید حداقل شامل یک تصویر باشد");
+            }
+            advertisementImageRepository.deleteByAdvertisement(ad);
+            for (String path : request.getImagePaths()) {
+                advertisementImageRepository.save(new AdvertisementImageEntity(path, ad));
+            }
+        }
+
         // After editing, needs admin approval again
         ad.setStatus(AdvertisementStatusEnum.PENDING);
         ad.setUpdatedAt(LocalDateTime.now());

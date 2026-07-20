@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.example.frontend.advertisement.Advertisement;
@@ -25,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class ManageMyAdsController implements javafx.fxml.Initializable {
 
-    private static final double CARD_WIDTH = 240;
+    private static final double CARD_WIDTH = 280;
 
     @FXML
     private StackPane contentArea;
@@ -225,29 +226,35 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         boolean canEdit = !"SOLD".equalsIgnoreCase(status) && !"DELETED".equalsIgnoreCase(status);
 
         if (canMarkSold || canDelete || canEdit) {
-            HBox actionsRow = new HBox(8);
+            HBox actionsRow = new HBox(6);
             actionsRow.setAlignment(Pos.CENTER_RIGHT);
+
+            // Base style shared by all action buttons: small font + tight padding so all three
+            // fit on one row at CARD_WIDTH, and USE_PREF_SIZE min-width so JavaFX never shrinks
+            // the button below its text's natural size (which is what was causing "…" truncation).
+            String baseButtonStyle = "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; "
+                    + "-fx-padding: 5 8; -fx-background-radius: 6; -fx-cursor: hand;";
 
             if (canEdit) {
                 Button editBtn = new Button("ویرایش");
-                editBtn.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; "
-                        + "-fx-background-radius: 6; -fx-cursor: hand;");
+                editBtn.setStyle("-fx-background-color: #f59e0b; " + baseButtonStyle);
+                editBtn.setMinWidth(Region.USE_PREF_SIZE);
                 editBtn.setOnAction(e -> handleEdit(ad));
                 actionsRow.getChildren().add(editBtn);
             }
 
             if (canMarkSold) {
                 Button soldBtn = new Button("فروخته شد");
-                soldBtn.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; "
-                        + "-fx-background-radius: 6; -fx-cursor: hand;");
+                soldBtn.setStyle("-fx-background-color: #2563eb; " + baseButtonStyle);
+                soldBtn.setMinWidth(Region.USE_PREF_SIZE);
                 soldBtn.setOnAction(e -> handleMarkAsSold(ad));
                 actionsRow.getChildren().add(soldBtn);
             }
 
             if (canDelete) {
                 Button deleteBtn = new Button("حذف");
-                deleteBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; "
-                        + "-fx-background-radius: 6; -fx-cursor: hand;");
+                deleteBtn.setStyle("-fx-background-color: #ef4444; " + baseButtonStyle);
+                deleteBtn.setMinWidth(Region.USE_PREF_SIZE);
                 deleteBtn.setOnAction(e -> handleDelete(ad));
                 actionsRow.getChildren().add(deleteBtn);
             }

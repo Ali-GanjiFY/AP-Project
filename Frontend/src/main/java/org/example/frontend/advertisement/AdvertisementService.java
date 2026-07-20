@@ -263,8 +263,10 @@ public class AdvertisementService {
     }
 
     // PUT /api/advertisements/{id} -> owner only; backend moves the ad back to PENDING for re-review
+    // imagePaths: pass null to leave images untouched, or the FULL final list
+    // (remaining existing images + newly uploaded ones) to replace the ad's images entirely.
     public String updateAdvertisement(String token, Long id, String title, String description,
-                                      Double price, Long categoryId, Long cityId) {
+                                      Double price, Long categoryId, Long cityId, List<String> imagePaths) {
         try {
             JsonObject body = new JsonObject();
             body.addProperty("title", title);
@@ -272,6 +274,9 @@ public class AdvertisementService {
             body.addProperty("price", price);
             body.addProperty("categoryId", categoryId);
             body.addProperty("cityId", cityId);
+            if (imagePaths != null) {
+                body.add("imagePaths", gson.toJsonTree(imagePaths));
+            }
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))

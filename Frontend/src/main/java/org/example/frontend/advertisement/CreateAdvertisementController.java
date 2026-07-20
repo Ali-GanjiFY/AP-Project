@@ -34,7 +34,10 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
     private final AdvertisementService advertisementService = new AdvertisementService();
     private final ImageUploadService imageUploadService = new ImageUploadService();
 
+    // Newly picked files (not uploaded yet).
     private final List<File> selectedImages = new ArrayList<>();
+    // Existing images of the ad being edited that the user has NOT removed (server paths).
+    private final List<String> remainingExistingImagePaths = new ArrayList<>();
 
     // When non-null, the form is in "edit" mode for this advertisement instead of "create" mode.
     private Long editingAdId;
@@ -64,11 +67,16 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         if (submitButton != null) {
             submitButton.setText("ذخیره تغییرات");
         }
-        // Images are not editable through the update endpoint, so hide the picker in edit mode.
-        if (imagesSection != null) {
-            imagesSection.setVisible(false);
-            imagesSection.setManaged(false);
+
+        remainingExistingImagePaths.clear();
+        if (ad.getImages() != null) {
+            for (AdvertisementDetail.ImageInfo image : ad.getImages()) {
+                remainingExistingImagePaths.add(image.getImagePath());
+            }
         }
+        // Images ARE editable: keep the section visible and render the current images
+        // (each removable) plus the "add image" button for new ones.
+        renderImageChips();
 
         applyPendingSelections();
     }
@@ -125,19 +133,58 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         List<File> files = fileChooser.showOpenMultipleDialog(NavigationService.getPrimaryStage());
         if (files != null && !files.isEmpty()) {
             selectedImages.addAll(files);
-
-            imagesCountLabel.setText(selectedImages.size() + " عکس انتخاب شد");
-
-            imagesPreviewContainer.getChildren().clear();
-            for (File file : selectedImages) {
-                Label fileLabel = new Label(file.getName());
-                fileLabel.setStyle(
-                        "-fx-background-color: #f1f5f9; -fx-padding: 4 10; " +
-                                "-fx-background-radius: 12; -fx-font-size: 11px; -fx-text-fill: #334155;"
-                );
-                imagesPreviewContainer.getChildren().add(fileLabel);
-            }
+            renderImageChips();
         }
+    }
+
+    // Builds one "chip" per image (existing ones already on the server + newly picked local
+    // files), each with a small × button to remove it before saving.
+    private void renderImageChips() {
+        int total = remainingExistingImagePaths.size() + selectedImages.size();
+        imagesCountLabel.setText(total == 0 ? "هیچ عکسی انتخاب نشده" : total + " عکس انتخاب شده");
+
+        imagesPreviewContainer.getChildren().clear();
+
+        for (String existingPath : new ArrayList<>(remainingExistingImagePaths)) {
+            imagesPreviewContainer.getChildren().add(buildImageChip(imageFileName(existingPath), true,
+                    () -> {
+                        remainingExistingImagePaths.remove(existingPath);
+                        renderImageChips();
+                    }));
+        }
+
+        for (File file : new ArrayList<>(selectedImages)) {
+            imagesPreviewContainer.getChildren().add(buildImageChip(file.getName(), false,
+                    () -> {
+                        selectedImages.remove(file);
+                        renderImageChips();
+                    }));
+        }
+    }
+
+    private String imageFileName(String path) {
+        if (path == null) return "تصویر";
+        int slashIndex = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        return slashIndex >= 0 ? path.substring(slashIndex + 1) : path;
+    }
+
+    private javafx.scene.layout.HBox buildImageChip(String label, boolean isExisting, Runnable onRemove) {
+        Label nameLabel = new Label((isExisting ? "" : "🆕 ") + label);
+        nameLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #334155;");
+
+        Button removeBtn = new Button("×");
+        removeBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-font-weight: bold; "
+                        + "-fx-cursor: hand; -fx-padding: 0 0 0 4;"
+        );
+        removeBtn.setOnAction(e -> onRemove.run());
+
+        javafx.scene.layout.HBox chip = new javafx.scene.layout.HBox(4, nameLabel, removeBtn);
+        chip.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        chip.setStyle(
+                "-fx-background-color: #f1f5f9; -fx-padding: 4 10; -fx-background-radius: 12;"
+        );
+        return chip;
     }
 
     @FXML
@@ -221,14 +268,31 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
 
     private void submitEdit(String token, String title, String description, Double price,
                             Long categoryId, Long cityId) {
+        if (remainingExistingImagePaths.isEmpty() && selectedImages.isEmpty()) {
+            showError("آگهی باید حداقل شامل یک تصویر باشد.");
+            return;
+        }
+
         statusLabel.setText("در حال ذخیره تغییرات...");
         statusLabel.setStyle("-fx-text-fill: #64748b;");
 
         Long adId = editingAdId;
+        List<String> existingToKeep = new ArrayList<>(remainingExistingImagePaths);
+        List<File> newFilesToUpload = new ArrayList<>(selectedImages);
 
         new Thread(() -> {
+            List<String> newlyUploadedPaths = imageUploadService.uploadImages(token, newFilesToUpload);
+
+            if (!newFilesToUpload.isEmpty() && newlyUploadedPaths.isEmpty()) {
+                Platform.runLater(() -> showError("آپلود عکس‌های جدید ناموفق بود. لطفاً دوباره تلاش کنید."));
+                return;
+            }
+
+            List<String> finalImagePaths = new ArrayList<>(existingToKeep);
+            finalImagePaths.addAll(newlyUploadedPaths);
+
             String result = advertisementService.updateAdvertisement(
-                    token, adId, title, description, price, categoryId, cityId
+                    token, adId, title, description, price, categoryId, cityId, finalImagePaths
             );
 
             Platform.runLater(() -> {
