@@ -218,13 +218,23 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
 
         card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel);
 
-        // Only ACTIVE ads can be marked as sold; only non-DELETED ads can be deleted.
+        // Only ACTIVE ads can be marked as sold; only non-DELETED ads can be deleted;
+        // SOLD/DELETED ads can no longer be edited.
         boolean canMarkSold = "ACTIVE".equalsIgnoreCase(status);
         boolean canDelete = !"DELETED".equalsIgnoreCase(status);
+        boolean canEdit = !"SOLD".equalsIgnoreCase(status) && !"DELETED".equalsIgnoreCase(status);
 
-        if (canMarkSold || canDelete) {
+        if (canMarkSold || canDelete || canEdit) {
             HBox actionsRow = new HBox(8);
             actionsRow.setAlignment(Pos.CENTER_RIGHT);
+
+            if (canEdit) {
+                Button editBtn = new Button("ویرایش");
+                editBtn.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; "
+                        + "-fx-background-radius: 6; -fx-cursor: hand;");
+                editBtn.setOnAction(e -> handleEdit(ad));
+                actionsRow.getChildren().add(editBtn);
+            }
 
             if (canMarkSold) {
                 Button soldBtn = new Button("فروخته شد");
@@ -291,6 +301,33 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
                     alert.setHeaderText("خطا در تغییر وضعیت آگهی");
                     alert.showAndWait();
                 }
+            });
+        }).start();
+    }
+
+    private void handleEdit(Advertisement ad) {
+        String token = UserSession.getInstance().getToken();
+        statusLabel.setText("در حال بارگذاری اطلاعات آگهی...");
+
+        new Thread(() -> {
+            org.example.frontend.advertisement.AdvertisementDetail detail =
+                    advertisementService.getAdvertisementDetail(ad.getId(), token);
+
+            Platform.runLater(() -> {
+                if (detail == null) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR,
+                            "دریافت اطلاعات آگهی برای ویرایش ناموفق بود.", ButtonType.OK);
+                    alert.setHeaderText("خطا در بارگذاری آگهی");
+                    alert.showAndWait();
+                    loadMyAdvertisements();
+                    return;
+                }
+
+                NavigationService.<org.example.frontend.advertisement.CreateAdvertisementController>switchScene(
+                        "/fxml/advertisement/create-advertisement-view.fxml",
+                        "ویرایش آگهی",
+                        controller -> controller.setEditMode(detail)
+                );
             });
         }).start();
     }

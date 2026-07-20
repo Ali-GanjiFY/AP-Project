@@ -36,7 +36,7 @@
                         <Insets top="30.0" right="36.0" bottom="30.0" left="36.0"/>
                     </padding>
 
-                    <Label text="ثبت آگهی جدید" styleClass="auth-title"/>
+                    <Label fx:id="formTitleLabel" text="ثبت آگهی جدید" styleClass="auth-title"/>
 
                     <VBox spacing="6.0" alignment="CENTER_LEFT">
                         <Label text="عنوان آگهی:" styleClass="sub-label"/>
@@ -82,7 +82,7 @@
                         </VBox>
                     </HBox>
 
-                    <VBox spacing="8.0" alignment="CENTER_LEFT">
+                    <VBox fx:id="imagesSection" spacing="8.0" alignment="CENTER_LEFT">
                         <Label text="تصاویر آگهی:" styleClass="sub-label"/>
                         <HBox spacing="12" alignment="CENTER_LEFT">
                             <Button text="انتخاب عکس"
@@ -104,7 +104,8 @@
                            maxWidth="460"/>
 
                     <HBox spacing="12.0" alignment="CENTER">
-                        <Button text="ثبت آگهی"
+                        <Button fx:id="submitButton"
+                                text="ثبت آگهی"
                                 onAction="#handleSubmit"
                                 styleClass="button"
                                 prefWidth="220"/>

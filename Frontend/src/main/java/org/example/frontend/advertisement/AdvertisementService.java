@@ -262,7 +262,48 @@ public class AdvertisementService {
         }
     }
 
+    // PUT /api/advertisements/{id} -> owner only; backend moves the ad back to PENDING for re-review
+    public String updateAdvertisement(String token, Long id, String title, String description,
+                                      Double price, Long categoryId, Long cityId) {
+        try {
+            JsonObject body = new JsonObject();
+            body.addProperty("title", title);
+            body.addProperty("description", description);
+            body.addProperty("price", price);
+            body.addProperty("categoryId", categoryId);
+            body.addProperty("cityId", cityId);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(body)))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return "SUCCESS";
+            } else {
+                try {
+                    JsonObject err = gson.fromJson(response.body(), JsonObject.class);
+                    if (err != null && err.has("message")) {
+                        return err.get("message").getAsString();
+                    }
+                } catch (Exception ignored) {
+                }
+                return "خطا در ویرایش آگهی! " + response.statusCode();
+            }
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
+        }
+    }
+
     public List<CityDto> getAllCities() {
+
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(CITIES_URL))

@@ -15,8 +15,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                // Makes every endpoint require the scheme by default in Swagger UI,
-                // so the padlock icon shows up next to each operation.
+                // Makes every endpoint require the scheme by default in Swagger UI
                 .addSecurityItem(new SecurityRequirement().addList(SCHEME_NAME))
                 .components(new Components()
                         .addSecuritySchemes(SCHEME_NAME, new SecurityScheme()
@@ -24,9 +23,8 @@ public class OpenApiConfig {
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                // Just paste the raw token here; Swagger will
-                                // automatically prefix it with "Bearer " for you.
-                                .description("Paste only the JWT token returned by /api/auth/login (no need to type 'Bearer ')")
+                                // Swagger auto-prefixes "Bearer " for you, just paste raw token
+                                .description("Paste only the JWT token returned by /api/auth/login")
                         )
                 );
     }

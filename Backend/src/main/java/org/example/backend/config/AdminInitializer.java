@@ -14,6 +14,7 @@ public class AdminInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Default admin credentials
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "123456";
     private static final String ADMIN_PHONE = "09120000000";
@@ -27,10 +28,12 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // Skip if admin already exists
         if (userRepository.existsByUsername(ADMIN_USERNAME)) {
             return;
         }
 
+        // Create and configure admin user
         UserEntity admin = new UserEntity(
                 ADMIN_FULLNAME,
                 ADMIN_USERNAME,
@@ -41,6 +44,7 @@ public class AdminInitializer implements CommandLineRunner {
         admin.setRole(RoleEnum.ADMIN);
         admin.setStatus(UserStatusEnum.ACTIVE);
 
+        // Persist admin account
         userRepository.save(admin);
         System.out.println("Default admin account created: " + ADMIN_USERNAME + " / " + ADMIN_PASSWORD);
     }

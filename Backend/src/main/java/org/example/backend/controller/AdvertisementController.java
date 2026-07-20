@@ -59,11 +59,6 @@ public class AdvertisementController {
     }
 
     // GET /api/advertisements/mine -> self, ads owned by the current user.
-    // IMPORTANT: SecurityConfig's GET "/api/advertisements/**" permitAll matcher
-    // also matches this path, so it would otherwise be reachable anonymously
-    // (Authentication.getName() would be "anonymousUser", causing a lookup failure
-    // instead of a clean 401/403). @PreAuthorize is mandatory here, not just
-    // defense-in-depth -- please also tighten the SecurityConfig matcher itself.
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/mine")
     public ResponseEntity<List<AdvertisementSummaryResponse>> getMyAdvertisements(Authentication authentication) {

@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // manual constructor, no lombok in this project's pom.xml
+    // manual constructor
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -39,8 +39,6 @@ public class SecurityConfig {
     // NOTE: no AuthenticationManager/DaoAuthenticationProvider here —
     // AuthService checks passwords manually via passwordEncoder.matches(),
     // it doesn't go through Spring's AuthenticationManager.
-    // Add those back only if you build a CustomUserDetailsService later.
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -74,7 +72,7 @@ public class SecurityConfig {
                                 "/uploads/**"
                         ).permitAll()
 
-
+                        // GET /api/advertisements/mine requires authentication
                         .requestMatchers(HttpMethod.GET, "/api/advertisements/mine").authenticated()
 
                         // read-only browsing is public, but ONLY for GET.

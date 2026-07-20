@@ -10,12 +10,15 @@ import java.nio.file.Paths;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    // Injects upload directory path from properties, defaults to "uploads"
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Resolves absolute path and normalizes it (removes .. etc.)
         String uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize().toString();
+        // Maps /uploads/** URLs to the actual filesystem directory
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
     }
