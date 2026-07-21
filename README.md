@@ -182,6 +182,14 @@ Second run HelloApplication
   <img src="./images/advance-search-2.jpg" alt="advance search 2">
   <figcaption>advance-search-2.jpg</figcaption>
 </figure>
+<figure>
+  <img src="./images/Edit-advertisement.png" alt="Edit advertisement">
+  <figcaption>Edit-advertisement.png</figcaption>
+</figure>
+<figure>
+  <img src="./images/Edit-advertisement1.png" alt="Edit advertisement detalis">
+  <figcaption>Edit-advertisement1.png</figcaption>
+</figure>
 
 </div>
 
