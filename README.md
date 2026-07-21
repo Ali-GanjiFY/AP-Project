@@ -98,6 +98,9 @@ Frontend/src/main/java/org/example/frontend/
 ⚡   راهنمای اجرا
 First run BackendApplication
 Second run HelloApplication
+Every run that has not admin ,makes an admin with this information :
+username: admin
+pass: 123456
 ```
 ### Pictures
 
