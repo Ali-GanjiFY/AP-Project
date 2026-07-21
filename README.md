@@ -265,25 +265,6 @@ BUILD SUCCESS
 
 بنابراین، منطق بررسی‌شده در سرویس‌های **داشبورد ادمین، مدیریت آگهی‌ها و مدیریت کاربران** در سناریوهای تعریف‌شده عملکرد صحیحی داشته است. ✅
 `
-
-### 📸 پیشنهاد برای اسکرین‌شات
-
-برای عکس README، از آخرین اجرای `mvn clean test`، از این قسمت عکس بگیر:
-
-
-[INFO] Running org.example.backend.service.impl.AdminDashboardServiceImplTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
-
-[INFO] Running org.example.backend.service.impl.AdminReviewServiceImplTest
-[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
-
-[INFO] Running org.example.backend.service.impl.UserServiceImplTest
-[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
-
-[INFO] Results:
-[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
-
-[INFO] BUILD SUCCESS
 ### Pictures
 
 <div align="center">
