@@ -21,6 +21,7 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^09\\d{9}$", message = "Phone number must be a valid Iranian mobile number (e.g. 09123456789)")
     private String phone;
 
     @Email(message = "Email format is invalid")

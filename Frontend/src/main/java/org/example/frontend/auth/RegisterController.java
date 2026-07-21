@@ -40,6 +40,11 @@ public class RegisterController {
             return;
         }
 
+        if (!phone.matches("^09\\d{9}$")) {
+            showError("شماره تلفن معتبر نیست. فرمت صحیح: 09123456789");
+            return;
+        }
+
         errorLabel.setVisible(false);
 
         // ارسال به بک‌اند در Thread جداگانه
@@ -80,6 +85,9 @@ public class RegisterController {
         }
         if (cleanError.contains("phone already exists") || cleanError.contains("phone is taken")) {
             return "این شماره تلفن قبلاً ثبت شده است.";
+        }
+        if (cleanError.contains("valid iranian mobile number") || cleanError.contains("phone number must be")) {
+            return "شماره تلفن معتبر نیست. فرمت صحیح: 09123456789";
         }
         if (cleanError.contains("connection refused") || cleanError.contains("network") || cleanError.contains("timeout")) {
             return "برقراری ارتباط با سرور برقرار نشد. اتصال اینترنت خود را بررسی کنید.";
