@@ -40,7 +40,7 @@ public class MessageController {
     }
 
     // POST /api/conversations/{conversationId}/messages -> self, send a message
-    // (participant only, both sides must be ACTIVE, enforced in the service layer)
+    // Both sides must be ACTIVE
     @PostMapping
     public ResponseEntity<ChatMessageResponse> sendMessage(
             @PathVariable Long conversationId, Authentication authentication,

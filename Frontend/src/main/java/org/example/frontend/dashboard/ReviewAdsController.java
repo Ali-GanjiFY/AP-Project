@@ -137,6 +137,20 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         approveBtn.setOnAction(e -> submitDecision(ad, "APPROVED", noteField.getText(), approveBtn, rejectBtn));
         rejectBtn.setOnAction(e -> submitDecision(ad, "REJECTED", noteField.getText(), approveBtn, rejectBtn));
 
+        // VIEW DETAILS
+        Button viewDetailsBtn = new Button("مشاهده جزئیات");
+        String viewDetailsStyle = "-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; "
+                + "-fx-background-radius: 6; -fx-cursor: hand;";
+        viewDetailsBtn.setStyle(viewDetailsStyle);
+        viewDetailsBtn.setMaxWidth(Double.MAX_VALUE);
+        viewDetailsBtn.setOnAction(e -> {
+            AdReviewDetailController.setSelectedAdvertisementId(ad.getId());
+            NavigationService.switchScene(
+                    "/fxml/dashboard/ad-review-detail-view.fxml",
+                    "جزئیات آگهی (بررسی ادمین)"
+            );
+        });
+
         HBox actionsRow = new HBox(8, approveBtn, rejectBtn);
         actionsRow.setAlignment(Pos.CENTER_RIGHT);
 
@@ -149,13 +163,26 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
                 + "-fx-border-color: #e2e8f0; -fx-border-radius: 10;";
         card.setStyle(cardStyle);
 
-        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, imagesRow, noteField, actionsRow);
+        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, imagesRow,
+                viewDetailsBtn, noteField, actionsRow);
         return card;
     }
 
     private void loadImagesForCard(Long adId, FlowPane imagesRow) {
         new Thread(() -> {
-            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId);
+            String token = UserSession.getInstance().getToken();
+            AdvertisementDetail detail = advertisementService.getAdvertisementDetail(adId, token);
+
+            if (detail == null) {
+                System.err.println("[ReviewAds] آگهی " + adId + ": دریافت جزئیات ناموفق (detail=null)");
+            } else if (detail.getImages() == null || detail.getImages().isEmpty()) {
+                System.err.println("[ReviewAds] آگهی " + adId + ": هیچ عکسی در پاسخ سرور نیست (images خالی/null است)");
+            } else {
+                System.out.println("[ReviewAds] آگهی " + adId + ": " + detail.getImages().size() + " عکس دریافت شد");
+                for (AdvertisementDetail.ImageInfo imageInfo : detail.getImages()) {
+                    System.out.println("    -> imagePath = [" + imageInfo.getImagePath() + "]");
+                }
+            }
 
             Platform.runLater(() -> {
                 if (detail == null || detail.getImages() == null || detail.getImages().isEmpty()) {
@@ -173,7 +200,13 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
                     imageView.setFitWidth(THUMB_SIZE);
                     imageView.setFitHeight(THUMB_SIZE);
                     imageView.setPreserveRatio(false);
-                    imageView.setImage(new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true));
+                    Image img = new Image(imageUrl, THUMB_SIZE, THUMB_SIZE, false, true, true);
+                    img.errorProperty().addListener((obs, wasError, isError) -> {
+                        if (isError) {
+                            System.err.println("[ReviewAds] آگهی " + adId + ": خطا در لود عکس از " + imageUrl);
+                        }
+                    });
+                    imageView.setImage(img);
 
                     imagesRow.getChildren().add(imageView);
                 }
@@ -216,7 +249,7 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
 
     @FXML
     private void handleManageUsers() {
-        // TODO: بارگذاری صفحه مدیریت کاربران
+        NavigationService.switchScene("/fxml/dashboard/user-management-view.fxml", "مدیریت کاربران");
     }
 
     @FXML

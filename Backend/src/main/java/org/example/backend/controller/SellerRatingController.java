@@ -32,7 +32,7 @@ public class SellerRatingController {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
-    // POST /api/ratings
+    // POST /api/ratings -> self, create a new rating for a seller
     @PostMapping
     public ResponseEntity<SellerRatingResponse> createRating(
             Authentication authentication, @Valid @RequestBody CreateRatingRequest request) {
@@ -68,7 +68,6 @@ public class SellerRatingController {
     }
 
     // GET /api/ratings/me -> self, ratings received by the current logged-in user
-    // (as a seller).
     @GetMapping("/me")
     public ResponseEntity<List<SellerRatingResponse>> getMyRatings(Authentication authentication) {
         return ResponseEntity.ok(sellerRatingService.getSellerRatings(currentUser(authentication)));

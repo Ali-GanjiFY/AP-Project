@@ -7,6 +7,7 @@ import org.example.backend.entity.FavoriteEntity;
 import org.example.backend.entity.UserEntity;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.exception.ResourceNotFoundException;
+import org.example.backend.exception.UnauthorizedException;
 import org.example.backend.repository.FavoriteRepository;
 import org.example.backend.service.FavoriteService;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public FavoriteResponse addFavorite(UserEntity user, AdvertisementEntity advertisement) {
+        if (advertisement.getOwner() != null && advertisement.getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("شما نمی‌توانید آگهی خودتان را به علاقه‌مندی‌ها اضافه کنید");
+        }
         // Check if already favorite to avoid duplicate entry
         if (favoriteRepository.existsByUserAndAdvertisement(user, advertisement)) {
             throw new DuplicateResourceException("این آگهی قبلاً به علاقه‌مندی‌ها اضافه شده است");

@@ -191,16 +191,26 @@ public class AdvertisementService {
     }
 
     public AdvertisementDetail getAdvertisementDetail(Long id) {
+        return getAdvertisementDetail(id, null);
+    }
+
+    public AdvertisementDetail getAdvertisementDetail(Long id, String token) {
         try {
-            HttpRequest request = HttpRequest.newBuilder()
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/" + id))
                     .header("Accept", "application/json")
-                    .GET()
-                    .build();
+                    .GET();
+
+            if (token != null && !token.isBlank()) {
+                builder.header("Authorization", "Bearer " + token);
+            }
+
+            HttpRequest request = builder.build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {return gson.fromJson(response.body(), AdvertisementDetail.class);
+            if (response.statusCode() == 200) {
+                return gson.fromJson(response.body(), AdvertisementDetail.class);
             } else {
                 System.err.println("خطا در دریافت جزئیات آگهی! " + response.statusCode());
                 return null;
@@ -252,7 +262,53 @@ public class AdvertisementService {
         }
     }
 
+    // PUT /api/advertisements/{id} -> owner only; backend moves the ad back to PENDING for re-review
+    // imagePaths: pass null to leave images untouched, or the FULL final list
+    // (remaining existing images + newly uploaded ones) to replace the ad's images entirely.
+    public String updateAdvertisement(String token, Long id, String title, String description,
+                                      Double price, Long categoryId, Long cityId, List<String> imagePaths) {
+        try {
+            JsonObject body = new JsonObject();
+            body.addProperty("title", title);
+            body.addProperty("description", description);
+            body.addProperty("price", price);
+            body.addProperty("categoryId", categoryId);
+            body.addProperty("cityId", cityId);
+            if (imagePaths != null) {
+                body.add("imagePaths", gson.toJsonTree(imagePaths));
+            }
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/" + id))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(body)))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return "SUCCESS";
+            } else {
+                try {
+                    JsonObject err = gson.fromJson(response.body(), JsonObject.class);
+                    if (err != null && err.has("message")) {
+                        return err.get("message").getAsString();
+                    }
+                } catch (Exception ignored) {
+                }
+                return "خطا در ویرایش آگهی! " + response.statusCode();
+            }
+        } catch (java.net.ConnectException e) {
+            return "خطا: امکان اتصال به سرور بک‌اند وجود ندارد.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "خطایی در سیستم رخ داده است: " + e.getMessage();
+        }
+    }
+
     public List<CityDto> getAllCities() {
+
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(CITIES_URL))

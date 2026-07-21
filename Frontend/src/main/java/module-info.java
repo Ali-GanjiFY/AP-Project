@@ -21,7 +21,6 @@ module org.example.frontend {
 
     opens org.example.frontend.shared to javafx.fxml;
 
-    // خط اصلاح شده برای دسترسی کامل FXML و GSON به پکیج داشبورد
     opens org.example.frontend.dashboard to com.google.gson, javafx.fxml;
 
     opens org.example.frontend.advertisement to com.google.gson, javafx.fxml;

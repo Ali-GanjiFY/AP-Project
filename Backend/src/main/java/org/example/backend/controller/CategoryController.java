@@ -37,8 +37,7 @@ public class CategoryController {
     }
 
     // GET /api/categories/by-name?name=... -> public, exact (case-insensitive) match.
-    // Renamed from "/search" since the service returns a single exact match,
-    // not a text-search result list.
+    // returns a single exact match.
     @GetMapping("/by-name")
     public ResponseEntity<CategoryResponse> getCategoryByName(
             @RequestParam @NotBlank(message = "Name must not be blank") String name) {

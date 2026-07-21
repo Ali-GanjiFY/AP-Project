@@ -2,8 +2,11 @@ package org.example.backend.dto.request;
 
 import jakarta.validation.constraints.Positive;
 
+import java.util.List;
+
 public class UpdateAdvertisementRequest {
 
+    // Optional fields; null means "no change"
     private String title;
     private String description;
 
@@ -13,9 +16,14 @@ public class UpdateAdvertisementRequest {
     private Long categoryId;
     private Long cityId;
 
-    // Constructor
+    // Final list of image paths (old remaining + newly uploaded).
+    // null = images left unchanged; empty list is rejected by the service.
+    private List<String> imagePaths;
+
+    // Default constructor
     public UpdateAdvertisementRequest() {}
 
+    // Convenience constructor for required fields
     public UpdateAdvertisementRequest(String title, String description, Double price, Long categoryId, Long cityId) {
         this.title = title;
         this.description = description;
@@ -23,7 +31,6 @@ public class UpdateAdvertisementRequest {
         this.categoryId = categoryId;
         this.cityId = cityId;
     }
-
 
     // Getters and Setters
     public String getTitle() { return title; }
@@ -40,4 +47,7 @@ public class UpdateAdvertisementRequest {
 
     public Long getCityId() { return cityId; }
     public void setCityId(Long cityId) { this.cityId = cityId; }
+
+    public List<String> getImagePaths() { return imagePaths; }
+    public void setImagePaths(List<String> imagePaths) { this.imagePaths = imagePaths; }
 }

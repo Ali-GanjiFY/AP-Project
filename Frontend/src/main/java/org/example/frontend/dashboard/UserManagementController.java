@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import org.example.frontend.shared.NavigationService;
+import org.example.frontend.shared.UserSession;
 
 import java.util.List;
 
@@ -154,5 +156,26 @@ public class UserManagementController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleBackToDashboard() {
+        NavigationService.switchScene("/fxml/dashboard/admin-dashboard-view.fxml", "پنل مدیریت (ادمین)");
+    }
+
+    @FXML
+    private void handleReviewAds() {
+        NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
+    }
+
+    @FXML
+    private void handleManageSections() {
+        NavigationService.switchScene("/fxml/dashboard/manage-sections-view.fxml", "مدیریت بخش‌ها");
+    }
+
+    @FXML
+    private void handleLogout() {
+        UserSession.getInstance().cleanSession();
+        NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
 }

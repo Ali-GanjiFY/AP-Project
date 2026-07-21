@@ -19,11 +19,13 @@ public class AuthController {
         this.authService = authService;
     }
 
+    // POST /api/auth/register -> public, creates a new user account
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
+    // POST /api/auth/login -> public, authenticates user and returns JWT token
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));

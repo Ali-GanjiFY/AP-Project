@@ -77,6 +77,7 @@
                             <TableView fx:id="categoryTable" VBox.vgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="categoryNameColumn" text="نام دسته‌بندی" prefWidth="200"/>
+                                    <TableColumn fx:id="categoryDescriptionColumn" text="توضیحات" prefWidth="350"/>
                                     <TableColumn fx:id="categoryParentColumn" text="والد" prefWidth="150"/>
                                     <TableColumn fx:id="categoryActiveColumn" text="فعال" prefWidth="80"/>
                                     <TableColumn fx:id="categoryActionColumn" text="عملیات" prefWidth="120"/>

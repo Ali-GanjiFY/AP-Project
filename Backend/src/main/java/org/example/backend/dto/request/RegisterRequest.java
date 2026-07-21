@@ -2,6 +2,7 @@ package org.example.backend.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 
@@ -16,9 +17,11 @@ public class RegisterRequest {
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
+    @Pattern(regexp = "\\S+", message = "Password must not contain whitespace")
     private String password;
 
     @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^09\\d{9}$", message = "Phone number must be a valid Iranian mobile number (e.g. 09123456789)")
     private String phone;
 
     @Email(message = "Email format is invalid")

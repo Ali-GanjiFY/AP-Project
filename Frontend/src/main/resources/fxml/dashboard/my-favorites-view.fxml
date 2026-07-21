@@ -6,7 +6,7 @@
 
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.example.frontend.dashboard.ManageMyAdsController"
+           fx:controller="org.example.frontend.dashboard.MyFavoritesController"
            nodeOrientation="RIGHT_TO_LEFT"
            prefWidth="1280" prefHeight="720">
 
@@ -18,42 +18,15 @@
     <children>
         <StackPane fx:id="contentArea" style="-fx-padding: 20; -fx-background-color: #0f172a;"
                    StackPane.alignment="CENTER">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
             <StackPane.margin>
                 <Insets left="250.0"/>
             </StackPane.margin>
 
             <VBox spacing="15">
-                <Label text="مدیریت آگهی‌های من"
+                <Label text="علاقه‌مندی‌های من"
                        style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9;"/>
 
-                <VBox spacing="10"
-                      style="-fx-background-color: #1e293b; -fx-background-radius: 12; -fx-border-color: #334155; -fx-border-radius: 12; -fx-padding: 18;">
-                    <Label text="امتیازهای دریافتی شما به‌عنوان فروشنده"
-                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9;"/>
-
-                    <HBox spacing="24" alignment="CENTER_RIGHT">
-                        <Label fx:id="ratingsAverageLabel" text="میانگین امتیاز: -"
-                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;"/>
-                        <Label fx:id="ratingsCountLabel" text="تعداد نظرات: -"
-                               style="-fx-font-size: 14px; -fx-text-fill: #cbd5e1;"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="toggleRatingsButton" text="نمایش نظرات"
-                                onAction="#handleToggleRatingsComments"
-                                style="-fx-background-color: #334155; -fx-text-fill: #f1f5f9; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                    </HBox>
-
-                    <VBox fx:id="ratingsCommentsContainer" spacing="10" visible="false" managed="false">
-                        <Separator style="-fx-opacity: 0.3;"/>
-                        <Label fx:id="ratingsCommentsStatusLabel" text=""
-                               style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
-                        <VBox fx:id="ratingsCommentsList" spacing="8"/>
-                    </VBox>
-                </VBox>
-
-                <Label fx:id="statusLabel" text="در حال بارگذاری آگهی‌ها..."
+                <Label fx:id="statusLabel" text="در حال بارگذاری..."
                        style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
 
                 <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
@@ -82,16 +55,12 @@
             <Button text="بازگشت به داشبورد" onAction="#handleBackToDashboard"
                     maxWidth="Infinity" styleClass="menu-button"/>
 
-            <Button text="علاقه‌مندی‌ها" onAction="#handleShowFavorites"
-                    maxWidth="Infinity" styleClass="menu-button"/>
-
             <Button text="ثبت آگهی جدید" onAction="#handleCreateAdvertisement"
                     maxWidth="Infinity" styleClass="menu-button"
                     style="-fx-text-fill: #ffffff;"/>
 
-            <Button text="مدیریت آگهی‌های من" onAction="#handleRefresh"
-                    maxWidth="Infinity" styleClass="menu-button"
-                    style="-fx-text-fill: #ffffff; -fx-background-color: #334155;"/>
+            <Button text="مدیریت آگهی‌های من" onAction="#handleManageMyAds"
+                    maxWidth="Infinity" styleClass="menu-button"/>
 
             <Button text="چت‌ها" onAction="#handleOpenChats"
                     maxWidth="Infinity" styleClass="menu-button"/>

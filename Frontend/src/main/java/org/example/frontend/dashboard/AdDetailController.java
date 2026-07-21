@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.example.frontend.advertisement.AdvertisementDetail;
+import org.example.frontend.advertisement.FavoriteService;
 import org.example.frontend.advertisement.RatingService;
 import org.example.frontend.shared.NavigationService; // Import NavigationService
 import org.example.frontend.shared.UserSession;
@@ -49,6 +50,7 @@ public class AdDetailController implements Initializable {
     @FXML private Label reviewFormStatusLabel;
     @FXML private Label reviewsStatusLabel;
     @FXML private VBox reviewsListContainer;
+    @FXML private Button favoriteButton;
 
     // دکمه شروع گفتگو - مطمئن شو در FXML تعریف شده و به این متد وصل است
     @FXML private Button startChatButton;
@@ -56,6 +58,8 @@ public class AdDetailController implements Initializable {
     private final RatingService ratingService = new RatingService();
     private List<AdvertisementDetail.ImageInfo> adImages;
     private int currentImageIndex = 0;
+    private final FavoriteService favoriteService = new FavoriteService();
+    private boolean isFavorite = false;
 
     // Alert helper methods (assuming they are defined in this class or a base class)
     private void showError(String title, String message) {
@@ -178,13 +182,85 @@ public class AdDetailController implements Initializable {
         if (startChatButton != null) {
             startChatButton.setDisable(!loggedIn || isOwner);
         }
+
+        setupFavoriteButton(loggedIn, isOwner);
+    }
+
+    private void setupFavoriteButton(boolean loggedIn, boolean isOwner) {
+        if (favoriteButton == null) {
+            return;
+        }
+
+        if (!loggedIn) {
+            favoriteButton.setDisable(true);
+            favoriteButton.setText("برای افزودن به علاقه‌مندی‌ها وارد شوید");
+            return;
+        }
+
+        if (isOwner) {
+            favoriteButton.setDisable(true);
+            favoriteButton.setText("این آگهی متعلق به شماست");
+            return;
+        }
+
+        String token = UserSession.getInstance().getToken();
+        Long adId = selectedAdvertisement.getId();
+        favoriteButton.setDisable(true);
+
+        new Thread(() -> {
+            boolean fav = favoriteService.isFavorite(token, adId);
+            Platform.runLater(() -> {
+                isFavorite = fav;
+                updateFavoriteButtonUi();
+                favoriteButton.setDisable(false);
+            });
+        }).start();
+    }
+
+    private void updateFavoriteButtonUi() {
+        if (isFavorite) {
+            favoriteButton.setText("♥ حذف از علاقه‌مندی‌ها");
+            favoriteButton.setStyle("-fx-background-color: #64748b; -fx-text-fill: white; -fx-font-weight: bold; "
+                    + "-fx-cursor: hand; -fx-padding: 10 16 10 16; -fx-background-radius: 8;");
+        } else {
+            favoriteButton.setText("♡ افزودن به علاقه‌مندی‌ها");
+            favoriteButton.setStyle("-fx-background-color: #f43f5e; -fx-text-fill: white; -fx-font-weight: bold; "
+                    + "-fx-cursor: hand; -fx-padding: 10 16 10 16; -fx-background-radius: 8;");
+        }
+    }
+
+    @FXML
+    private void handleToggleFavorite() {
+        String token = UserSession.getInstance().getToken();
+        if (token == null || selectedAdvertisement == null || selectedAdvertisement.getId() == null) {
+            return;
+        }
+
+        Long adId = selectedAdvertisement.getId();
+        favoriteButton.setDisable(true);
+
+        new Thread(() -> {
+            String outcome = isFavorite
+                    ? favoriteService.removeFavorite(token, adId)
+                    : favoriteService.addFavorite(token, adId);
+
+            Platform.runLater(() -> {
+                favoriteButton.setDisable(false);
+                if ("SUCCESS".equals(outcome)) {
+                    isFavorite = !isFavorite;
+                    updateFavoriteButtonUi();
+                } else {
+                    showError("خطا", outcome);
+                }
+            });
+        }).start();
     }
 
     private void setupRatingsSection() {
         Double avg = selectedAdvertisement.getSellerAverageRating();
         Long count = selectedAdvertisement.getSellerRatingCount();
         sellerAverageRatingLabel.setText(avg != null
-                ? String.format("میانگین امتیاز فروشنده: %.1f از ۵", avg)
+                ? String.format("میانگین امتیاز فروشنده: %.1f از 5", avg)
                 : "میانگین امتیاز فروشنده: بدون امتیاز");
         sellerRatingCountLabel.setText("تعداد نظرات: " + (count != null ? count : 0));
 
@@ -248,7 +324,7 @@ public class AdDetailController implements Initializable {
                 + "-fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-padding: 10;");
 
         Label headerLabel = new Label(safeText(review.getBuyerUsername(), "کاربر")
-                + "  —  امتیاز: " + review.getScore() + " / ۵");
+                + "  —  امتیاز: " + review.getScore() + " / 5");
         headerLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #d97706;");
         card.getChildren().add(headerLabel);
 

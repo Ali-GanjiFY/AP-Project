@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.example.frontend.advertisement.Advertisement;
@@ -25,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class ManageMyAdsController implements javafx.fxml.Initializable {
 
-    private static final double CARD_WIDTH = 240;
+    private static final double CARD_WIDTH = 280;
 
     @FXML
     private StackPane contentArea;
@@ -74,7 +75,7 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
                     ratingsCountLabel.setText("تعداد نظرات: -");
                     return;
                 }
-                ratingsAverageLabel.setText(String.format("میانگین امتیاز: %.1f از ۵", summary.getAverageScore()));
+                ratingsAverageLabel.setText(String.format("میانگین امتیاز: %.1f از 5", summary.getAverageScore()));
                 ratingsCountLabel.setText("تعداد نظرات: " + summary.getTotalCount());
             });
         }).start();
@@ -125,16 +126,16 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     private VBox buildRatingCard(RatingService.RatingDto rating) {
         VBox card = new VBox(6);
         card.setPadding(new Insets(10));
-        card.setStyle("-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-color: #e2e8f0; -fx-border-radius: 8;");
+        card.setStyle("-fx-background-color: #0f172a; -fx-background-radius: 8; -fx-border-color: #334155; -fx-border-radius: 8;");
 
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(Pos.CENTER_RIGHT);
 
-        Label scoreLabel = new Label("امتیاز: " + rating.getScore() + " / ۵");
-        scoreLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #d97706;");
+        Label scoreLabel = new Label("امتیاز: " + rating.getScore() + " / 5");
+        scoreLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;");
 
         Label buyerLabel = new Label("از طرف: " + safeText(rating.getBuyerUsername(), "کاربر"));
-        buyerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #64748b;");
+        buyerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
 
         headerRow.getChildren().addAll(scoreLabel, buyerLabel);
 
@@ -144,7 +145,7 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         if (comment != null && !comment.isBlank()) {
             Label commentLabel = new Label(comment);
             commentLabel.setWrapText(true);
-            commentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #334155;");
+            commentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #e2e8f0;");
             card.getChildren().add(commentLabel);
         }
 
@@ -218,26 +219,42 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
 
         card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel);
 
-        // Only ACTIVE ads can be marked as sold; only non-DELETED ads can be deleted.
+        // Only ACTIVE ads can be marked as sold; only non-DELETED ads can be deleted;
+        // SOLD/DELETED ads can no longer be edited.
         boolean canMarkSold = "ACTIVE".equalsIgnoreCase(status);
         boolean canDelete = !"DELETED".equalsIgnoreCase(status);
+        boolean canEdit = !"SOLD".equalsIgnoreCase(status) && !"DELETED".equalsIgnoreCase(status);
 
-        if (canMarkSold || canDelete) {
-            HBox actionsRow = new HBox(8);
+        if (canMarkSold || canDelete || canEdit) {
+            HBox actionsRow = new HBox(6);
             actionsRow.setAlignment(Pos.CENTER_RIGHT);
+
+            // Base style shared by all action buttons: small font + tight padding so all three
+            // fit on one row at CARD_WIDTH, and USE_PREF_SIZE min-width so JavaFX never shrinks
+            // the button below its text's natural size (which is what was causing "…" truncation).
+            String baseButtonStyle = "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; "
+                    + "-fx-padding: 5 8; -fx-background-radius: 6; -fx-cursor: hand;";
+
+            if (canEdit) {
+                Button editBtn = new Button("ویرایش");
+                editBtn.setStyle("-fx-background-color: #f59e0b; " + baseButtonStyle);
+                editBtn.setMinWidth(Region.USE_PREF_SIZE);
+                editBtn.setOnAction(e -> handleEdit(ad));
+                actionsRow.getChildren().add(editBtn);
+            }
 
             if (canMarkSold) {
                 Button soldBtn = new Button("فروخته شد");
-                soldBtn.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; "
-                        + "-fx-background-radius: 6; -fx-cursor: hand;");
+                soldBtn.setStyle("-fx-background-color: #2563eb; " + baseButtonStyle);
+                soldBtn.setMinWidth(Region.USE_PREF_SIZE);
                 soldBtn.setOnAction(e -> handleMarkAsSold(ad));
                 actionsRow.getChildren().add(soldBtn);
             }
 
             if (canDelete) {
                 Button deleteBtn = new Button("حذف");
-                deleteBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; "
-                        + "-fx-background-radius: 6; -fx-cursor: hand;");
+                deleteBtn.setStyle("-fx-background-color: #ef4444; " + baseButtonStyle);
+                deleteBtn.setMinWidth(Region.USE_PREF_SIZE);
                 deleteBtn.setOnAction(e -> handleDelete(ad));
                 actionsRow.getChildren().add(deleteBtn);
             }
@@ -295,6 +312,33 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    private void handleEdit(Advertisement ad) {
+        String token = UserSession.getInstance().getToken();
+        statusLabel.setText("در حال بارگذاری اطلاعات آگهی...");
+
+        new Thread(() -> {
+            org.example.frontend.advertisement.AdvertisementDetail detail =
+                    advertisementService.getAdvertisementDetail(ad.getId(), token);
+
+            Platform.runLater(() -> {
+                if (detail == null) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR,
+                            "دریافت اطلاعات آگهی برای ویرایش ناموفق بود.", ButtonType.OK);
+                    alert.setHeaderText("خطا در بارگذاری آگهی");
+                    alert.showAndWait();
+                    loadMyAdvertisements();
+                    return;
+                }
+
+                NavigationService.<org.example.frontend.advertisement.CreateAdvertisementController>switchScene(
+                        "/fxml/advertisement/create-advertisement-view.fxml",
+                        "ویرایش آگهی",
+                        controller -> controller.setEditMode(detail)
+                );
+            });
+        }).start();
+    }
+
     private void handleDelete(Advertisement ad) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "آیا از حذف این آگهی مطمئن هستید؟", ButtonType.YES, ButtonType.NO);
@@ -337,6 +381,16 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     @FXML
     private void handleCreateAdvertisement() {
         NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
+    }
+
+    @FXML
+    private void handleShowFavorites() {
+        NavigationService.switchScene("/fxml/dashboard/my-favorites-view.fxml", "علاقه‌مندی‌های من");
+    }
+
+    @FXML
+    private void handleOpenChats() {
+        NavigationService.switchScene("/fxml/chat/conversation-list-view.fxml", "چت‌ها");
     }
 
     @FXML

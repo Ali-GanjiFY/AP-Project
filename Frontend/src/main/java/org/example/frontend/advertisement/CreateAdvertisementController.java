@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
@@ -16,25 +17,87 @@ import java.util.ResourceBundle;
 
 public class CreateAdvertisementController implements javafx.fxml.Initializable {
 
+    @FXML private Label formTitleLabel;
     @FXML private TextField titleField;
     @FXML private TextArea descriptionField;
     @FXML private TextField priceField;
     @FXML private ComboBox<CategoryOption> categoryComboBox;
     @FXML private ComboBox<CityOption> cityComboBox;
     @FXML private Label imagesCountLabel;
+    @FXML private VBox imagesSection;
     @FXML private FlowPane imagesPreviewContainer;
     @FXML private Label statusLabel;
+    @FXML private Button submitButton;
 
     private final CategoryService categoryService = new CategoryService();
     private final CityService cityService = new CityService();
     private final AdvertisementService advertisementService = new AdvertisementService();
     private final ImageUploadService imageUploadService = new ImageUploadService();
 
+    // Newly picked files (not uploaded yet).
     private final List<File> selectedImages = new ArrayList<>();
+    // Existing images of the ad being edited that the user has NOT removed (server paths).
+    private final List<String> remainingExistingImagePaths = new ArrayList<>();
+
+    // When non-null, the form is in "edit" mode for this advertisement instead of "create" mode.
+    private Long editingAdId;
+    private Long pendingCategoryId;
+    private Long pendingCityId;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadCategoriesAndCities();
+    }
+
+    // Called by NavigationService's controllerInitializer when navigating here to edit an existing ad.
+    public void setEditMode(AdvertisementDetail ad) {
+        this.editingAdId = ad.getId();
+        this.pendingCategoryId = ad.getCategory() != null ? ad.getCategory().getId() : null;
+        this.pendingCityId = ad.getCity() != null ? ad.getCity().getId() : null;
+
+        titleField.setText(ad.getTitle());
+        descriptionField.setText(ad.getDescription());
+        if (ad.getPrice() != null) {
+            priceField.setText(String.valueOf(ad.getPrice()));
+        }
+
+        if (formTitleLabel != null) {
+            formTitleLabel.setText("ویرایش آگهی");
+        }
+        if (submitButton != null) {
+            submitButton.setText("ذخیره تغییرات");
+        }
+
+        remainingExistingImagePaths.clear();
+        if (ad.getImages() != null) {
+            for (AdvertisementDetail.ImageInfo image : ad.getImages()) {
+                remainingExistingImagePaths.add(image.getImagePath());
+            }
+        }
+        // Images ARE editable: keep the section visible and render the current images
+        // (each removable) plus the "add image" button for new ones.
+        renderImageChips();
+
+        applyPendingSelections();
+    }
+
+    private void applyPendingSelections() {
+        if (pendingCategoryId != null) {
+            for (CategoryOption option : categoryComboBox.getItems()) {
+                if (option.getId().equals(pendingCategoryId)) {
+                    categoryComboBox.setValue(option);
+                    break;
+                }
+            }
+        }
+        if (pendingCityId != null) {
+            for (CityOption option : cityComboBox.getItems()) {
+                if (option.getId().equals(pendingCityId)) {
+                    cityComboBox.setValue(option);
+                    break;
+                }
+            }
+        }
     }
 
     private void loadCategoriesAndCities() {
@@ -52,6 +115,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
                 if (cities.isEmpty()) {
                     showError("شهری برای انتخاب یافت نشد. با مدیر سیستم تماس بگیرید.");
                 }
+
+                // If setEditMode ran before the lists were populated, apply the selection now.
+                applyPendingSelections();
             });
         }).start();
     }
@@ -67,19 +133,58 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         List<File> files = fileChooser.showOpenMultipleDialog(NavigationService.getPrimaryStage());
         if (files != null && !files.isEmpty()) {
             selectedImages.addAll(files);
-
-            imagesCountLabel.setText(selectedImages.size() + " عکس انتخاب شد");
-
-            imagesPreviewContainer.getChildren().clear();
-            for (File file : selectedImages) {
-                Label fileLabel = new Label(file.getName());
-                fileLabel.setStyle(
-                        "-fx-background-color: #f1f5f9; -fx-padding: 4 10; " +
-                                "-fx-background-radius: 12; -fx-font-size: 11px; -fx-text-fill: #334155;"
-                );
-                imagesPreviewContainer.getChildren().add(fileLabel);
-            }
+            renderImageChips();
         }
+    }
+
+    // Builds one "chip" per image (existing ones already on the server + newly picked local
+    // files), each with a small × button to remove it before saving.
+    private void renderImageChips() {
+        int total = remainingExistingImagePaths.size() + selectedImages.size();
+        imagesCountLabel.setText(total == 0 ? "هیچ عکسی انتخاب نشده" : total + " عکس انتخاب شده");
+
+        imagesPreviewContainer.getChildren().clear();
+
+        for (String existingPath : new ArrayList<>(remainingExistingImagePaths)) {
+            imagesPreviewContainer.getChildren().add(buildImageChip(imageFileName(existingPath), true,
+                    () -> {
+                        remainingExistingImagePaths.remove(existingPath);
+                        renderImageChips();
+                    }));
+        }
+
+        for (File file : new ArrayList<>(selectedImages)) {
+            imagesPreviewContainer.getChildren().add(buildImageChip(file.getName(), false,
+                    () -> {
+                        selectedImages.remove(file);
+                        renderImageChips();
+                    }));
+        }
+    }
+
+    private String imageFileName(String path) {
+        if (path == null) return "تصویر";
+        int slashIndex = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        return slashIndex >= 0 ? path.substring(slashIndex + 1) : path;
+    }
+
+    private javafx.scene.layout.HBox buildImageChip(String label, boolean isExisting, Runnable onRemove) {
+        Label nameLabel = new Label((isExisting ? "" : "🆕 ") + label);
+        nameLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #334155;");
+
+        Button removeBtn = new Button("×");
+        removeBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-font-weight: bold; "
+                        + "-fx-cursor: hand; -fx-padding: 0 0 0 4;"
+        );
+        removeBtn.setOnAction(e -> onRemove.run());
+
+        javafx.scene.layout.HBox chip = new javafx.scene.layout.HBox(4, nameLabel, removeBtn);
+        chip.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        chip.setStyle(
+                "-fx-background-color: #f1f5f9; -fx-padding: 4 10; -fx-background-radius: 12;"
+        );
+        return chip;
     }
 
     @FXML
@@ -121,11 +226,21 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
             return;
         }
 
+        Long categoryId = category.getId();
+        Long cityId = city.getId();
+
+        if (editingAdId != null) {
+            submitEdit(token, title, description, price, categoryId, cityId);
+        } else {
+            submitCreate(token, title, description, price, categoryId, cityId);
+        }
+    }
+
+    private void submitCreate(String token, String title, String description, Double price,
+                              Long categoryId, Long cityId) {
         statusLabel.setText("در حال ثبت آگهی...");
         statusLabel.setStyle("-fx-text-fill: #64748b;");
 
-        Long categoryId = category.getId();
-        Long cityId = city.getId();
         List<File> imagesToUpload = new ArrayList<>(selectedImages);
 
         new Thread(() -> {
@@ -143,7 +258,47 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
             Platform.runLater(() -> {
                 if ("SUCCESS".equals(result)) {
                     showSuccess("آگهی با موفقیت ثبت شد و پس از تأیید ادمین نمایش داده می‌شود.");
-                    NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+                    NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
+                } else {
+                    showError(result);
+                }
+            });
+        }).start();
+    }
+
+    private void submitEdit(String token, String title, String description, Double price,
+                            Long categoryId, Long cityId) {
+        if (remainingExistingImagePaths.isEmpty() && selectedImages.isEmpty()) {
+            showError("آگهی باید حداقل شامل یک تصویر باشد.");
+            return;
+        }
+
+        statusLabel.setText("در حال ذخیره تغییرات...");
+        statusLabel.setStyle("-fx-text-fill: #64748b;");
+
+        Long adId = editingAdId;
+        List<String> existingToKeep = new ArrayList<>(remainingExistingImagePaths);
+        List<File> newFilesToUpload = new ArrayList<>(selectedImages);
+
+        new Thread(() -> {
+            List<String> newlyUploadedPaths = imageUploadService.uploadImages(token, newFilesToUpload);
+
+            if (!newFilesToUpload.isEmpty() && newlyUploadedPaths.isEmpty()) {
+                Platform.runLater(() -> showError("آپلود عکس‌های جدید ناموفق بود. لطفاً دوباره تلاش کنید."));
+                return;
+            }
+
+            List<String> finalImagePaths = new ArrayList<>(existingToKeep);
+            finalImagePaths.addAll(newlyUploadedPaths);
+
+            String result = advertisementService.updateAdvertisement(
+                    token, adId, title, description, price, categoryId, cityId, finalImagePaths
+            );
+
+            Platform.runLater(() -> {
+                if ("SUCCESS".equals(result)) {
+                    showSuccess("آگهی با موفقیت ویرایش شد و مجدداً برای تأیید ادمین ارسال شد.");
+                    NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
                 } else {
                     showError(result);
                 }
@@ -153,7 +308,11 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
 
     @FXML
     private void handleCancel() {
-        NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+        if (editingAdId != null) {
+            NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
+        } else {
+            NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
+        }
     }
 
     private void showError(String message) {

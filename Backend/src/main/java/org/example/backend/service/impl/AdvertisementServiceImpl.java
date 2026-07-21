@@ -31,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,6 +112,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         if (request.getCategoryId() != null) ad.setCategory(categoryService.getCategoryEntityById(request.getCategoryId()));
         if (request.getCityId() != null) ad.setCity(cityService.getCityEntityById(request.getCityId()));
 
+        // If the client sent an image list, it must be the full final list (existing + new),
+        // and it fully replaces the current set of images for this ad.
+        if (request.getImagePaths() != null) {
+            if (request.getImagePaths().isEmpty()) {
+                throw new InvalidInputException("آگهی باید حداقل شامل یک تصویر باشد");
+            }
+            advertisementImageRepository.deleteByAdvertisement(ad);
+            for (String path : request.getImagePaths()) {
+                advertisementImageRepository.save(new AdvertisementImageEntity(path, ad));
+            }
+        }
+
         // After editing, needs admin approval again
         ad.setStatus(AdvertisementStatusEnum.PENDING);
         ad.setUpdatedAt(LocalDateTime.now());
@@ -159,7 +173,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     // Get full advertisement details with seller ratings
     @Override
     public AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser) {
-        return toDetailResponse(getAdvertisementEntityById(adId), currentUser);
+        AdvertisementEntity ad = getAdvertisementEntityById(adId);
+
+        // Non-active ads (PENDING/REJECTED/DELETED/SOLD... except SOLD which stays
+        // visible) must only be visible to their owner or an admin. Otherwise any
+        // guest or user could view someone else's unreviewed/rejected ad just by
+        // guessing its numeric id via GET /api/advertisements/{id}.
+        boolean isOwner = currentUser != null && ad.getOwner().getId().equals(currentUser.getId());
+        boolean isAdmin = currentUser != null && currentUser.getRole() == RoleEnum.ADMIN;
+        boolean publiclyVisible = ad.getStatus() == AdvertisementStatusEnum.ACTIVE || ad.getStatus() == AdvertisementStatusEnum.SOLD;
+
+        if (!publiclyVisible && !isOwner && !isAdmin) {
+            throw new ResourceNotFoundException("آگهی یافت نشد");
+        }
+
+        return toDetailResponse(ad, currentUser);
     }
 
     // Get advertisement entity by ID (internal use by other services)
@@ -192,7 +220,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .stream().map(this::toSummaryResponse).toList();
     }
 
-    // Search and filter active advertisements
     @Override
     public List<AdvertisementSummaryResponse> searchAdvertisements(AdvertisementSearchRequest request) {
         // Validate price range
@@ -204,14 +231,30 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         // Start with all active ads
         List<AdvertisementEntity> ads = advertisementRepository.findByStatus(AdvertisementStatusEnum.ACTIVE);
 
+        // اگر یک کتگوری برای فیلتر انتخاب شده، باید هم خودش و هم زیرمجموعه‌هاش (اگر والد باشه) در نظر گرفته بشه
+        Set<Long> allowedCategoryIds = null;
+        if (request.getCategoryId() != null) {
+            CategoryEntity selectedCategory = categoryService.getCategoryEntityById(request.getCategoryId());
+            allowedCategoryIds = new HashSet<>();
+            allowedCategoryIds.add(selectedCategory.getId());
+
+            // اگر این کتگوری، خودش والد یک یا چند زیرمجموعه است، آی‌دی همه‌ی فرزندانش هم اضافه می‌شود
+            if (selectedCategory.getSubCategories() != null) {
+                for (CategoryEntity child : selectedCategory.getSubCategories()) {
+                    allowedCategoryIds.add(child.getId());
+                }
+            }
+        }
+        final Set<Long> finalAllowedCategoryIds = allowedCategoryIds;
+
         // Apply filters using stream (in-memory filtering)
         return ads.stream()
                 // Keyword search: title or description
                 .filter(ad -> request.getKeyword() == null || request.getKeyword().isBlank()
                         || ad.getTitle().toLowerCase().contains(request.getKeyword().toLowerCase())
                         || ad.getDescription().toLowerCase().contains(request.getKeyword().toLowerCase()))
-                // Category filter
-                .filter(ad -> request.getCategoryId() == null || ad.getCategory().getId().equals(request.getCategoryId()))
+                // Category filter (شامل زیرمجموعه‌ها هم می‌شود)
+                .filter(ad -> finalAllowedCategoryIds == null || finalAllowedCategoryIds.contains(ad.getCategory().getId()))
                 // City filter
                 .filter(ad -> request.getCityId() == null || ad.getCity().getId().equals(request.getCityId()))
                 // Price range filter

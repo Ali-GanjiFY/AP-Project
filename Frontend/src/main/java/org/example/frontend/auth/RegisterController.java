@@ -22,7 +22,7 @@ public class RegisterController {
         String username = usernameField.getText().trim();
         String phone = phoneField.getText().trim();
         String email = emailField.getText().trim();
-        String password = passwordField.getText(); // پسورد بدون trim
+        String password = passwordField.getText();
 
         // اعتبارسنجی‌های پایه سمت کلاینت
         if (fullName.isEmpty() || username.isEmpty() || phone.isEmpty() || password.isEmpty()) {
@@ -32,6 +32,16 @@ public class RegisterController {
 
         if (password.length() < 6) {
             showError("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+            return;
+        }
+
+        if (!password.matches("\\S+")) {
+            showError("رمز عبور نباید شامل فاصله باشد.");
+            return;
+        }
+
+        if (!phone.matches("^09\\d{9}$")) {
+            showError("شماره تلفن معتبر نیست. فرمت صحیح: 09123456789");
             return;
         }
 
@@ -76,6 +86,9 @@ public class RegisterController {
         if (cleanError.contains("phone already exists") || cleanError.contains("phone is taken")) {
             return "این شماره تلفن قبلاً ثبت شده است.";
         }
+        if (cleanError.contains("valid iranian mobile number") || cleanError.contains("phone number must be")) {
+            return "شماره تلفن معتبر نیست. فرمت صحیح: 09123456789";
+        }
         if (cleanError.contains("connection refused") || cleanError.contains("network") || cleanError.contains("timeout")) {
             return "برقراری ارتباط با سرور برقرار نشد. اتصال اینترنت خود را بررسی کنید.";
         }
@@ -97,5 +110,3 @@ public class RegisterController {
         errorLabel.setVisible(true);
     }
 }
-
-
