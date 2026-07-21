@@ -144,8 +144,6 @@ UserServiceImplTest.java
 ### 1️⃣ تست‌های داشبورد ادمین
 
 کلاس زیر شامل **۲ تست واحد** است:
-
-text
 AdminDashboardServiceImplTest
 
 این تست‌ها منطق مربوط به داشبورد مدیریتی را بررسی می‌کنند، از جمله:
@@ -159,7 +157,6 @@ AdminDashboardServiceImplTest
 
 کلاس زیر شامل **۷ تست واحد** است:
 
-text
 AdminReviewServiceImplTest
 
 این تست‌ها منطق مربوط به مدیریت و بررسی آگهی‌ها توسط ادمین را پوشش می‌دهند، از جمله:
@@ -177,8 +174,6 @@ AdminReviewServiceImplTest
 ### 3️⃣ تست‌های مدیریت کاربران
 
 کلاس زیر شامل **۶ تست واحد** است:
-
-text
 UserServiceImplTest
 
 سناریوهای بررسی‌شده در این کلاس عبارت‌اند از:
@@ -196,12 +191,12 @@ UserServiceImplTest
 
 برای اجرای تمام تست‌های Backend، ابتدا وارد پوشه `Backend` شوید:
 
-bash
+
 cd Backend
 
 سپس دستور زیر را اجرا کنید:
 
-bash
+
 mvn clean test
 
 این دستور ابتدا خروجی‌های قبلی را پاک می‌کند، کدهای اصلی و تست‌ها را کامپایل می‌کند و در نهایت تمام تست‌های شناسایی‌شده را اجرا می‌کند.
@@ -212,7 +207,6 @@ mvn clean test
 
 خروجی نهایی اجرای تست‌ها به شکل زیر بوده است:
 
-text
 AdminDashboardServiceImplTest: 2 tests
 AdminReviewServiceImplTest:    7 tests
 UserServiceImplTest:           6 tests
@@ -220,8 +214,6 @@ UserServiceImplTest:           6 tests
 Total:                        15 tests
 
 نتیجه گزارش‌شده توسط Maven:
-
-text
 Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 
