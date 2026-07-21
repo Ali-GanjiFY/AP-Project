@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Represents advertisement service impl.
+ */
 @Service
 public class AdvertisementServiceImpl implements AdvertisementService {
 
@@ -45,6 +48,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final CategoryService categoryService;
     private final CityService cityService;
 
+    /**
+     * Constructs a new AdvertisementServiceImpl.
+     * @param advertisementRepository the advertisement repository
+     * @param advertisementImageRepository the advertisement image repository
+     * @param sellerRatingRepository the seller rating repository
+     * @param categoryService the category service
+     * @param cityService the city service
+     */
     public AdvertisementServiceImpl(AdvertisementRepository advertisementRepository,
                                     AdvertisementImageRepository advertisementImageRepository,
                                     SellerRatingRepository sellerRatingRepository,
@@ -57,7 +68,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         this.cityService = cityService;
     }
 
-    // Create new ad
+    /**
+     * Create new ad.
+     * @param owner the owner
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public AdvertisementDetailResponse createAdvertisement(UserEntity owner, CreateAdvertisementRequest request) {
@@ -96,7 +112,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return getAdvertisementDetail(saved.getId(), owner);
     }
 
-    // Update ad: owner only, returns to PENDING for re-review
+    /**
+     * Update ad: owner only, returns to PENDING for re-review.
+     * @param adId the ad id
+     * @param currentUser the current user
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public AdvertisementDetailResponse updateAdvertisement(Long adId, UserEntity currentUser, UpdateAdvertisementRequest request) {
@@ -129,7 +151,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return getAdvertisementDetail(adId, currentUser);
     }
 
-    // Soft delete
+    /**
+     * Soft delete.
+     * @param adId the ad id
+     * @param currentUser the current user
+     */
     @Override
     @Transactional
     public void deleteAdvertisement(Long adId, UserEntity currentUser) {
@@ -140,7 +166,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         advertisementRepository.save(ad);
     }
 
-    // Mark as SOLD
+    /**
+     * Mark as SOLD.
+     * @param adId the ad id
+     * @param currentUser the current user
+     * @return the result
+     */
     @Override
     @Transactional
     public AdvertisementDetailResponse markAsSold(Long adId, UserEntity currentUser) {
@@ -158,6 +189,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return getAdvertisementDetail(adId, currentUser);
     }
 
+    /**
+     * Change status.
+     * @param ad the ad
+     * @param newStatus the new status
+     */
     @Override
     @Transactional
     public void changeStatus(AdvertisementEntity ad, AdvertisementStatusEnum newStatus) {
@@ -166,7 +202,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         advertisementRepository.save(ad);
     }
 
-    // Full details with seller ratings
+    /**
+     * Full details with seller ratings.
+     * @param adId the ad id
+     * @param currentUser the current user
+     * @return the result
+     */
     @Override
     public AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser) {
         AdvertisementEntity ad = getAdvertisementEntityById(adId);
@@ -182,13 +223,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return toDetailResponse(ad, currentUser);
     }
 
+    /**
+     * Gets advertisement entity by id.
+     * @param adId the ad id
+     * @return the result
+     */
     @Override
     public AdvertisementEntity getAdvertisementEntityById(Long adId) {
         return advertisementRepository.findById(adId)
                 .orElseThrow(() -> new ResourceNotFoundException("آگهی یافت نشد"));
     }
 
-    // All active ads
+    /**
+     * All active ads.
+     * @return the result
+     */
     @Override
     @Transactional(readOnly = true)
     public List<AdvertisementSummaryResponse> getAllActiveAds() {
@@ -198,20 +247,31 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .collect(Collectors.toList());
     }
 
-    // Ads owned by specific user
+    /**
+     * Ads owned by specific user.
+     * @param owner the owner
+     * @return the result
+     */
     @Override
     public List<AdvertisementSummaryResponse> getMyAdvertisements(UserEntity owner) {
         return advertisementRepository.findByOwner(owner).stream().map(this::toSummaryResponse).toList();
     }
 
-    // Pending ads for admin (oldest first)
+    /**
+     * Pending ads for admin (oldest first).
+     * @return the result
+     */
     @Override
     public List<AdvertisementSummaryResponse> getPendingAdvertisements() {
         return advertisementRepository.findByStatusOrderByCreatedAtAsc(AdvertisementStatusEnum.PENDING)
                 .stream().map(this::toSummaryResponse).toList();
     }
 
-    // Search: keyword, category, city, price, sorting
+    /**
+     * Search: keyword, category, city, price, sorting.
+     * @param request the request
+     * @return the result
+     */
     @Override
     public List<AdvertisementSummaryResponse> searchAdvertisements(AdvertisementSearchRequest request) {
         if (request.getMinPrice() != null && request.getMaxPrice() != null
@@ -255,7 +315,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .toList();
     }
 
-    // Build comparator for sorting
+    /**
+     * Build comparator for sorting.
+     * @param request the request
+     * @return the result
+     */
     private Comparator<AdvertisementEntity> buildComparator(AdvertisementSearchRequest request) {
         Comparator<AdvertisementEntity> comparator = "price".equalsIgnoreCase(request.getSortBy())
                 ? Comparator.comparing(AdvertisementEntity::getPrice)
@@ -264,13 +328,22 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return "desc".equalsIgnoreCase(request.getSortDirection()) ? comparator.reversed() : comparator;
     }
 
-    // Ensure current user is owner
+    /**
+     * Ensure current user is owner.
+     * @param ad the ad
+     * @param currentUser the current user
+     */
     private void ensureOwner(AdvertisementEntity ad, UserEntity currentUser) {
         if (!ad.getOwner().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("شما اجازه‌ی تغییر این آگهی را ندارید");
         }
     }
 
+    /**
+     * Ensures owner or admin.
+     * @param ad the ad
+     * @param currentUser the current user
+     */
     private void ensureOwnerOrAdmin(AdvertisementEntity ad, UserEntity currentUser) {
         boolean isOwner = ad.getOwner().getId().equals(currentUser.getId());
         boolean isAdmin = currentUser.getRole() == RoleEnum.ADMIN;
@@ -279,7 +352,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
     }
 
-    // Convert to Summary DTO
+    /**
+     * Convert to Summary DTO.
+     * @param ad the ad
+     * @return the result
+     */
     private AdvertisementSummaryResponse toSummaryResponse(AdvertisementEntity ad) {
         String mainImage = (ad.getImages() != null && !ad.getImages().isEmpty())
                 ? ad.getImages().get(0).getImagePath() : null;
@@ -290,6 +367,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         );
     }
 
+    /**
+     * Converts to detail response.
+     * @param ad the ad
+     * @param currentUser the current user
+     * @return the result
+     */
     private AdvertisementDetailResponse toDetailResponse(AdvertisementEntity ad, UserEntity currentUser) {
         // Fetch images
         List<AdvertisementImageResponse> images = advertisementImageRepository.findByAdvertisement(ad).stream()

@@ -15,19 +15,33 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Represents message service impl.
+ */
 @Service
 public class MessageServiceImpl implements MessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ConversationService conversationService;
 
+    /**
+     * Constructs a new MessageServiceImpl.
+     * @param chatMessageRepository the chat message repository
+     * @param conversationService the conversation service
+     */
     public MessageServiceImpl(ChatMessageRepository chatMessageRepository,
                               ConversationService conversationService) {
         this.chatMessageRepository = chatMessageRepository;
         this.conversationService = conversationService;
     }
 
-    // Send a message
+    /**
+     * Send a message.
+     * @param conversationId the conversation id
+     * @param sender the sender
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public ChatMessageResponse sendMessage(Long conversationId, UserEntity sender, SendMessageRequest request) {
@@ -49,7 +63,12 @@ public class MessageServiceImpl implements MessageService {
         return toResponse(saved);
     }
 
-    // Get all messages in a conversation with access control
+    /**
+     * Get all messages in a conversation with access control.
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     * @return the result
+     */
     @Override
     public List<ChatMessageResponse> getConversationMessages(Long conversationId, UserEntity currentUser) {
         ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, currentUser);
@@ -59,7 +78,11 @@ public class MessageServiceImpl implements MessageService {
                 .toList();
     }
 
-    // Mark all unseen messages as seen (only messages from other users)
+    /**
+     * Mark all unseen messages as seen (only messages from other users).
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     */
     @Override
     @Transactional
     public void markMessagesAsSeen(Long conversationId, UserEntity currentUser) {
@@ -76,7 +99,11 @@ public class MessageServiceImpl implements MessageService {
         chatMessageRepository.saveAll(unseen);
     }
 
-    // Convert ChatMessage entity to ChatMessageResponse DTO
+    /**
+     * Convert ChatMessage entity to ChatMessageResponse DTO.
+     * @param message the message
+     * @return the result
+     */
     private ChatMessageResponse toResponse(ChatMessageEntity message) {
         return new ChatMessageResponse(
                 message.getId(), message.getContent(), message.getSentAt(), message.isSeen(),

@@ -18,45 +18,73 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Represents user service impl.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Constructs a new UserServiceImpl.
+     * @param userRepository the user repository
+     * @param passwordEncoder the password encoder
+     */
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Prevent operations on soft-deleted users
+    /**
+     * Prevent operations on soft-deleted users.
+     * @param user the user
+     */
     private void validateNotDeleted(UserEntity user) {
         if (user.getStatus() == UserStatusEnum.DELETED) {
             throw new InvalidInputException("این کاربر قبلاً حذف شده است");
         }
     }
 
-    // Get user entity by ID (internal use)
+    /**
+     * Get user entity by ID (internal use).
+     * @param userId the user id
+     * @return the result
+     */
     @Override
     public UserEntity getUserEntityById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("کاربر یافت نشد"));
     }
 
-    // Get user entity by username (internal use)
+    /**
+     * Get user entity by username (internal use).
+     * @param username the username
+     * @return the result
+     */
     @Override
     public UserEntity getUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("کاربر یافت نشد"));
     }
 
-    // Get user as DTO by ID
+    /**
+     * Get user as DTO by ID.
+     * @param userId the user id
+     * @return the result
+     */
     @Override
     public UserResponse getUserById(Long userId) {
         return UserResponse.fromEntity(getUserEntityById(userId));
     }
 
-    // Update user profile: full name, email, phone with uniqueness checks
+    /**
+     * Update user profile: full name, email, phone with uniqueness checks.
+     * @param userId the user id
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
@@ -99,7 +127,11 @@ public class UserServiceImpl implements UserService {
         return UserResponse.fromEntity(updatedUser);
     }
 
-    // Change password: verify old password, ensure new password is different
+    /**
+     * Change password: verify old password, ensure new password is different.
+     * @param userId the user id
+     * @param request the request
+     */
     @Override
     @Transactional
     public void changePassword(Long userId, ChangePasswordRequest request) {
@@ -120,7 +152,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    // Get all users (including deleted ones)
+    /**
+     * Get all users (including deleted ones).
+     * @return the result
+     */
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
@@ -128,7 +163,11 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    // Get users filtered by status
+    /**
+     * Get users filtered by status.
+     * @param status the status
+     * @return the result
+     */
     @Override
     public List<UserResponse> getUsersByStatus(UserStatusEnum status) {
         return userRepository.findByStatus(status).stream()
@@ -136,7 +175,11 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    // Block user: admin only, cannot block other admins
+    /**
+     * Block user: admin only, cannot block other admins.
+     * @param userId the user id
+     * @return the result
+     */
     @Override
     @Transactional
     public UserResponse blockUser(Long userId) {
@@ -150,7 +193,11 @@ public class UserServiceImpl implements UserService {
         return UserResponse.fromEntity(userRepository.save(user));
     }
 
-    // Unblock user: cannot unblock deleted accounts
+    /**
+     * Unblock user: cannot unblock deleted accounts.
+     * @param userId the user id
+     * @return the result
+     */
     @Override
     @Transactional
     public UserResponse unblockUser(Long userId) {
@@ -162,7 +209,11 @@ public class UserServiceImpl implements UserService {
         return UserResponse.fromEntity(userRepository.save(user));
     }
 
-    // Soft delete user: user can delete self, admin can delete others (except other admins)
+    /**
+     * Soft delete user: user can delete self, admin can delete others (except other admins).
+     * @param currentUserId the current user id
+     * @param targetUserId the target user id
+     */
     @Override
     @Transactional
     public void deleteUser(Long currentUserId, Long targetUserId) {

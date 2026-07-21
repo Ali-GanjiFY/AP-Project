@@ -15,16 +15,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Represents favorite service impl.
+ */
 @Service
 public class FavoriteServiceImpl implements FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
 
+    /**
+     * Constructs a new FavoriteServiceImpl.
+     * @param favoriteRepository the favorite repository
+     */
     public FavoriteServiceImpl(FavoriteRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
     }
 
-    // Add advertisement to user's favorites
+    /**
+     * Add advertisement to user's favorites.
+     * @param user the user
+     * @param advertisement the advertisement
+     * @return the result
+     */
     @Override
     @Transactional
     public FavoriteResponse addFavorite(UserEntity user, AdvertisementEntity advertisement) {
@@ -38,7 +50,11 @@ public class FavoriteServiceImpl implements FavoriteService {
         return toResponse(favoriteRepository.save(new FavoriteEntity(user, advertisement)));
     }
 
-    // Remove advertisement from user's favorites
+    /**
+     * Remove advertisement from user's favorites.
+     * @param user the user
+     * @param advertisement the advertisement
+     */
     @Override
     @Transactional
     public void removeFavorite(UserEntity user, AdvertisementEntity advertisement) {
@@ -49,13 +65,22 @@ public class FavoriteServiceImpl implements FavoriteService {
         favoriteRepository.deleteByUserAndAdvertisement(user, advertisement);
     }
 
-    // Check if an advertisement is in user's favorites
+    /**
+     * Check if an advertisement is in user's favorites.
+     * @param user the user
+     * @param advertisement the advertisement
+     * @return the result
+     */
     @Override
     public boolean isFavorite(UserEntity user, AdvertisementEntity advertisement) {
         return favoriteRepository.existsByUserAndAdvertisement(user, advertisement);
     }
 
-    // Get all favorites for a user
+    /**
+     * Get all favorites for a user.
+     * @param user the user
+     * @return the result
+     */
     @Override
     public List<FavoriteResponse> getUserFavorites(UserEntity user) {
         return favoriteRepository.findByUserOrderBySavedAtDesc(user).stream()
@@ -63,7 +88,11 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .toList();
     }
 
-    // Convert Favorite entity to FavoriteResponse
+    /**
+     * Convert Favorite entity to FavoriteResponse.
+     * @param favorite the favorite
+     * @return the result
+     */
     private FavoriteResponse toResponse(FavoriteEntity favorite) {
         AdvertisementEntity ad = favorite.getAdvertisement();
 

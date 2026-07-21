@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents favorite controller.
+ */
 @RestController
 @RequestMapping("/api/favorites")
 public class FavoriteController {
@@ -21,6 +24,12 @@ public class FavoriteController {
     private final AdvertisementService advertisementService;
     private final UserService userService;
 
+    /**
+     * Constructs a new FavoriteController.
+     * @param favoriteService the favorite service
+     * @param advertisementService the advertisement service
+     * @param userService the user service
+     */
     public FavoriteController(FavoriteService favoriteService,
                               AdvertisementService advertisementService,
                               UserService userService) {
@@ -29,18 +38,31 @@ public class FavoriteController {
         this.userService = userService;
     }
 
-    // Resolves the authenticated User entity from the JWT-backed Authentication.
+    /**
+     * Resolves the authenticated User entity from the JWT-backed Authentication.
+     * @param authentication the authentication
+     * @return the result
+     */
     private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
-    // GET /api/favorites -> self, list of the current user's favorite advertisements
+    /**
+     * GET /api/favorites -> self, list of the current user's favorite advertisements.
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getMyFavorites(Authentication authentication) {
         return ResponseEntity.ok(favoriteService.getUserFavorites(currentUser(authentication)));
     }
 
-    // POST /api/favorites/{advertisementId} -> self, add an advertisement to favorites
+    /**
+     * POST /api/favorites/{advertisementId} -> self, add an advertisement to favorites.
+     * @param advertisementId the advertisement id
+     * @param authentication the authentication
+     * @return the result
+     */
     @PostMapping("/{advertisementId}")
     public ResponseEntity<FavoriteResponse> addFavorite(
             @PathVariable Long advertisementId, Authentication authentication) {
@@ -49,7 +71,12 @@ public class FavoriteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // DELETE /api/favorites/{advertisementId} -> self, remove an advertisement from favorites
+    /**
+     * DELETE /api/favorites/{advertisementId} -> self, remove an advertisement from favorites.
+     * @param advertisementId the advertisement id
+     * @param authentication the authentication
+     * @return the result
+     */
     @DeleteMapping("/{advertisementId}")
     public ResponseEntity<Void> removeFavorite(
             @PathVariable Long advertisementId, Authentication authentication) {
@@ -58,7 +85,12 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
-    // GET /api/favorites/{advertisementId}/status -> self, check whether an advertisement is in favorites
+    /**
+     * GET /api/favorites/{advertisementId}/status -> self, check whether an advertisement is in favorites.
+     * @param advertisementId the advertisement id
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping("/{advertisementId}/status")
     public ResponseEntity<Boolean> isFavorite(
             @PathVariable Long advertisementId, Authentication authentication) {

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents message controller.
+ */
 @RestController
 @RequestMapping("/api/conversations/{conversationId}/messages")
 public class MessageController {
@@ -20,18 +23,31 @@ public class MessageController {
     private final MessageService messageService;
     private final UserService userService;
 
+    /**
+     * Constructs a new MessageController.
+     * @param messageService the message service
+     * @param userService the user service
+     */
     public MessageController(MessageService messageService, UserService userService) {
         this.messageService = messageService;
         this.userService = userService;
     }
 
-    // Resolves the authenticated User entity from the JWT-backed Authentication.
+    /**
+     * Resolves the authenticated User entity from the JWT-backed Authentication.
+     * @param authentication the authentication
+     * @return the result
+     */
     private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
-    // GET /api/conversations/{conversationId}/messages -> self, all messages in
-    // the conversation, chronological order (participant only)
+    /**
+     * GET /api/conversations/{conversationId}/messages -> self, all messages in the conversation, chronological order (participant only).
+     * @param conversationId the conversation id
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping
     public ResponseEntity<List<ChatMessageResponse>> getConversationMessages(
             @PathVariable Long conversationId, Authentication authentication) {
@@ -39,8 +55,13 @@ public class MessageController {
                 messageService.getConversationMessages(conversationId, currentUser(authentication)));
     }
 
-    // POST /api/conversations/{conversationId}/messages -> self, send a message
-    // Both sides must be ACTIVE
+    /**
+     * POST /api/conversations/{conversationId}/messages -> self, send a message Both sides must be ACTIVE.
+     * @param conversationId the conversation id
+     * @param authentication the authentication
+     * @param request the request
+     * @return the result
+     */
     @PostMapping
     public ResponseEntity<ChatMessageResponse> sendMessage(
             @PathVariable Long conversationId, Authentication authentication,
@@ -50,8 +71,12 @@ public class MessageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // PUT /api/conversations/{conversationId}/messages/seen -> self, mark all
-    // unseen messages from the other participant as seen
+    /**
+     * PUT /api/conversations/{conversationId}/messages/seen -> self, mark all unseen messages from the other participant as seen.
+     * @param conversationId the conversation id
+     * @param authentication the authentication
+     * @return the result
+     */
     @PutMapping("/seen")
     public ResponseEntity<Void> markMessagesAsSeen(
             @PathVariable Long conversationId, Authentication authentication) {

@@ -18,6 +18,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Represents security config.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,20 +28,27 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // manual constructor
+    /**
+     * Manual constructor.
+     * @param jwtAuthenticationFilter the jwt authentication filter
+     */
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // BCrypt for hashing/verifying passwords, used directly in AuthService
+    /**
+     * BCrypt for hashing/verifying passwords, used directly in AuthService.
+     * @return the result
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // NOTE: no AuthenticationManager/DaoAuthenticationProvider here —
-    // AuthService checks passwords manually via passwordEncoder.matches(),
-    // it doesn't go through Spring's AuthenticationManager.
+    /**
+     * NOTE: no AuthenticationManager/DaoAuthenticationProvider here — AuthService checks passwords manually via passwordEncoder.matches(), it doesn't go through Spring's AuthenticationManager.
+     * @return the result
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -52,6 +62,11 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Security filter chain.
+     * @param http the http
+     * @return the result
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 

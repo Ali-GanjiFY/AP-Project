@@ -15,6 +15,9 @@ import org.example.backend.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Represents auth service impl.
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -22,6 +25,12 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    /**
+     * Constructs a new AuthServiceImpl.
+     * @param userRepository the user repository
+     * @param passwordEncoder the password encoder
+     * @param jwtUtil the jwt util
+     */
     public AuthServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            JwtUtil jwtUtil) {
@@ -30,7 +39,11 @@ public class AuthServiceImpl implements AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    // Register a new user with unique validation and JWT generation
+    /**
+     * Register a new user with unique validation and JWT generation.
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -65,7 +78,11 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(token, user.getId(), user.getUsername(), user.getRole());
     }
 
-    // Authenticate user and return JWT token
+    /**
+     * Authenticate user and return JWT token.
+     * @param request the request
+     * @return the result
+     */
     @Override
     public AuthResponse login(LoginRequest request) {
         // Find by username

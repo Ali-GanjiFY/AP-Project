@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Represents file upload controller.
+ */
 @RestController
 @RequestMapping("/api/uploads")
 public class FileUploadController {
@@ -23,7 +26,11 @@ public class FileUploadController {
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
-    // POST /api/uploads/images (multipart/form-data, key = "files")
+    /**
+     * POST /api/uploads/images (multipart/form-data, key = "files").
+     * @param files the files
+     * @return the result
+     */
     @PostMapping("/images")
     public ResponseEntity<List<String>> uploadImages(@RequestParam("files") List<MultipartFile> files) {
         List<String> savedUrls = new ArrayList<>();

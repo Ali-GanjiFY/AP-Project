@@ -14,18 +14,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Represents city service impl.
+ */
 @Service
 public class CityServiceImpl implements CityService {
 
     private final CityRepository cityRepository;
     private final AdvertisementRepository advertisementRepository; // For checking ad dependencies before deletion
 
+    /**
+     * Constructs a new CityServiceImpl.
+     * @param cityRepository the city repository
+     * @param advertisementRepository the advertisement repository
+     */
     public CityServiceImpl(CityRepository cityRepository, AdvertisementRepository advertisementRepository) {
         this.cityRepository = cityRepository;
         this.advertisementRepository = advertisementRepository;
     }
 
-    // Create a new city
+    /**
+     * Create a new city.
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public CityResponse createCity(CityRequest request) {
@@ -38,7 +50,12 @@ public class CityServiceImpl implements CityService {
         return toResponse(cityRepository.save(city));
     }
 
-    // Update city details
+    /**
+     * Update city details.
+     * @param id the id
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public CityResponse updateCity(Long id, CityRequest request) {
@@ -52,7 +69,10 @@ public class CityServiceImpl implements CityService {
         return toResponse(cityRepository.save(city));
     }
 
-    // Delete city with advertisement dependency
+    /**
+     * Delete city with advertisement dependency.
+     * @param id the id
+     */
     @Override
     @Transactional
     public void deleteCity(Long id) {
@@ -70,13 +90,21 @@ public class CityServiceImpl implements CityService {
         cityRepository.delete(city);
     }
 
-    // Get city by ID
+    /**
+     * Get city by ID.
+     * @param id the id
+     * @return the result
+     */
     @Override
     public CityResponse getCityById(Long id) {
         return toResponse(getCityEntityById(id));
     }
 
-    // Get city by name (case-insensitive)
+    /**
+     * Get city by name (case-insensitive).
+     * @param name the name
+     * @return the result
+     */
     @Override
     @Transactional(readOnly = true)
     public CityResponse getCityByName(String name) {
@@ -85,20 +113,31 @@ public class CityServiceImpl implements CityService {
         return toResponse(city);
     }
 
-    // Get city entity by ID
+    /**
+     * Get city entity by ID.
+     * @param id the id
+     * @return the result
+     */
     @Override
     public CityEntity getCityEntityById(Long id) {
         return cityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("شهر یافت نشد"));
     }
 
-    // Get all cities
+    /**
+     * Get all cities.
+     * @return the result
+     */
     @Override
     public List<CityResponse> getAllCities() {
         return cityRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    // Convert City entity to CityResponse
+    /**
+     * Convert City entity to CityResponse.
+     * @param city the city
+     * @return the result
+     */
     private CityResponse toResponse(CityEntity city) {
         return new CityResponse(city.getId(), city.getName(), city.getProvince());
     }

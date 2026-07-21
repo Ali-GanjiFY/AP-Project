@@ -10,9 +10,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
 
+/**
+ * Represents global exception handler.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles validation.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
 
@@ -29,7 +37,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(errorMessage, 400));
     }
 
-    // 400 Bad Request
+    /**
+     * 400 Bad Request.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<ErrorResponse> handleInvalidInput(InvalidInputException ex) {
         return ResponseEntity
@@ -37,7 +49,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ex.getMessage(), 400));
     }
 
-    // 401 Unauthorized
+    /**
+     * 401 Unauthorized.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex) {
         return ResponseEntity
@@ -45,7 +61,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ex.getMessage(), 401));
     }
 
-    // 403 Forbidden
+    /**
+     * 403 Forbidden.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
         return ResponseEntity
@@ -53,7 +73,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ex.getMessage(), 403));
     }
 
-    // 404 Not Found
+    /**
+     * 404 Not Found.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity
@@ -61,7 +85,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ex.getMessage(), 404));
     }
 
-    // 409 Conflict
+    /**
+     * 409 Conflict.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateResourceException ex) {
         return ResponseEntity
@@ -69,7 +97,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ex.getMessage(), 409));
     }
 
-    // 500 Internal Server Error
+    /**
+     * 500 Internal Server Error.
+     * @param ex the ex
+     * @return the result
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
         return ResponseEntity
