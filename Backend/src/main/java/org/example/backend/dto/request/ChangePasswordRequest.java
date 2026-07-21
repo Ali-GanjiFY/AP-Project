@@ -1,4 +1,3 @@
-
 package org.example.backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
@@ -6,11 +5,11 @@ import jakarta.validation.constraints.Size;
 
 public class ChangePasswordRequest {
 
-    @NotBlank(message = "رمز عبور فعلی الزامی است")
+    @NotBlank(message = "Current password is required")
     private String oldPassword;
 
-    @NotBlank(message = "رمز عبور جدید الزامی است")
-    @Size(min = 6, message = "رمز عبور جدید باید حداقل ۶ کاراکتر باشد")
+    @NotBlank(message = "New password is required")
+    @Size(min = 6, message = "New password must be at least 6 characters")
     private String newPassword;
 
     // Constructor

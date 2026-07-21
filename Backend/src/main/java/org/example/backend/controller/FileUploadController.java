@@ -19,20 +19,24 @@ import java.util.UUID;
 @RequestMapping("/api/uploads")
 public class FileUploadController {
 
+    // Injects upload directory path from properties, defaults to "uploads"
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
-    // POST /api/uploads/images  (multipart/form-data, key = "files")
+    // POST /api/uploads/images (multipart/form-data, key = "files")
     @PostMapping("/images")
     public ResponseEntity<List<String>> uploadImages(@RequestParam("files") List<MultipartFile> files) {
         List<String> savedUrls = new ArrayList<>();
         try {
+            // Resolve absolute path and create directory if not exists
             Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
             Files.createDirectories(uploadPath);
 
             for (MultipartFile file : files) {
+                // Skip empty files
                 if (file.isEmpty()) continue;
 
+                // Clean original filename and extract extension
                 String originalName = StringUtils.cleanPath(
                         file.getOriginalFilename() == null ? "file" : file.getOriginalFilename());
                 String extension = "";
@@ -41,15 +45,18 @@ public class FileUploadController {
                     extension = originalName.substring(dotIndex);
                 }
 
+                // Generate unique filename with UUID and save to disk
                 String newFileName = UUID.randomUUID() + extension;
                 Path targetPath = uploadPath.resolve(newFileName);
                 Files.copy(file.getInputStream(), targetPath);
 
+                // Build URL path for accessing the file
                 savedUrls.add("/uploads/" + newFileName);
             }
 
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUrls);
         } catch (IOException e) {
+            // Return 500 if file system operation fails
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

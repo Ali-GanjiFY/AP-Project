@@ -40,19 +40,18 @@ public class ConversationController {
     public ResponseEntity<ConversationResponse> startOrGetConversation(
             @PathVariable Long advertisementId, Authentication authentication) {
         AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
-        ConversationResponse response =
-                conversationService.startOrGetConversation(currentUser(authentication), advertisement);
+        ConversationResponse response = conversationService.startOrGetConversation(currentUser(authentication), advertisement);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // GET /api/conversations -> self, all conversations for the current user
-    // (both as buyer and as seller), most recently active first
+    // (for both buyer and seller), most recently active first
     @GetMapping
     public ResponseEntity<List<ConversationResponse>> getMyConversations(Authentication authentication) {
         return ResponseEntity.ok(conversationService.getUserConversations(currentUser(authentication)));
     }
 
-    // GET /api/conversations/{id} -> self, single conversation (participant only,
+    // GET /api/conversations/{id} -> self, single conversation (participant only)
     @GetMapping("/{id}")
     public ResponseEntity<ConversationResponse> getConversationById(
             @PathVariable Long id, Authentication authentication) {

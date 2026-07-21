@@ -6,6 +6,7 @@ import java.util.List;
 
 public class UpdateAdvertisementRequest {
 
+    // Optional fields; null means "no change"
     private String title;
     private String description;
 
@@ -15,13 +16,14 @@ public class UpdateAdvertisementRequest {
     private Long categoryId;
     private Long cityId;
 
-    // لیست کامل نهایی مسیر عکس‌ها (باقی‌مانده‌های قدیمی + آپلودشده‌های جدید)
-    // null یعنی عکس‌ها دست‌نخورده بمونن؛ لیست خالی هم توسط سرویس رد می‌شود
+    // Final list of image paths (old remaining + newly uploaded).
+    // null = images left unchanged; empty list is rejected by the service.
     private List<String> imagePaths;
 
-    // Constructor
+    // Default constructor
     public UpdateAdvertisementRequest() {}
 
+    // Convenience constructor for required fields
     public UpdateAdvertisementRequest(String title, String description, Double price, Long categoryId, Long cityId) {
         this.title = title;
         this.description = description;

@@ -22,7 +22,7 @@ public class RegisterController {
         String username = usernameField.getText().trim();
         String phone = phoneField.getText().trim();
         String email = emailField.getText().trim();
-        String password = passwordField.getText(); // پسورد بدون trim
+        String password = passwordField.getText();
 
         // اعتبارسنجی‌های پایه سمت کلاینت
         if (fullName.isEmpty() || username.isEmpty() || phone.isEmpty() || password.isEmpty()) {
@@ -32,6 +32,11 @@ public class RegisterController {
 
         if (password.length() < 6) {
             showError("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+            return;
+        }
+
+        if (!password.matches("\\S+")) {
+            showError("رمز عبور نباید شامل فاصله باشد.");
             return;
         }
 
@@ -97,5 +102,3 @@ public class RegisterController {
         errorLabel.setVisible(true);
     }
 }
-
-

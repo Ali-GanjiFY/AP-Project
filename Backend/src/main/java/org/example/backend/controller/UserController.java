@@ -23,6 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Extracts current user ID from JWT-backed Authentication
     private Long currentUserId(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName()).getId();
     }
@@ -88,7 +89,7 @@ public class UserController {
     }
 
     // DELETE /api/users/{id} -> admin only, delete another user's account.
-    // Service still enforces "admin cannot delete another admin".
+    // Admin cannot delete another admin
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(Authentication authentication, @PathVariable Long id) {

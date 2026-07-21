@@ -58,7 +58,7 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
-    // GET /api/favorites/{advertisementId}/status -> self, check whether an
+    // GET /api/favorites/{advertisementId}/status -> self, check whether an advertisement is in favorites
     @GetMapping("/{advertisementId}/status")
     public ResponseEntity<Boolean> isFavorite(
             @PathVariable Long advertisementId, Authentication authentication) {

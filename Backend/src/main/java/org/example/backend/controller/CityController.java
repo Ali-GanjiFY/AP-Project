@@ -38,8 +38,7 @@ public class CityController {
     }
 
     // GET /api/cities/by-name?name=... -> public, exact (case-insensitive) match.
-    // Named "by-name" rather than "search" since the service returns a single
-    // exact match, not a text-search result list.
+    // returns a single exact match.
     @GetMapping("/by-name")
     public ResponseEntity<CityResponse> getCityByName(
             @RequestParam @NotBlank(message = "Name must not be blank") String name) {
