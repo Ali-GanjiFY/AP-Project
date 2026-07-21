@@ -57,7 +57,7 @@ public class AuthService {
         }
     }
 
-    // متد جدید ثبت‌نام بر اساس ساختار RegisterRequest بک‌اَند
+
     public String register(String fullName, String username, String password, String phone, String email) {
         try {
             // ساخت بدنه جیسون به صورت دستی و تمیز
@@ -76,9 +76,9 @@ public class AuthService {
             int statusCode = response.statusCode();
             String responseBody = response.body();
 
-            // طبق کنترلر بک‌اَند، ثبت‌نام موفق با کد 201 (CREATED) برمی‌گردد
+            //  201 (CREATED)
             if (statusCode == 201 || statusCode == 200) {
-                // ثبت‌نام موفقیت‌آمیز بود؛ اطلاعات توکن سشن را هم ذخیره می‌کنیم
+                // اطلاعات توکن سشن را هم ذخیره می‌کنیم
                 String token = extractJsonValue(responseBody, "token");
                 String userIdStr = extractJsonValue(responseBody, "userId");
                 String responseUsername = extractJsonValue(responseBody, "username");

@@ -16,7 +16,7 @@ public class AdminUserService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
-    // دریافت لیست همه کاربران
+
     public List<UserResponse> getAllUsers() throws Exception {
         String token = UserSession.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()
@@ -35,7 +35,7 @@ public class AdminUserService {
         }
     }
 
-    // مسدود کردن کاربر
+
     public UserResponse blockUser(Long userId) throws Exception {
         String token = UserSession.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()
@@ -53,7 +53,7 @@ public class AdminUserService {
         }
     }
 
-    // فعال‌سازی مجدد کاربر
+
     public UserResponse unblockUser(Long userId) throws Exception {
         String token = UserSession.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()

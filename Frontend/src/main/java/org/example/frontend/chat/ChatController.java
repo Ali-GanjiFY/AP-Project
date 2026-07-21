@@ -46,26 +46,22 @@ public class ChatController {
 
     private final ChatService chatService = new ChatService();
 
-    /*
-     * برای جلوگیری از نمایش دوباره یک پیام هنگام polling.
-     */
+
     private final Set<Long> displayedMessageIds = new HashSet<>();
 
     private Long conversationId;
 
-    /*
-     * هر دو ثانیه سرور را برای پیام‌های جدید بررسی می‌کند.
-     */
+
+     // Every two seconds server checks for news messages
+
     private Timeline messagePolling;
 
-    /*
-     * جلوگیری از اجرای هم‌زمان چند درخواست دریافت پیام.
-     */
+
+
+
     private boolean loadingMessages;
 
-    /*
-     * اگر صفحه بسته شود، نتیجه درخواست قبلی دیگر روی UI اعمال نمی‌شود.
-     */
+
     private boolean controllerActive = true;
 
     @FXML
@@ -83,9 +79,7 @@ public class ChatController {
 
         sendButton.setDisable(true);
 
-        /*
-         * خالی و پر بودن فیلد، وضعیت دکمه ارسال را کنترل می‌کند.
-         */
+        // empty of full button is important
         messageTextField.textProperty().addListener(
                 (observable, oldValue, newValue) ->
                         updateSendButtonState()
@@ -115,9 +109,7 @@ public class ChatController {
         startMessagePolling();
     }
 
-    /**
-     * دریافت نام کاربر مقابل و عنوان آگهی.
-     */
+
     private void loadConversationInformation() {
         runInBackground(() -> {
             ConversationResponse conversation =
@@ -154,7 +146,7 @@ public class ChatController {
     /**
      * دریافت تاریخچه یا پیام‌های جدید.
      *
-     * @param showLoading آیا هنگام اولین بار پیام در حال بارگذاری نمایش داده شود؟
+     * @param showLoading
      */
     private void loadMessages(boolean showLoading) {
         if (conversationId == null || loadingMessages) {
@@ -171,9 +163,7 @@ public class ChatController {
             List<ChatMessageResponse> messages =
                     chatService.getMessages(conversationId);
 
-            /*
-             * خوانده‌شدن پیام‌های دریافتی را هم ثبت می‌کنیم.
-             */
+
             chatService.markMessagesAsSeen(conversationId);
 
             Platform.runLater(() -> {
@@ -247,9 +237,7 @@ public class ChatController {
         });
     }
 
-    /**
-     * پیام را فقط درصورتی نمایش می‌دهد که قبلاً نمایش داده نشده باشد.
-     */
+
     private void addMessageIfNotDisplayed(
             ChatMessageResponse message
     ) {
@@ -272,9 +260,7 @@ public class ChatController {
         addMessageBubble(message, ownMessage);
     }
 
-    /**
-     * تشخیص می‌دهد پیام متعلق به کاربر فعلی است یا طرف مقابل.
-     */
+
     private boolean isCurrentUserMessage(
             ChatMessageResponse message
     ) {
@@ -290,10 +276,7 @@ public class ChatController {
             );
         }
 
-        /*
-         * اگر userId داخل Session مقداردهی نشده بود،
-         * از username استفاده می‌کنیم.
-         */
+
         String currentUsername = session.getUsername();
 
         return currentUsername != null &&
@@ -303,9 +286,7 @@ public class ChatController {
                 );
     }
 
-    /**
-     * ساخت ظاهر یک پیام.
-     */
+    // make a message styl
     private void addMessageBubble(
             ChatMessageResponse message,
             boolean ownMessage
@@ -384,9 +365,7 @@ public class ChatController {
         HBox wrapper = new HBox(bubble);
         wrapper.setMaxWidth(Double.MAX_VALUE);
 
-        /*
-         * پیام خودمان سمت راست و پیام طرف مقابل سمت چپ.
-         */
+
         wrapper.setAlignment(
                 ownMessage
                         ? Pos.CENTER_RIGHT
@@ -471,9 +450,7 @@ public class ChatController {
     }
 
     /**
-     * فعلاً تاریخ ISO را کمی خواناتر می‌کند.
-     * مثال:
-     * 2026-07-13T15:20:10 -> 2026-07-13 15:20
+     *2026-07-13T15:20:10 -> 2026-07-13 15:20
      */
     private String formatDateTime(String sentAt) {
         if (sentAt == null || sentAt.isBlank()) {

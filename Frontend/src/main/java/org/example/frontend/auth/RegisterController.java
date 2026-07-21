@@ -24,7 +24,7 @@ public class RegisterController {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
 
-        // اعتبارسنجی‌های پایه سمت کلاینت
+
         if (fullName.isEmpty() || username.isEmpty() || phone.isEmpty() || password.isEmpty()) {
             showError("لطفاً تمامی فیلدهای اجباری را پر کنید.");
             return;
@@ -47,14 +47,14 @@ public class RegisterController {
 
         errorLabel.setVisible(false);
 
-        // ارسال به بک‌اند در Thread جداگانه
+        // Send to backend in difference Thread
         new Thread(() -> {
             String result = authService.register(fullName, username, password, phone, email);
 
             Platform.runLater(() -> {
                 if ("SUCCESS".equals(result)) {
                     showSuccess("ثبت‌نام با موفقیت انجام شد! در حال انتقال...");
-                    // تغییر به داشبورد
+
                     NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد اصلی");
                 } else {
                     showError(translateErrorMessage(result));
@@ -69,9 +69,7 @@ public class RegisterController {
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
 
-    /**
-     * متد کمکی برای ترجمه خطاهای دریافتی از AuthService در بخش ثبت‌نام
-     */
+
     private String translateErrorMessage(String rawError) {
         if (rawError == null) return "خطای نامشخصی رخ داده است.";
 

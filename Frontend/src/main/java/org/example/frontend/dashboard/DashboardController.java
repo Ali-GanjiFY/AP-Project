@@ -162,7 +162,7 @@ public class DashboardController implements javafx.fxml.Initializable {
             }
         } catch (NumberFormatException ignored) {}
 
-        // نگاشت انتخاب مرتب‌سازی به پارامترهای سمت بک‌اند
+
         String sortBy = "date";
         String sortDirection = "desc";
         String selectedSort = sortByComboBox.getValue();

@@ -50,7 +50,7 @@ public class AdReviewDetailController implements Initializable {
     private List<AdvertisementDetail.ImageInfo> adImages;
     private int currentImageIndex = 0;
 
-    // این متد را قبل از رفتن به این صفحه صدا بزن تا بداند کدام آگهی را نشان بدهد
+    // With this func we khow what advertisement will be show
     public static void setSelectedAdvertisementId(Long advertisementId) {
         selectedAdvertisementId = advertisementId;
     }

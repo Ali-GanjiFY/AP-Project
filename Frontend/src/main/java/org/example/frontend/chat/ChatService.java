@@ -26,9 +26,7 @@ public class ChatService {
         this.gson = new Gson();
     }
 
-    /**
-     * دریافت لیست گفتگوهای کاربر فعلی.
-     */
+
     public List<ConversationResponse> getMyConversations()
             throws IOException, InterruptedException {
 
@@ -94,9 +92,8 @@ public class ChatService {
         );
     }
 
-    /**
-     * دریافت تاریخچه پیام‌های گفتگو.
-     */
+    //دریافت تاریخچه پیام‌های گفتگو
+
     public List<ChatMessageResponse> getMessages(Long conversationId)
             throws IOException, InterruptedException {
 
@@ -120,9 +117,9 @@ public class ChatService {
         return messages == null ? List.of() : messages;
     }
 
-    /**
-     * ارسال و ذخیره پیام جدید.
-     */
+
+     // ارسال و ذخیره پیام جدید.
+
     public ChatMessageResponse sendMessage(
             Long conversationId,
             String content
