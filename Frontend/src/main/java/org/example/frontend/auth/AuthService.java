@@ -7,17 +7,29 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+/**
+ * Represents auth service.
+ */
 public class AuthService {
 
     private static final String BASE_URL = "http://localhost:8080/api/auth";
     private final HttpClient httpClient;
 
+    /**
+     * Constructs a new AuthService.
+     */
     public AuthService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
     }
 
+    /**
+     * Logs in.
+     * @param username the username
+     * @param password the password
+     * @return the result
+     */
     public String login(String username, String password) {
         try {
             String jsonRequestBody = String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password);
@@ -57,7 +69,15 @@ public class AuthService {
         }
     }
 
-    // متد جدید ثبت‌نام بر اساس ساختار RegisterRequest بک‌اَند
+    /**
+     * متد جدید ثبت‌نام بر اساس ساختار RegisterRequest بک‌اَند.
+     * @param fullName the full name
+     * @param username the username
+     * @param password the password
+     * @param phone the phone
+     * @param email the email
+     * @return the result
+     */
     public String register(String fullName, String username, String password, String phone, String email) {
         try {
             // ساخت بدنه جیسون به صورت دستی و تمیز
@@ -103,6 +123,12 @@ public class AuthService {
         }
     }
 
+    /**
+     * Extract json value.
+     * @param json the json
+     * @param key the key
+     * @return the result
+     */
     private String extractJsonValue(String json, String key) {
         String searchKey = "\"" + key + "\":";
         int index = json.indexOf(searchKey);

@@ -26,6 +26,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Represents dashboard controller.
+ */
 public class DashboardController implements javafx.fxml.Initializable {
 
     private static final double CARD_WIDTH = 220;
@@ -61,12 +64,20 @@ public class DashboardController implements javafx.fxml.Initializable {
     private Timeline autoRefreshTimeline;
     private boolean isFilteredMode = false;
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initFilters();
         loadAdvertisements();
         startAutoRefresh();
     }
+    /**
+     * Handles open chats.
+     */
     @FXML
     private void handleOpenChats() {
         if (autoRefreshTimeline != null) {
@@ -79,6 +90,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         );
     }
 
+    /**
+     * Initializes filters.
+     */
     private void initFilters() {
         sortByComboBox.getItems().addAll(
                 "جدیدترین آگهی‌ها",
@@ -100,6 +114,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Starts auto refresh.
+     */
     private void startAutoRefresh() {
         autoRefreshTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(10), event -> {
@@ -112,6 +129,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         autoRefreshTimeline.play();
     }
 
+    /**
+     * Loads advertisements.
+     */
     private void loadAdvertisements() {
         new Thread(() -> {
             List<Advertisement> ads = advertisementService.getAllActiveAds();
@@ -119,6 +139,10 @@ public class DashboardController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Updates ads container.
+     * @param ads the ads
+     */
     private void updateAdsContainer(List<Advertisement> ads) {
         Platform.runLater(() -> {
             adsListContainer.getChildren().clear();
@@ -136,6 +160,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         });
     }
 
+    /**
+     * Handles apply filters.
+     */
     @FXML
     private void handleApplyFilters() {
         isFilteredMode = true; // غیر فعال کردن رفرش خودکار دوره ای
@@ -197,6 +224,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles reset filters.
+     */
     @FXML
     private void handleResetFilters() {
         searchField.clear();
@@ -210,6 +240,11 @@ public class DashboardController implements javafx.fxml.Initializable {
         loadAdvertisements();
     }
 
+    /**
+     * Builds ad card.
+     * @param ad the ad
+     * @return the result
+     */
     private VBox buildAdCard(Advertisement ad) {
         VBox card = new VBox();
         card.setPrefSize(CARD_WIDTH, CARD_HEIGHT);
@@ -294,12 +329,20 @@ public class DashboardController implements javafx.fxml.Initializable {
         return card;
     }
 
+    /**
+     * Builds no image label.
+     * @return the result
+     */
     private Label buildNoImageLabel() {
         Label noImageLabel = new Label("بدون تصویر");
         noImageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
         return noImageLabel;
     }
 
+    /**
+     * Opens ad detail.
+     * @param ad the ad
+     */
     private void openAdDetail(Advertisement ad) {
         if (ad.getId() == null) {
             return;
@@ -341,6 +384,11 @@ public class DashboardController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Maps status to message.
+     * @param status the status
+     * @return the result
+     */
     private String mapStatusToMessage(String status) {
         switch (status) {
             case "DELETED":
@@ -356,6 +404,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         }
     }
 
+    /**
+     * Handles logout.
+     */
     @FXML
     private void handleLogout() {
         if (autoRefreshTimeline != null) {
@@ -365,6 +416,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
     }
 
+    /**
+     * Handles create advertisement.
+     */
     @FXML
     private void handleCreateAdvertisement() {
         if (autoRefreshTimeline != null) {
@@ -373,6 +427,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
     }
 
+    /**
+     * Handles manage my ads.
+     */
     @FXML
     private void handleManageMyAds() {
         if (autoRefreshTimeline != null) {
@@ -381,6 +438,9 @@ public class DashboardController implements javafx.fxml.Initializable {
         NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
     }
 
+    /**
+     * Handles show favorites.
+     */
     @FXML
     private void handleShowFavorites() {
         if (autoRefreshTimeline != null) {

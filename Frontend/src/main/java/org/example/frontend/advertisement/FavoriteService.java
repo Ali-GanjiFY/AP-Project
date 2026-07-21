@@ -13,6 +13,9 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents favorite service.
+ */
 public class FavoriteService {
 
     private static final String BASE_URL = "http://localhost:8080/api/favorites";
@@ -20,6 +23,9 @@ public class FavoriteService {
     private final HttpClient httpClient;
     private final Gson gson;
 
+    /**
+     * Constructs a new FavoriteService.
+     */
     public FavoriteService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
@@ -27,6 +33,12 @@ public class FavoriteService {
         this.gson = new Gson();
     }
 
+    /**
+     * Checks whether favorite.
+     * @param token the token
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     public boolean isFavorite(String token, Long advertisementId) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -44,6 +56,12 @@ public class FavoriteService {
         return false;
     }
 
+    /**
+     * Adds favorite.
+     * @param token the token
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     public String addFavorite(String token, Long advertisementId) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -64,6 +82,12 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Removes favorite.
+     * @param token the token
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     public String removeFavorite(String token, Long advertisementId) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -84,6 +108,11 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Gets my favorites.
+     * @param token the token
+     * @return the result
+     */
     public List<FavoriteItem> getMyFavorites(String token) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -104,6 +133,12 @@ public class FavoriteService {
         return Collections.emptyList();
     }
 
+    /**
+     * Extract error.
+     * @param body the body
+     * @param fallback the fallback
+     * @return the result
+     */
     private String extractError(String body, String fallback) {
         try {
             JsonObject err = gson.fromJson(body, JsonObject.class);
@@ -115,13 +150,28 @@ public class FavoriteService {
         return fallback;
     }
 
+    /**
+     * Represents favorite item.
+     */
     public static class FavoriteItem {
         private Long id;
         private String savedAt;
         private Advertisement advertisement;
 
+        /**
+         * Gets id.
+         * @return the result
+         */
         public Long getId() { return id; }
+        /**
+         * Gets saved at.
+         * @return the result
+         */
         public String getSavedAt() { return savedAt; }
+        /**
+         * Gets advertisement.
+         * @return the result
+         */
         public Advertisement getAdvertisement() { return advertisement; }
     }
 }

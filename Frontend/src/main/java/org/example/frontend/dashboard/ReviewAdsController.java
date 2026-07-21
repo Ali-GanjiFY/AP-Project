@@ -25,6 +25,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Represents review ads controller.
+ */
 public class ReviewAdsController implements javafx.fxml.Initializable {
 
     private static final double CARD_WIDTH = 240;
@@ -43,11 +46,19 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
     private final AdminReviewService adminReviewService = new AdminReviewService();
     private final AdvertisementService advertisementService = new AdvertisementService();
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadPendingAdvertisements();
     }
 
+    /**
+     * Loads pending advertisements.
+     */
     private void loadPendingAdvertisements() {
         statusLabel.setText("در حال بارگذاری آگهی‌ها...");
         String token = UserSession.getInstance().getToken();
@@ -73,6 +84,11 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Builds review card.
+     * @param ad the ad
+     * @return the result
+     */
     private VBox buildReviewCard(Advertisement ad) {
 
         String title = "بدون عنوان";
@@ -168,6 +184,11 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         return card;
     }
 
+    /**
+     * Loads images for card.
+     * @param adId the ad id
+     * @param imagesRow the images row
+     */
     private void loadImagesForCard(Long adId, FlowPane imagesRow) {
         new Thread(() -> {
             String token = UserSession.getInstance().getToken();
@@ -214,6 +235,14 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Submit decision.
+     * @param ad the ad
+     * @param decision the decision
+     * @param note the note
+     * @param approveBtn the approve btn
+     * @param rejectBtn the reject btn
+     */
     private void submitDecision(Advertisement ad, String decision, String note, Button approveBtn, Button rejectBtn) {
         approveBtn.setDisable(true);
         rejectBtn.setDisable(true);
@@ -237,26 +266,41 @@ public class ReviewAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles refresh.
+     */
     @FXML
     private void handleRefresh() {
         loadPendingAdvertisements();
     }
 
+    /**
+     * Handles back to dashboard.
+     */
     @FXML
     private void handleBackToDashboard() {
         NavigationService.switchScene("/fxml/dashboard/admin-dashboard-view.fxml", "پنل مدیریت (ادمین)");
     }
 
+    /**
+     * Handles manage users.
+     */
     @FXML
     private void handleManageUsers() {
         NavigationService.switchScene("/fxml/dashboard/user-management-view.fxml", "مدیریت کاربران");
     }
 
+    /**
+     * Handles manage sections.
+     */
     @FXML
     private void handleManageSections() {
         NavigationService.switchScene("/fxml/dashboard/manage-sections-view.fxml", "مدیریت بخش‌ها");
     }
 
+    /**
+     * Handles logout.
+     */
     @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();

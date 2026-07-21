@@ -19,6 +19,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Represents ad review detail controller.
+ */
 public class AdReviewDetailController implements Initializable {
 
     private static final String SERVER_BASE_URL = "http://localhost:8080";
@@ -50,11 +53,19 @@ public class AdReviewDetailController implements Initializable {
     private List<AdvertisementDetail.ImageInfo> adImages;
     private int currentImageIndex = 0;
 
-    // این متد را قبل از رفتن به این صفحه صدا بزن تا بداند کدام آگهی را نشان بدهد
+    /**
+     * این متد را قبل از رفتن به این صفحه صدا بزن تا بداند کدام آگهی را نشان بدهد.
+     * @param advertisementId the advertisement id
+     */
     public static void setSelectedAdvertisementId(Long advertisementId) {
         selectedAdvertisementId = advertisementId;
     }
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (selectedAdvertisementId == null) {
@@ -67,6 +78,10 @@ public class AdReviewDetailController implements Initializable {
         loadAdvertisementDetail(selectedAdvertisementId);
     }
 
+    /**
+     * Loads advertisement detail.
+     * @param adId the ad id
+     */
     private void loadAdvertisementDetail(Long adId) {
         titleLabel.setText("در حال بارگذاری...");
         setButtonsDisabled(true);
@@ -89,6 +104,10 @@ public class AdReviewDetailController implements Initializable {
         }).start();
     }
 
+    /**
+     * Shows advertisement detail.
+     * @param ad the ad
+     */
     private void showAdvertisementDetail(AdvertisementDetail ad) {
         titleLabel.setText(safeText(ad.getTitle(), "بدون عنوان"));
         priceLabel.setText(formatPrice(ad.getPrice()));
@@ -123,6 +142,9 @@ public class AdReviewDetailController implements Initializable {
         }
     }
 
+    /**
+     * Shows current image.
+     */
     private void showCurrentImage() {
         if (adImages == null || adImages.isEmpty()) {
             return;
@@ -141,6 +163,9 @@ public class AdReviewDetailController implements Initializable {
         nextImageButton.setVisible(multipleImages);
     }
 
+    /**
+     * Handles prev image.
+     */
     @FXML
     private void handlePrevImage() {
         if (adImages == null || adImages.isEmpty()) {
@@ -150,6 +175,9 @@ public class AdReviewDetailController implements Initializable {
         showCurrentImage();
     }
 
+    /**
+     * Handles next image.
+     */
     @FXML
     private void handleNextImage() {
         if (adImages == null || adImages.isEmpty()) {
@@ -159,16 +187,26 @@ public class AdReviewDetailController implements Initializable {
         showCurrentImage();
     }
 
+    /**
+     * Handles approve.
+     */
     @FXML
     private void handleApprove() {
         submitDecision("APPROVED");
     }
 
+    /**
+     * Handles reject.
+     */
     @FXML
     private void handleReject() {
         submitDecision("REJECTED");
     }
 
+    /**
+     * Submit decision.
+     * @param decision the decision
+     */
     private void submitDecision(String decision) {
         if (currentAd == null || currentAd.getId() == null) {
             decisionStatusLabel.setText("شناسه آگهی معتبر نیست.");
@@ -199,20 +237,38 @@ public class AdReviewDetailController implements Initializable {
         }).start();
     }
 
+    /**
+     * Sets buttons disabled.
+     * @param disabled the disabled
+     */
     private void setButtonsDisabled(boolean disabled) {
         approveButton.setDisable(disabled);
         rejectButton.setDisable(disabled);
     }
 
+    /**
+     * Handles back.
+     */
     @FXML
     private void handleBack() {
         NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
     }
 
+    /**
+     * Safe text.
+     * @param value the value
+     * @param defaultValue the default value
+     * @return the result
+     */
     private String safeText(String value, String defaultValue) {
         return value == null || value.isBlank() ? defaultValue : value;
     }
 
+    /**
+     * Formats price.
+     * @param price the price
+     * @return the result
+     */
     private String formatPrice(Double price) {
         if (price == null) {
             return "-";
@@ -220,6 +276,11 @@ public class AdReviewDetailController implements Initializable {
         return String.format("%,.0f تومان", price);
     }
 
+    /**
+     * Status to persian.
+     * @param status the status
+     * @return the result
+     */
     private String statusToPersian(String status) {
         if (status == null) {
             return null;

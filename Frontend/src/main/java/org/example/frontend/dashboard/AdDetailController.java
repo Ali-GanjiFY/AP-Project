@@ -23,6 +23,9 @@ import java.util.ResourceBundle;
 import org.example.frontend.chat.ChatService;
 import org.example.frontend.chat.ConversationResponse; // Import ConversationResponse
 
+/**
+ * Represents ad detail controller.
+ */
 public class AdDetailController implements Initializable {
 
     private static final String SERVER_BASE_URL = "http://localhost:8080";
@@ -61,7 +64,11 @@ public class AdDetailController implements Initializable {
     private final FavoriteService favoriteService = new FavoriteService();
     private boolean isFavorite = false;
 
-    // Alert helper methods (assuming they are defined in this class or a base class)
+    /**
+     * Alert helper methods (assuming they are defined in this class or a base class).
+     * @param title the title
+     * @param message the message
+     */
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -70,6 +77,11 @@ public class AdDetailController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Shows info.
+     * @param title the title
+     * @param message the message
+     */
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -77,6 +89,11 @@ public class AdDetailController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    /**
+     * Gets friendly chat error.
+     * @param error the error
+     * @return the result
+     */
     private String getFriendlyChatError(Throwable error) {
         String message = error != null && error.getMessage() != null ? error.getMessage() : "";
         String lowerMessage = message.toLowerCase();
@@ -119,10 +136,19 @@ public class AdDetailController implements Initializable {
         return "شروع گفتگو انجام نشد. لطفاً دوباره تلاش کنید.";
     }
 
+    /**
+     * Sets selected advertisement.
+     * @param advertisement the advertisement
+     */
     public static void setSelectedAdvertisement(AdvertisementDetail advertisement) {
         selectedAdvertisement = advertisement;
     }
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (selectedAdvertisement == null) {
@@ -186,6 +212,11 @@ public class AdDetailController implements Initializable {
         setupFavoriteButton(loggedIn, isOwner);
     }
 
+    /**
+     * Setup favorite button.
+     * @param loggedIn the logged in
+     * @param isOwner the is owner
+     */
     private void setupFavoriteButton(boolean loggedIn, boolean isOwner) {
         if (favoriteButton == null) {
             return;
@@ -217,6 +248,9 @@ public class AdDetailController implements Initializable {
         }).start();
     }
 
+    /**
+     * Updates favorite button ui.
+     */
     private void updateFavoriteButtonUi() {
         if (isFavorite) {
             favoriteButton.setText("♥ حذف از علاقه‌مندی‌ها");
@@ -229,6 +263,9 @@ public class AdDetailController implements Initializable {
         }
     }
 
+    /**
+     * Handles toggle favorite.
+     */
     @FXML
     private void handleToggleFavorite() {
         String token = UserSession.getInstance().getToken();
@@ -256,6 +293,9 @@ public class AdDetailController implements Initializable {
         }).start();
     }
 
+    /**
+     * Setup ratings section.
+     */
     private void setupRatingsSection() {
         Double avg = selectedAdvertisement.getSellerAverageRating();
         Long count = selectedAdvertisement.getSellerRatingCount();
@@ -284,6 +324,9 @@ public class AdDetailController implements Initializable {
         loadReviews();
     }
 
+    /**
+     * Loads reviews.
+     */
     private void loadReviews() {
         reviewsStatusLabel.setText("در حال بارگذاری نظرات...");
         Long adId = selectedAdvertisement.getId();
@@ -318,6 +361,11 @@ public class AdDetailController implements Initializable {
         }).start();
     }
 
+    /**
+     * Builds review card.
+     * @param review the review
+     * @return the result
+     */
     private VBox buildReviewCard(RatingService.RatingDto review) {
         VBox card = new VBox(6);
         card.setStyle("-fx-background-color: #f8fafa; -fx-background-radius: 8; " // Changed to a softer color
@@ -339,6 +387,9 @@ public class AdDetailController implements Initializable {
         return card;
     }
 
+    /**
+     * Handles submit review.
+     */
     @FXML
     private void handleSubmitReview() {
         Integer score = scoreComboBox.getValue();
@@ -380,6 +431,9 @@ public class AdDetailController implements Initializable {
         }).start();
     }
 
+    /**
+     * Handles back.
+     */
     @FXML
     private void handleBack() {
         NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد");
@@ -387,6 +441,9 @@ public class AdDetailController implements Initializable {
 
     // --- Updated handleStartChat method ---
 
+    /**
+     * Handles start chat.
+     */
     @FXML
     private void handleStartChat() {
         String token = UserSession.getInstance().getToken();
@@ -440,6 +497,9 @@ public class AdDetailController implements Initializable {
     // --- End of updated handleStartChat ---
 
 
+    /**
+     * Shows current image.
+     */
     private void showCurrentImage() {
         if (adImages == null || adImages.isEmpty()) {
             return;
@@ -458,6 +518,9 @@ public class AdDetailController implements Initializable {
         nextImageButton.setVisible(multipleImages);
     }
 
+    /**
+     * Handles prev image.
+     */
     @FXML
     private void handlePrevImage() {
         if (adImages == null || adImages.isEmpty()) {
@@ -467,6 +530,9 @@ public class AdDetailController implements Initializable {
         showCurrentImage();
     }
 
+    /**
+     * Handles next image.
+     */
     @FXML
     private void handleNextImage() {
         if (adImages == null || adImages.isEmpty()) {
@@ -476,10 +542,21 @@ public class AdDetailController implements Initializable {
         showCurrentImage();
     }
 
+    /**
+     * Safe text.
+     * @param value the value
+     * @param defaultValue the default value
+     * @return the result
+     */
     private String safeText(String value, String defaultValue) {
         return value == null || value.isBlank() ? defaultValue : value;
     }
 
+    /**
+     * Formats price.
+     * @param price the price
+     * @return the result
+     */
     private String formatPrice(Double price) {
         if (price == null) {
             return "-";
@@ -487,6 +564,11 @@ public class AdDetailController implements Initializable {
         return String.format("%,.0f تومان", price);
     }
 
+    /**
+     * Status to persian.
+     * @param status the status
+     * @return the result
+     */
     private String statusToPersian(String status) {
         if (status == null) {
             return null;

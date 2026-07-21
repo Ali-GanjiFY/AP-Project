@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Represents create advertisement controller.
+ */
 public class CreateAdvertisementController implements javafx.fxml.Initializable {
 
     @FXML private Label formTitleLabel;
@@ -44,12 +47,20 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
     private Long pendingCategoryId;
     private Long pendingCityId;
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadCategoriesAndCities();
     }
 
-    // Called by NavigationService's controllerInitializer when navigating here to edit an existing ad.
+    /**
+     * Called by NavigationService's controllerInitializer when navigating here to edit an existing ad.
+     * @param ad the ad
+     */
     public void setEditMode(AdvertisementDetail ad) {
         this.editingAdId = ad.getId();
         this.pendingCategoryId = ad.getCategory() != null ? ad.getCategory().getId() : null;
@@ -81,6 +92,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         applyPendingSelections();
     }
 
+    /**
+     * Applies pending selections.
+     */
     private void applyPendingSelections() {
         if (pendingCategoryId != null) {
             for (CategoryOption option : categoryComboBox.getItems()) {
@@ -100,6 +114,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }
     }
 
+    /**
+     * Loads categories and cities.
+     */
     private void loadCategoriesAndCities() {
         new Thread(() -> {
             List<CategoryOption> categories = categoryService.getAllCategories();
@@ -122,6 +139,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }).start();
     }
 
+    /**
+     * Handles choose images.
+     */
     @FXML
     private void handleChooseImages() {
         FileChooser fileChooser = new FileChooser();
@@ -137,8 +157,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }
     }
 
-    // Builds one "chip" per image (existing ones already on the server + newly picked local
-    // files), each with a small × button to remove it before saving.
+    /**
+     * Builds one "chip" per image (existing ones already on the server + newly picked local files), each with a small × button to remove it before saving.
+     */
     private void renderImageChips() {
         int total = remainingExistingImagePaths.size() + selectedImages.size();
         imagesCountLabel.setText(total == 0 ? "هیچ عکسی انتخاب نشده" : total + " عکس انتخاب شده");
@@ -162,6 +183,11 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }
     }
 
+    /**
+     * Image file name.
+     * @param path the path
+     * @return the result
+     */
     private String imageFileName(String path) {
         if (path == null) return "تصویر";
         int slashIndex = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
@@ -187,6 +213,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         return chip;
     }
 
+    /**
+     * Handles submit.
+     */
     @FXML
     private void handleSubmit() {
         String title = titleField.getText() == null ? "" : titleField.getText().trim();
@@ -236,6 +265,15 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }
     }
 
+    /**
+     * Submit create.
+     * @param token the token
+     * @param title the title
+     * @param description the description
+     * @param price the price
+     * @param categoryId the category id
+     * @param cityId the city id
+     */
     private void submitCreate(String token, String title, String description, Double price,
                               Long categoryId, Long cityId) {
         statusLabel.setText("در حال ثبت آگهی...");
@@ -266,6 +304,15 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }).start();
     }
 
+    /**
+     * Submit edit.
+     * @param token the token
+     * @param title the title
+     * @param description the description
+     * @param price the price
+     * @param categoryId the category id
+     * @param cityId the city id
+     */
     private void submitEdit(String token, String title, String description, Double price,
                             Long categoryId, Long cityId) {
         if (remainingExistingImagePaths.isEmpty() && selectedImages.isEmpty()) {
@@ -306,6 +353,9 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }).start();
     }
 
+    /**
+     * Handles cancel.
+     */
     @FXML
     private void handleCancel() {
         if (editingAdId != null) {
@@ -315,6 +365,10 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }
     }
 
+    /**
+     * Shows error.
+     * @param message the message
+     */
     private void showError(String message) {
         statusLabel.setText(message);
         statusLabel.setVisible(true);
@@ -324,6 +378,10 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         }
     }
 
+    /**
+     * Shows success.
+     * @param message the message
+     */
     private void showSuccess(String message) {
         statusLabel.setText(message);
         statusLabel.setVisible(true);

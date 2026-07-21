@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Represents image upload service.
+ */
 public class ImageUploadService {
 
     private static final String UPLOAD_URL = "http://localhost:8080/api/uploads/images";
@@ -24,7 +27,12 @@ public class ImageUploadService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
-    // /uploads/abc.jpg
+    /**
+     * /uploads/abc.jpg.
+     * @param token the token
+     * @param files the files
+     * @return the result
+     */
     public List<String> uploadImages(String token, List<File> files) {
 
         List<String> result = new ArrayList<>();
@@ -63,6 +71,11 @@ public class ImageUploadService {
         return result;
     }
 
+    /**
+     * Builds request body.
+     * @param files the files
+     * @return the result
+     */
     private byte[] buildRequestBody(List<File> files) throws Exception {
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -88,6 +101,11 @@ public class ImageUploadService {
         return buffer.toByteArray();
     }
 
+    /**
+     * Guess content type.
+     * @param file the file
+     * @return the result
+     */
     private String guessContentType(File file) {
         String name = file.getName().toLowerCase();
 

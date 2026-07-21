@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents chat controller.
+ */
 public class ChatController {
 
     @FXML
@@ -68,6 +71,9 @@ public class ChatController {
      */
     private boolean controllerActive = true;
 
+    /**
+     * Initialize.
+     */
     @FXML
     private void initialize() {
         chatTitleLabel.setText("گفتگو");
@@ -198,6 +204,9 @@ public class ChatController {
         }, "دریافت پیام‌ها", () -> loadingMessages = false);
     }
 
+    /**
+     * Handles send message.
+     */
     @FXML
     private void handleSendMessage() {
         if (conversationId == null) {
@@ -397,6 +406,9 @@ public class ChatController {
         scrollToBottom();
     }
 
+    /**
+     * Starts message polling.
+     */
     private void startMessagePolling() {
         stopMessagePolling();
 
@@ -414,6 +426,9 @@ public class ChatController {
         messagePolling.play();
     }
 
+    /**
+     * Stops message polling.
+     */
     private void stopMessagePolling() {
         if (messagePolling != null) {
             messagePolling.stop();
@@ -421,6 +436,9 @@ public class ChatController {
         }
     }
 
+    /**
+     * Handles back.
+     */
     @FXML
     private void handleBack() {
         controllerActive = false;
@@ -433,6 +451,9 @@ public class ChatController {
     }
 
 
+    /**
+     * Updates send button state.
+     */
     private void updateSendButtonState() {
         boolean invalidConversation =
                 conversationId == null;
@@ -451,6 +472,9 @@ public class ChatController {
         );
     }
 
+    /**
+     * Scroll to bottom.
+     */
     private void scrollToBottom() {
         Platform.runLater(() -> {
             scrollPane.applyCss();
@@ -459,6 +483,12 @@ public class ChatController {
         });
     }
 
+    /**
+     * Safe text.
+     * @param value the value
+     * @param fallback the fallback
+     * @return the result
+     */
     private String safeText(
             String value,
             String fallback
@@ -489,6 +519,11 @@ public class ChatController {
         return formatted;
     }
 
+    /**
+     * Runs in background.
+     * @param task the task
+     * @param operation the operation
+     */
     private void runInBackground(
             CheckedTask task,
             String operation
@@ -496,6 +531,12 @@ public class ChatController {
         runInBackground(task, operation, null);
     }
 
+    /**
+     * Runs in background.
+     * @param task the task
+     * @param operation the operation
+     * @param failureCleanup the failure cleanup
+     */
     private void runInBackground(
             CheckedTask task,
             String operation,
@@ -532,6 +573,11 @@ public class ChatController {
         thread.start();
     }
 
+    /**
+     * Gets useful error message.
+     * @param exception the exception
+     * @return the result
+     */
     private String getUsefulErrorMessage(
             Exception exception
     ) {
@@ -543,6 +589,10 @@ public class ChatController {
         return exception.getClass().getSimpleName();
     }
 
+    /**
+     * Shows error.
+     * @param message the message
+     */
     private void showError(String message) {
         Alert alert = new Alert(
                 Alert.AlertType.ERROR
@@ -554,6 +604,9 @@ public class ChatController {
         alert.showAndWait();
     }
 
+    /**
+     * Contract for checked task.
+     */
     @FunctionalInterface
     private interface CheckedTask {
         void run() throws Exception;

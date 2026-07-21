@@ -5,6 +5,9 @@ import javafx.scene.control.*;
 import javafx.application.Platform;
 import org.example.frontend.shared.NavigationService;
 
+/**
+ * Represents register controller.
+ */
 public class RegisterController {
 
     @FXML private TextField fullNameField;
@@ -16,6 +19,9 @@ public class RegisterController {
 
     private final AuthService authService = new AuthService();
 
+    /**
+     * Handles register.
+     */
     @FXML
     private void handleRegister() {
         String fullName = fullNameField.getText().trim();
@@ -64,6 +70,9 @@ public class RegisterController {
         }).start();
     }
 
+    /**
+     * Navigates to to login.
+     */
     @FXML
     private void navigateToLogin() {
         NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
@@ -96,6 +105,10 @@ public class RegisterController {
         return rawError;
     }
 
+    /**
+     * Shows error.
+     * @param message the message
+     */
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.getStyleClass().removeAll("success-text");
@@ -103,6 +116,10 @@ public class RegisterController {
         errorLabel.setVisible(true);
     }
 
+    /**
+     * Shows success.
+     * @param message the message
+     */
     private void showSuccess(String message) {
         errorLabel.setText(message);
         errorLabel.getStyleClass().removeAll("error-text");

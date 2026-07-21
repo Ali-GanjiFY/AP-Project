@@ -17,6 +17,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Represents manage sections controller.
+ */
 public class ManageSectionsController implements javafx.fxml.Initializable {
 
     @FXML private StackPane contentArea;
@@ -45,6 +48,11 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
     private final CityService cityService = new CityService();
     private final CategoryService categoryService = new CategoryService();
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cityNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -70,6 +78,9 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
 
     // City
 
+    /**
+     * Loads cities.
+     */
     private void loadCities() {
         cityStatusLabel.setText("در حال بارگذاری شهرها...");
 
@@ -85,6 +96,9 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles add city.
+     */
     @FXML
     private void handleAddCity() {
         String name = cityNameField.getText() == null ? "" : cityNameField.getText().trim();
@@ -114,6 +128,9 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Adds city delete button.
+     */
     private void addCityDeleteButton() {
         cityActionColumn.setCellFactory(col -> new TableCell<>() {
             private final Button deleteBtn = new Button("حذف");
@@ -126,6 +143,11 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
                 });
             }
 
+            /**
+             * Updates item.
+             * @param item the item
+             * @param empty the empty
+             */
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -134,6 +156,10 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         });
     }
 
+    /**
+     * Confirm and delete city.
+     * @param city the city
+     */
     private void confirmAndDeleteCity(CityOption city) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "آیا از حذف شهر «" + city.getName() + "» مطمئن هستید؟", ButtonType.YES, ButtonType.NO);
@@ -156,6 +182,9 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
 
     //  Category
 
+    /**
+     * Loads categories.
+     */
     private void loadCategories() {
         categoryStatusLabel.setText("در حال بارگذاری دسته‌بندی‌ها...");
 
@@ -172,6 +201,9 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles add category.
+     */
     @FXML
     private void handleAddCategory() {
         String name = categoryNameField.getText() == null ? "" : categoryNameField.getText().trim();
@@ -204,6 +236,9 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Adds category delete button.
+     */
     private void addCategoryDeleteButton() {
         categoryActionColumn.setCellFactory(col -> new TableCell<>() {
             private final Button deleteBtn = new Button("حذف");
@@ -216,6 +251,11 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
                 });
             }
 
+            /**
+             * Updates item.
+             * @param item the item
+             * @param empty the empty
+             */
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -224,6 +264,10 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
         });
     }
 
+    /**
+     * Confirm and delete category.
+     * @param category the category
+     */
     private void confirmAndDeleteCategory(CategoryOption category) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "آیا از حذف دسته‌بندی «" + category.getName() + "» مطمئن هستید؟", ButtonType.YES, ButtonType.NO);
@@ -246,27 +290,43 @@ public class ManageSectionsController implements javafx.fxml.Initializable {
 
     // both of them
 
+    /**
+     * Shows alert.
+     * @param message the message
+     */
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setHeaderText("خطا");
         alert.showAndWait();
     }
 
+    /**
+     * Handles back to dashboard.
+     */
     @FXML
     private void handleBackToDashboard() {
         NavigationService.switchScene("/fxml/dashboard/admin-dashboard-view.fxml", "پنل مدیریت (ادمین)");
     }
 
+    /**
+     * Handles manage users.
+     */
     @FXML
     private void handleManageUsers() {
         NavigationService.switchScene("/fxml/dashboard/user-management-view.fxml", "مدیریت کاربران");
     }
 
+    /**
+     * Handles review ads.
+     */
     @FXML
     private void handleReviewAds() {
         NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
     }
 
+    /**
+     * Handles logout.
+     */
     @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();

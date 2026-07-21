@@ -13,6 +13,9 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * Represents chat service.
+ */
 public class ChatService {
 
     private static final String BASE_URL =
@@ -21,6 +24,9 @@ public class ChatService {
     private final HttpClient httpClient;
     private final Gson gson;
 
+    /**
+     * Constructs a new ChatService.
+     */
     public ChatService() {
         this.httpClient = HttpClient.newHttpClient();
         this.gson = new Gson();
@@ -193,6 +199,11 @@ public class ChatService {
                 .header("Accept", "application/json");
     }
 
+    /**
+     * Sends.
+     * @param request the request
+     * @return the result
+     */
     private HttpResponse<String> send(HttpRequest request)
             throws IOException, InterruptedException {
 
@@ -202,6 +213,11 @@ public class ChatService {
         );
     }
 
+    /**
+     * Ensures successful.
+     * @param response the response
+     * @param operation the operation
+     */
     private void ensureSuccessful(
             HttpResponse<String> response,
             String operation
@@ -217,6 +233,11 @@ public class ChatService {
         }
     }
 
+    /**
+     * Validates id.
+     * @param id the id
+     * @param name the name
+     */
     private void validateId(Long id, String name) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException(

@@ -13,8 +13,15 @@ import org.example.frontend.shared.NavigationService;
 
 import java.net.URL;
 
+/**
+ * Represents hello application.
+ */
 public class HelloApplication extends Application {
 
+    /**
+     * Starts.
+     * @param stage the stage
+     */
     @Override
     public void start(Stage stage) {
         NavigationService.setPrimaryStage(stage);
@@ -78,6 +85,10 @@ public class HelloApplication extends Application {
         fadeIn.play();
     }
 
+    /**
+     * Main.
+     * @param args the args
+     */
     public static void main(String[] args) {
         launch(args);
     }

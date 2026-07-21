@@ -7,19 +7,34 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.function.Consumer;
 
+/**
+ * Represents navigation service.
+ */
 public class NavigationService {
 
     private static Stage primaryStage;
 
+    /**
+     * Sets primary stage.
+     * @param stage the stage
+     */
     public static void setPrimaryStage(Stage stage) {
         primaryStage = stage;
     }
 
+    /**
+     * Gets primary stage.
+     * @return the result
+     */
     public static Stage getPrimaryStage() {
         return primaryStage;
     }
 
-    // متد استاندارد قدیمی برای سازگاری با بقیه بخش‌های برنامه
+    /**
+     * متد استاندارد قدیمی برای سازگاری با بقیه بخش‌های برنامه.
+     * @param fxmlPath the fxml path
+     * @param title the title
+     */
     public static void switchScene(String fxmlPath, String title) {
         switchScene(fxmlPath, title, null);
     }
