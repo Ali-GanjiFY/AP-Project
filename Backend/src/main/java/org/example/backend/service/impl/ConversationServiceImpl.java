@@ -91,9 +91,9 @@ public class ConversationServiceImpl implements ConversationService {
         conversationRepository.save(conversation);
     }
 
-    // Convert Conversation entity to ConversationResponse DTO
+    // Convert Conversation entity to ConversationResponse
     private ConversationResponse toResponse(ConversationEntity conversation, UserEntity currentUser) {
-        // Determine the other participant
+
         UserEntity other = conversation.getBuyer().getId().equals(currentUser.getId())
                 ? conversation.getSeller() : conversation.getBuyer();
 

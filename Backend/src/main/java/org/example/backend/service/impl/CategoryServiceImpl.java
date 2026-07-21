@@ -18,7 +18,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final AdvertisementRepository advertisementRepository; // For checking ad dependencies before deletion
+    private final AdvertisementRepository advertisementRepository; // For checking ad dependencies
 
     public CategoryServiceImpl(CategoryRepository categoryRepository, AdvertisementRepository advertisementRepository) {
         this.categoryRepository = categoryRepository;
@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryResponse createCategory(CategoryRequest request) {
-        // Check if category name already exists
+        // Check if category already exists
         if (categoryRepository.existsByName(request.getName())) {
             throw new DuplicateResourceException("این دسته‌بندی قبلاً ثبت شده است");
         }
@@ -79,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
         return toResponse(categoryRepository.save(category));
     }
 
-    // Delete category with dependency checks (subcategories and ads)
+    // Delete category with dependency checks
     @Override
     @Transactional
     public void deleteCategory(Long id) {
@@ -104,13 +104,13 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(category);
     }
 
-    // Get category by ID as DTO
+    // Get category by ID
     @Override
     public CategoryResponse getCategoryById(Long id) {
         return toResponse(getCategoryEntityById(id));
     }
 
-    // Get category by name (case-insensitive)
+    // Get category by name
     @Override
     @Transactional(readOnly = true)
     public CategoryResponse getCategoryByName(String name) {
@@ -119,7 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
         return toResponse(category);
     }
 
-    // Get category entity by ID (internal use by other services)
+    // Get category entity by ID
     @Override
     public CategoryEntity getCategoryEntityById(Long id) {
         return categoryRepository.findById(id)

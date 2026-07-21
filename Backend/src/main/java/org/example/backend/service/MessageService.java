@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface MessageService {
 
-    // Send a message in a conversation (sender must be a participant)
+    // Send message in conversation (sender must be participant)
     ChatMessageResponse sendMessage(Long conversationId, UserEntity sender, SendMessageRequest request);
 
-    // Get all messages in a conversation (currentUser must be a participant)
+    // Get all messages (user must be participant)
     List<ChatMessageResponse> getConversationMessages(Long conversationId, UserEntity currentUser);
 
-    // Mark all unseen messages as seen (only marks messages from others)
+    // Mark messages from other user as seen
     void markMessagesAsSeen(Long conversationId, UserEntity currentUser);
 }

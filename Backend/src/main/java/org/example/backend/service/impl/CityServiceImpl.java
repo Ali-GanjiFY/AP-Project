@@ -25,11 +25,11 @@ public class CityServiceImpl implements CityService {
         this.advertisementRepository = advertisementRepository;
     }
 
-    // Create a new city with unique name validation
+    // Create a new city
     @Override
     @Transactional
     public CityResponse createCity(CityRequest request) {
-        // Check if city name already exists
+        // Check if city already exists
         if (cityRepository.existsByName(request.getName())) {
             throw new DuplicateResourceException("این شهر قبلاً ثبت شده است");
         }
@@ -38,12 +38,12 @@ public class CityServiceImpl implements CityService {
         return toResponse(cityRepository.save(city));
     }
 
-    // Update city details (name, province) with uniqueness check
+    // Update city details
     @Override
     @Transactional
     public CityResponse updateCity(Long id, CityRequest request) {
         CityEntity city = getCityEntityById(id);
-        // Check name uniqueness if changed
+        // Check name uniqueness
         if (!city.getName().equals(request.getName()) && cityRepository.existsByName(request.getName())) {
             throw new DuplicateResourceException("این شهر قبلاً ثبت شده است");
         }
@@ -52,7 +52,7 @@ public class CityServiceImpl implements CityService {
         return toResponse(cityRepository.save(city));
     }
 
-    // Delete city with advertisement dependency check
+    // Delete city with advertisement dependency
     @Override
     @Transactional
     public void deleteCity(Long id) {
@@ -70,7 +70,7 @@ public class CityServiceImpl implements CityService {
         cityRepository.delete(city);
     }
 
-    // Get city by ID as DTO
+    // Get city by ID
     @Override
     public CityResponse getCityById(Long id) {
         return toResponse(getCityEntityById(id));
@@ -85,7 +85,7 @@ public class CityServiceImpl implements CityService {
         return toResponse(city);
     }
 
-    // Get city entity by ID (internal use by other services)
+    // Get city entity by ID
     @Override
     public CityEntity getCityEntityById(Long id) {
         return cityRepository.findById(id)
@@ -98,7 +98,7 @@ public class CityServiceImpl implements CityService {
         return cityRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    // Convert City entity to CityResponse DTO
+    // Convert City entity to CityResponse
     private CityResponse toResponse(CityEntity city) {
         return new CityResponse(city.getId(), city.getName(), city.getProvince());
     }

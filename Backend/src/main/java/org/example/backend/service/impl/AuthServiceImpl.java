@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             throw new DuplicateResourceException("Email already exists");
         }
 
-        // Create and save new user
+        // Create user
         UserEntity user = new UserEntity();
         user.setFullName(request.getFullName());
         user.setUsername(request.getUsername());
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     // Authenticate user and return JWT token
     @Override
     public AuthResponse login(LoginRequest request) {
-        // Find user by username
+        // Find by username
         UserEntity user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
 
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AuthenticationException("Invalid username or password");
         }
-        // Check if user is not blocked
+        // Check user is not blocked
         if (user.getStatus() != UserStatusEnum.ACTIVE) {
             throw new AuthenticationException("User is blocked");
         }

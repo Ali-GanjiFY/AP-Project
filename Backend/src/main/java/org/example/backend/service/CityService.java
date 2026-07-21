@@ -8,24 +8,24 @@ import java.util.List;
 
 public interface CityService {
 
-    // Create a new city with unique name validation
+    // Create new city
     CityResponse createCity(CityRequest request);
 
-    // Update city details (name, province)
+    // Update city
     CityResponse updateCity(Long id, CityRequest request);
 
-    // Delete city by ID (with advertisement dependency check)
+    // Delete city (checks for existing ads)
     void deleteCity(Long id);
 
-    // Get city by ID as DTO
+    // Get city by ID
     CityResponse getCityById(Long id);
 
     // Get city by name (case-insensitive)
     CityResponse getCityByName(String name);
 
-    // Get city entity by ID (internal use by other services)
+    // Internal use only
     CityEntity getCityEntityById(Long id);
 
-    // Get list of all cities
+    // List all cities
     List<CityResponse> getAllCities();
 }

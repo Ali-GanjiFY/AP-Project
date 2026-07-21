@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface SellerRatingService {
 
-    // Create a rating for a seller (buyer rates seller for an advertisement)
+    // Rate a seller for an ad (prevents duplicate)
     SellerRatingResponse createRating(UserEntity buyer, CreateRatingRequest request);
 
     // Get all ratings received by a seller
     List<SellerRatingResponse> getSellerRatings(UserEntity seller);
 
-    // Get all ratings for a specific advertisement
+    // Get ratings for a specific ad
     List<SellerRatingResponse> getRatingsByAdvertisement(Long advertisementId);
 
-    // Get rating summary (average score and total count) for a seller
+    // Get average score and count for a seller
     SellerRatingSummaryResponse getSellerRatingSummary(UserEntity seller);
 }

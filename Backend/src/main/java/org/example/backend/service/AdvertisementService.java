@@ -13,36 +13,36 @@ import java.util.List;
 
 public interface AdvertisementService {
 
-    // Create a new advertisement with PENDING status and at least one image
+    // Creates ad with PENDING status
     AdvertisementDetailResponse createAdvertisement(UserEntity owner, CreateAdvertisementRequest request);
 
-    // Update existing advertisement, returns to PENDING status for admin review
+    // Edits ad, reverts status to PENDING for re-review
     AdvertisementDetailResponse updateAdvertisement(Long adId, UserEntity currentUser, UpdateAdvertisementRequest request);
 
-    // Soft delete advertisement (owner or admin only)
+    // Soft delete (owner or admin)
     void deleteAdvertisement(Long adId, UserEntity currentUser);
 
-    // Mark active advertisement as SOLD (owner only)
+    // Marks as SOLD (owner only)
     AdvertisementDetailResponse markAsSold(Long adId, UserEntity currentUser);
 
-    // Internal method: change advertisement status (used by AdminReviewService)
+    // Used by AdminReviewService
     void changeStatus(AdvertisementEntity ad, AdvertisementStatusEnum newStatus);
 
-    // Get full advertisement details with seller ratings
+    // Full details with seller ratings
     AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser);
 
-    // Get advertisement entity by ID (internal use by other services)
+    // Internal use only
     AdvertisementEntity getAdvertisementEntityById(Long adId);
 
-    // Get all active advertisements for public browsing
+    // All active ads for public view
     List<AdvertisementSummaryResponse> getAllActiveAds();
 
-    // Get all advertisements owned by a specific user
+    // Ads owned by specific user
     List<AdvertisementSummaryResponse> getMyAdvertisements(UserEntity owner);
 
-    // Get pending advertisements for admin review (oldest first)
+    // Pending ads for admin (oldest first)
     List<AdvertisementSummaryResponse> getPendingAdvertisements();
 
-    // Search and filter active advertisements by keyword, category, city, price range and sorting
+    // Search: keyword, category, city, price, sorting
     List<AdvertisementSummaryResponse> searchAdvertisements(AdvertisementSearchRequest request);
 }

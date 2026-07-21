@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface FavoriteService {
 
-    // Add an advertisement to user's favorites (prevents duplicates)
+    // Add ad to user's favorites (prevents duplicate)
     FavoriteResponse addFavorite(UserEntity user, AdvertisementEntity advertisement);
 
-    // Remove an advertisement from user's favorites
+    // Remove ad from user's favorites
     void removeFavorite(UserEntity user, AdvertisementEntity advertisement);
 
-    // Check if an advertisement is in user's favorites
+    // Check if ad is in user's favorites
     boolean isFavorite(UserEntity user, AdvertisementEntity advertisement);
 
-    // Get all favorites for a user (sorted by saved date descending)
+    // Get all favorites for a user (sorted newest first)
     List<FavoriteResponse> getUserFavorites(UserEntity user);
 }

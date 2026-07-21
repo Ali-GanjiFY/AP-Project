@@ -10,18 +10,18 @@ import java.util.List;
 
 public interface ConversationService {
 
-    // Start a new conversation or get existing one between buyer and seller for an ad
+    // Start new or return existing conversation
     ConversationResponse startOrGetConversation(UserEntity buyer, AdvertisementEntity advertisement);
 
-    // Get all conversations for a user (both as buyer and seller)
+    // Get all conversations for a user
     List<ConversationResponse> getUserConversations(UserEntity user);
 
-    // Get conversation by ID with access control (user must be a participant)
+    // Get conversation by ID (user must be participant)
     ConversationResponse getConversationById(Long conversationId, UserEntity currentUser);
 
-    // Get conversation entity by ID with access control (internal use by MessageService)
+    // Internal use - get conversation entity with access check
     ConversationEntity getConversationEntityById(Long conversationId, UserEntity currentUser);
 
-    // Update last message timestamp for a conversation
+    // Update last message timestamp
     void touchLastMessageAt(ConversationEntity conversation, LocalDateTime time);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AdminReviewService {
 
-    // Review an advertisement: approve, reject, or remove (admin only)
+    // Review an advertisement
     AdminReviewResponse reviewAdvertisement(UserEntity admin, Long advertisementId, AdminDecisionRequest request);
 
     // Get the review record for a specific advertisement

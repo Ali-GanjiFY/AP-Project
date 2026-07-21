@@ -6,9 +6,9 @@ import org.example.backend.dto.response.AuthResponse;
 
 public interface AuthService {
 
-    // Register a new user with unique username, phone, email validation
+    // Register new user
     AuthResponse register(RegisterRequest request);
 
-    // Authenticate user with username and password, return JWT token
+    // Authenticate and return JWT
     AuthResponse login(LoginRequest request);
 }

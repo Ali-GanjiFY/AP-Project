@@ -10,33 +10,33 @@ import java.util.List;
 
 public interface UserService {
 
-    // Get user entity by ID (internal use by other services)
+    // Internal: get user entity by ID
     UserEntity getUserEntityById(Long userId);
 
-    // Get user entity by username (internal use by other services)
+    // Internal: get user entity by username
     UserEntity getUserEntityByUsername(String username);
 
-    // Get user profile as DTO by ID
+    // Get user profile as DTO
     UserResponse getUserById(Long userId);
 
-    // Update user profile (full name, email, phone) with uniqueness validation
+    // Update profile (full name, email, phone)
     UserResponse updateProfile(Long userId, UpdateProfileRequest request);
 
-    // Change user password with old password verification
+    // Change password (requires old password check)
     void changePassword(Long userId, ChangePasswordRequest request);
 
-    // Get list of all users
+    // List all users
     List<UserResponse> getAllUsers();
 
-    // Get list of users filtered by status (ACTIVE, BLOCKED, DELETED)
+    // Filter users by status
     List<UserResponse> getUsersByStatus(UserStatusEnum status);
 
-    // Block a user (admin only, cannot block other admins)
+    // Block user (admin only)
     UserResponse blockUser(Long userId);
 
-    // Unblock a user (admin only, cannot unblock deleted users)
+    // Unblock user (admin only)
     UserResponse unblockUser(Long userId);
 
-    // Soft delete a user: user can delete self, admin can delete others
+    // Soft delete (self or admin for others)
     void deleteUser(Long currentUserId, Long targetUserId);
 }

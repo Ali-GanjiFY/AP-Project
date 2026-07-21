@@ -32,41 +32,34 @@ public class AdvertisementEntity {
     @Column
     private LocalDateTime updatedAt;
 
-    // رابطه با صاحب آگهی
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private UserEntity owner;
 
-    // رابطه با دسته‌بندی
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    // رابطه با شهر
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private CityEntity city;
 
-    // رابطه با تصاویر
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<AdvertisementImageEntity> images;
 
-    // رابطه با گفتگوها
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<ConversationEntity> conversations;
 
-    // رابطه با علاقه‌مندی‌ها
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<FavoriteEntity> favorites;
 
-    // رابطه با امتیازها
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<SellerRatingEntity> ratings;
 
-    // Constructors
+    // Default constructor
     public AdvertisementEntity() {}
 
-    // Getters & Setters
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

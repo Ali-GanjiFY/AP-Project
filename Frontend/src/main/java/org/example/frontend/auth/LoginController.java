@@ -74,6 +74,9 @@ public class LoginController {
         if (cleanError.contains("connection refused") || cleanError.contains("network") || cleanError.contains("timeout")) {
             return "برقراری ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.";
         }
+        if (cleanError.toLowerCase().contains("blocked")) {
+            return "حساب کاربری شما مسدود شده است.";
+        }
 
         return rawError;
     }

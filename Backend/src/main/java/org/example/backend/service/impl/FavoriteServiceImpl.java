@@ -24,14 +24,14 @@ public class FavoriteServiceImpl implements FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    // Add advertisement to user's favorites, prevent duplicates
+    // Add advertisement to user's favorites
     @Override
     @Transactional
     public FavoriteResponse addFavorite(UserEntity user, AdvertisementEntity advertisement) {
         if (advertisement.getOwner() != null && advertisement.getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("شما نمی‌توانید آگهی خودتان را به علاقه‌مندی‌ها اضافه کنید");
         }
-        // Check if already favorite to avoid duplicate entry
+        // Check if already favorite
         if (favoriteRepository.existsByUserAndAdvertisement(user, advertisement)) {
             throw new DuplicateResourceException("این آگهی قبلاً به علاقه‌مندی‌ها اضافه شده است");
         }
@@ -42,7 +42,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public void removeFavorite(UserEntity user, AdvertisementEntity advertisement) {
-        // Verify that it exists before attempting deletion
+        // Verify that it exists
         if (!favoriteRepository.existsByUserAndAdvertisement(user, advertisement)) {
             throw new ResourceNotFoundException("این آگهی در لیست علاقه‌مندی‌های شما نیست");
         }
@@ -55,7 +55,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         return favoriteRepository.existsByUserAndAdvertisement(user, advertisement);
     }
 
-    // Get all favorites for a user, most recent first
+    // Get all favorites for a user
     @Override
     public List<FavoriteResponse> getUserFavorites(UserEntity user) {
         return favoriteRepository.findByUserOrderBySavedAtDesc(user).stream()
@@ -63,9 +63,10 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .toList();
     }
 
-    // Convert Favorite entity to FavoriteResponse DTO with advertisement summary
+    // Convert Favorite entity to FavoriteResponse
     private FavoriteResponse toResponse(FavoriteEntity favorite) {
         AdvertisementEntity ad = favorite.getAdvertisement();
+
         // Extract first image as main image
         String mainImage = (ad.getImages() != null && !ad.getImages().isEmpty())
                 ? ad.getImages().get(0).getImagePath() : null;
