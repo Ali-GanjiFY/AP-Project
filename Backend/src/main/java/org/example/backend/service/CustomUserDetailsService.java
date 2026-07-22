@@ -1,5 +1,6 @@
 package org.example.backend.service;
 import org.example.backend.entity.UserEntity;
+import org.example.backend.enums.UserStatusEnum;
 import org.springframework.lang.NonNull;
 import org.example.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,10 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    /**
-     * Constructs a new CustomUserDetailsService.
-     * @param userRepository the user repository
-     */
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -35,9 +32,15 @@ public class CustomUserDetailsService implements UserDetailsService {
                         .orElseThrow(() ->
                                 new UsernameNotFoundException("User not found"));
 
+        boolean isActive = user.getStatus() == UserStatusEnum.ACTIVE;
+
         return new User(
                 user.getUsername(),
                 user.getPassword(),
+                isActive,
+                true,
+                true,
+                isActive,
                 Collections.singleton(
                         new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
                 )
