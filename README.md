@@ -68,42 +68,63 @@
 
 divar-java-project/
 ├── Backend/
+
 ├── Frontend/
+
 ├── .gitignore
+
 └── README.md
 
 ---
 ## 🏗 ساختار کلی بکند
 Backend/src/main/java/org/example/backend/
 ├── config/          # تنظیمات (Security, JWT)
+
 ├── controller/      # REST APIها
+
 ├── service/         # منطق برنامه
+
 ├── repository/      # دیتابیس (JPA)
+
 ├── entity/          # موجودیت‌ها
+
 └── dto/             # مدل‌های انتقال داده
 
 ---
 ## 🏗 ساختار کلی فرانت
 Frontend/src/main/java/org/example/frontend/
 ├── auth/            # ورود و ثبت‌نام
+
 ├── chat/            # چت
+
 ├── advertisement/   # مدیریت آگهی‌ها
+
 └── shared/          # کامپوننت‌های مشترک
+
 
 قابلیت‌ها
 ✅ ثبت‌نام و ورود امن
+
 📢 مشاهده آگهی‌ها
+
 💬 چت بین کاربران
+
 🛡 پنل مدیریت
 
 ---
 
 ⚡   راهنمای اجرا
+
 First run BackendApplication
+
 Second run HelloApplication
+
 Every run that has not admin ,makes an admin with this information :
+
 username: admin
+
 pass: 123456
+
 
 ## 🧪 تست‌های واحد Backend
 
@@ -120,8 +141,11 @@ pass: 123456
 Backend/src/test/java/org/example/backend/service/impl/
 
 کلاس‌های تست پیاده‌سازی‌شده عبارت‌اند از:
+
 AdminDashboardServiceImplTest.java
+
 AdminReviewServiceImplTest.java
+
 UserServiceImplTest.java
 
 ---
@@ -129,9 +153,13 @@ UserServiceImplTest.java
 ## 📊 خلاصه تست‌های پیاده‌سازی‌شده
 
 | کلاس تست | تعداد تست | بخش مورد بررسی |
+
 | `AdminDashboardServiceImplTest` | 2 | آمار و اطلاعات داشبورد ادمین |
+
 | `AdminReviewServiceImplTest` | 7 | بررسی، تأیید و رد آگهی‌ها توسط ادمین |
+
 | `UserServiceImplTest` | 6 | مدیریت کاربران، وضعیت حساب و مجوزهای دسترسی |
+
 | **مجموع** | **15** | **تست‌های واحد Backend** |
 
 ---
@@ -205,13 +233,19 @@ mvn clean test
 خروجی نهایی اجرای تست‌ها به شکل زیر بوده است:
 
 AdminDashboardServiceImplTest: 2 tests
+
 AdminReviewServiceImplTest:    7 tests
+
 UserServiceImplTest:           6 tests
+
 ---------------------------------------
 Total:                        15 tests
 
 نتیجه گزارش‌شده توسط Maven:
+
 Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+
+
 BUILD SUCCESS
 
 | نتیجه | مقدار |
