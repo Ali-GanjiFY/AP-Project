@@ -20,6 +20,7 @@ import org.example.backend.enums.UserStatusEnum;
 import org.example.backend.exception.InvalidInputException;
 import org.example.backend.exception.ResourceNotFoundException;
 import org.example.backend.exception.UnauthorizedException;
+import org.example.backend.repository.AdminReviewRepository;
 import org.example.backend.repository.AdvertisementImageRepository;
 import org.example.backend.repository.AdvertisementRepository;
 import org.example.backend.repository.SellerRatingRepository;
@@ -45,6 +46,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementImageRepository advertisementImageRepository;
     private final SellerRatingRepository sellerRatingRepository;
+    private final AdminReviewRepository adminReviewRepository;
     private final CategoryService categoryService;
     private final CityService cityService;
 
@@ -53,17 +55,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
      * @param advertisementRepository the advertisement repository
      * @param advertisementImageRepository the advertisement image repository
      * @param sellerRatingRepository the seller rating repository
+     * @param adminReviewRepository the admin review repository
      * @param categoryService the category service
      * @param cityService the city service
      */
     public AdvertisementServiceImpl(AdvertisementRepository advertisementRepository,
                                     AdvertisementImageRepository advertisementImageRepository,
                                     SellerRatingRepository sellerRatingRepository,
+                                    AdminReviewRepository adminReviewRepository,
                                     CategoryService categoryService,
                                     CityService cityService) {
         this.advertisementRepository = advertisementRepository;
         this.advertisementImageRepository = advertisementImageRepository;
         this.sellerRatingRepository = sellerRatingRepository;
+        this.adminReviewRepository = adminReviewRepository;
         this.categoryService = categoryService;
         this.cityService = cityService;
     }
@@ -361,9 +366,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         String mainImage = (ad.getImages() != null && !ad.getImages().isEmpty())
                 ? ad.getImages().get(0).getImagePath() : null;
 
+        // Only rejected ads need to expose the admin's note to their owner.
+        String rejectionReason = null;
+        if (ad.getStatus() == AdvertisementStatusEnum.REJECTED) {
+            rejectionReason = adminReviewRepository.findByAdvertisement(ad)
+                    .map(review -> review.getNote())
+                    .orElse(null);
+        }
+
         return new AdvertisementSummaryResponse(
                 ad.getId(), ad.getTitle(), ad.getPrice(), ad.getCity().getName(),
-                ad.getCategory().getName(), ad.getStatus(), ad.getCreatedAt(), mainImage
+                ad.getCategory().getName(), ad.getStatus(), ad.getCreatedAt(), mainImage, rejectionReason
         );
     }
 
