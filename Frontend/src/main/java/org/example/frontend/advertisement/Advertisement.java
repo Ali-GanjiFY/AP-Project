@@ -14,6 +14,7 @@ public class Advertisement {
     private String status;
     private String createdAt;
     private String mainImagePath;
+    private String rejectionReason;
 
     /**
      * Gets id.
@@ -55,4 +56,9 @@ public class Advertisement {
      * @return the result
      */
     public String getMainImagePath() { return mainImagePath; }
+    /**
+     * Gets rejection reason (admin note). Null unless status is REJECTED.
+     * @return the result
+     */
+    public String getRejectionReason() { return rejectionReason; }
 }

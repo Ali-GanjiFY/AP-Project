@@ -255,6 +255,17 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
 
         card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel);
 
+        // If the ad was rejected, show the admin's reason so the owner knows why.
+        if ("REJECTED".equalsIgnoreCase(status) && ad.getRejectionReason() != null
+                && !ad.getRejectionReason().isBlank()) {
+            Label rejectionReasonLabel = new Label("دلیل رد: " + ad.getRejectionReason());
+            rejectionReasonLabel.setWrapText(true);
+            rejectionReasonLabel.setMaxWidth(CARD_WIDTH - 24);
+            rejectionReasonLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #991b1b; "
+                    + "-fx-background-color: #fee2e2; -fx-background-radius: 6; -fx-padding: 6 8;");
+            card.getChildren().add(rejectionReasonLabel);
+        }
+
         // Only ACTIVE ads can be marked as sold; only non-DELETED ads can be deleted;
         // SOLD/DELETED ads can no longer be edited.
         boolean canMarkSold = "ACTIVE".equalsIgnoreCase(status);
