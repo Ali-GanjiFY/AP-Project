@@ -25,9 +25,15 @@
 - 🖥 **JavaFX**
 - 📦 **Maven**
 - 🎨 **CSS**
+- 🎨**HTML**
 - 🐙 **Git**
 - 📑 **Swagger & Postman**
 - 🐘 **PostgreSQL**
+- ☕ **JUnit 5** برای تعریف و اجرای تست‌ها
+- 🎭 **Mockito** برای Mock کردن وابستگی‌های سرویس‌ها
+- 📦 **Maven** برای مدیریت وابستگی‌ها و اجرای تست‌ها
+- 🚀 **Maven Surefire Plugin** برای شناسایی و اجرای تست‌های JUnit
+
 
 
 ---
@@ -62,7 +68,7 @@
 ---
 
 ## 🏗 ساختار کلی مخزن
-```text
+
 divar-java-project/
 ├── Backend/
 ├── Frontend/
@@ -101,7 +107,183 @@ Second run HelloApplication
 Every run that has not admin ,makes an admin with this information :
 username: admin
 pass: 123456
-```
+
+## 🧪 تست‌های واحد Backend
+
+برای اطمینان از صحت عملکرد بخش‌های اصلی Backend، مجموعه‌ای از تست‌های واحد با استفاده از **JUnit 5** و **Mockito** پیاده‌سازی شده است.
+
+این تست‌ها منطق سرویس‌ها را به‌صورت مستقل و ایزوله بررسی می‌کنند؛ بنابراین برای اجرای آن‌ها نیازی به راه‌اندازی کامل برنامه یا اتصال واقعی به پایگاه داده نیست. وابستگی‌هایی مانند Repositoryها نیز با استفاده از Mockito شبیه‌سازی یا Mock شده‌اند.
+
+
+
+### 📁 محل قرارگیری تست‌ها
+
+فایل‌های تست در مسیر استاندارد Maven قرار گرفته‌اند:
+
+Backend/src/test/java/org/example/backend/service/impl/
+
+کلاس‌های تست پیاده‌سازی‌شده عبارت‌اند از:
+AdminDashboardServiceImplTest.java
+AdminReviewServiceImplTest.java
+UserServiceImplTest.java
+
+---
+
+## 📊 خلاصه تست‌های پیاده‌سازی‌شده
+
+| کلاس تست | تعداد تست | بخش مورد بررسی |
+| `AdminDashboardServiceImplTest` | 2 | آمار و اطلاعات داشبورد ادمین |
+| `AdminReviewServiceImplTest` | 7 | بررسی، تأیید و رد آگهی‌ها توسط ادمین |
+| `UserServiceImplTest` | 6 | مدیریت کاربران، وضعیت حساب و مجوزهای دسترسی |
+| **مجموع** | **15** | **تست‌های واحد Backend** |
+
+---
+
+## 🔍 جزئیات تست‌ها
+
+### 1️⃣ تست‌های داشبورد ادمین
+
+کلاس زیر شامل **۲ تست واحد** است:
+
+text
+AdminDashboardServiceImplTest
+
+این تست‌ها منطق مربوط به داشبورد مدیریتی را بررسی می‌کنند، از جمله:
+
+- 📈 دریافت آمار موردنیاز داشبورد ادمین
+- 🔗 بررسی تعامل صحیح سرویس با Repositoryهای مربوطه
+
+---
+
+### 2️⃣ تست‌های بررسی آگهی توسط ادمین
+
+کلاس زیر شامل **۷ تست واحد** است:
+
+text
+AdminReviewServiceImplTest
+
+این تست‌ها منطق مربوط به مدیریت و بررسی آگهی‌ها توسط ادمین را پوشش می‌دهند، از جمله:
+
+- 📋 دریافت آگهی‌های در انتظار بررسی
+- ✅ تأیید آگهی توسط ادمین
+- ❌ رد آگهی توسط ادمین
+- 🔄 بررسی و تغییر وضعیت آگهی
+- 🔎 مدیریت شرایطی که آگهی موردنظر پیدا نمی‌شود
+- 💾 بررسی ذخیره‌شدن صحیح تغییرات
+- 🧩 بررسی تعامل صحیح سرویس با وابستگی‌های Mock‌شده
+
+---
+
+### 3️⃣ تست‌های مدیریت کاربران
+
+کلاس زیر شامل **۶ تست واحد** است:
+
+text
+UserServiceImplTest
+
+سناریوهای بررسی‌شده در این کلاس عبارت‌اند از:
+
+- ✅ دریافت موفق کاربر با شناسه معتبر
+- 🔎 مدیریت خطا در صورت پیدا نشدن کاربر
+- 🛡️ جلوگیری از مسدودکردن حساب ادمین
+- 🚫 جلوگیری از فعال‌سازی مجدد حساب حذف‌شده
+- 🔐 جلوگیری از حذف حساب کاربر دیگر توسط کاربر عادی
+- 🗑️ انجام حذف نرم یا **Soft Delete** برای حساب کاربر
+
+---
+
+## ▶️ اجرای تست‌ها
+
+برای اجرای تمام تست‌های Backend، ابتدا وارد پوشه `Backend` شوید:
+
+bash
+cd Backend
+
+سپس دستور زیر را اجرا کنید:
+
+bash
+mvn clean test
+
+این دستور ابتدا خروجی‌های قبلی را پاک می‌کند، کدهای اصلی و تست‌ها را کامپایل می‌کند و در نهایت تمام تست‌های شناسایی‌شده را اجرا می‌کند.
+
+---
+
+## ✅ نتیجه اجرای تست‌ها
+
+خروجی نهایی اجرای تست‌ها به شکل زیر بوده است:
+
+text
+AdminDashboardServiceImplTest: 2 tests
+AdminReviewServiceImplTest:    7 tests
+UserServiceImplTest:           6 tests
+---------------------------------------
+Total:                        15 tests
+
+نتیجه گزارش‌شده توسط Maven:
+
+text
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+
+| نتیجه | مقدار |
+|:---|:---:|
+| 🧪 تعداد کل تست‌ها | **15** |
+| ❌ تست‌های ناموفق | **0** |
+| ⚠️ خطاهای اجرایی | **0** |
+| ⏭️ تست‌های ردشده | **0** |
+| ✅ وضعیت نهایی Build | **SUCCESS** |
+
+---
+
+## 🖼️ تصویر نتیجه اجرای تست‌ها
+
+تصویر زیر نتیجه اجرای موفق تست‌های واحد Backend با Maven را نشان می‌دهد:
+
+<div align="center">
+<figure>
+  <img src="./images/test.png" alt="tests">
+  <figcaption>test.png</figcaption>
+</figure>
+
+</div>
+
+---
+
+## 🎯 نتیجه‌گیری
+
+در مجموع، **۱۵ تست واحد** برای بررسی بخش‌های مهم Backend پیاده‌سازی و اجرا شده است:
+
+- 📊 **۲ تست** برای داشبورد ادمین
+- 📝 **۷ تست** برای بررسی و مدیریت آگهی‌ها توسط ادمین
+- 👤 **۶ تست** برای مدیریت کاربران و مجوزهای دسترسی
+
+تمام تست‌ها با موفقیت اجرا شده‌اند و هیچ Failure یا Error در نتیجه اجرای آن‌ها وجود ندارد:
+
+
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+
+بنابراین، منطق بررسی‌شده در سرویس‌های **داشبورد ادمین، مدیریت آگهی‌ها و مدیریت کاربران** در سناریوهای تعریف‌شده عملکرد صحیحی داشته است. ✅
+`
+
+### 📸 پیشنهاد برای اسکرین‌شات
+
+برای عکس README، از آخرین اجرای `mvn clean test`، از این قسمت عکس بگیر:
+
+
+[INFO] Running org.example.backend.service.impl.AdminDashboardServiceImplTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] Running org.example.backend.service.impl.AdminReviewServiceImplTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] Running org.example.backend.service.impl.UserServiceImplTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] Results:
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] BUILD SUCCESS
 ### Pictures
 
 <div align="center">
@@ -122,8 +304,8 @@ pass: 123456
 </figure>
 
 <figure>
-  <img src="./images/Admin-panel.jpg" alt="Admin panel">
-  <figcaption>Admin-panel.jpg</figcaption>
+  <img src="./images/statistical-admin-dashboard.png" alt="statistical admin dashboard">
+  <figcaption>statistical-admin-dashboard.png</figcaption>
 </figure>
 
 <figure>
@@ -196,4 +378,3 @@ pass: 123456
 
 </div>
 
----
