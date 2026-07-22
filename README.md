@@ -23,9 +23,8 @@
 - ☕ **Java**
 - 🚀 **Spring Boot**
 - 🖥 **JavaFX**
-- 📦 **Maven**
 - 🎨 **CSS**
-- 🎨**HTML**
+- 🎨 **HTML**
 - 🐙 **Git**
 - 📑 **Swagger & Postman**
 - 🐘 **PostgreSQL**
