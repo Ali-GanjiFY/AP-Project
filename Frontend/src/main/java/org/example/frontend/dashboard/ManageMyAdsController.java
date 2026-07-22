@@ -258,7 +258,7 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         // If the ad was rejected, show the admin's reason so the owner knows why.
         if ("REJECTED".equalsIgnoreCase(status) && ad.getRejectionReason() != null
                 && !ad.getRejectionReason().isBlank()) {
-            Label rejectionReasonLabel = new Label("دلیل رد: " + ad.getRejectionReason());
+            Label rejectionReasonLabel = new Label(ad.getRejectionReason());
             rejectionReasonLabel.setWrapText(true);
             rejectionReasonLabel.setMaxWidth(CARD_WIDTH - 24);
             rejectionReasonLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #991b1b; "
