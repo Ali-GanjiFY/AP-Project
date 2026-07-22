@@ -40,6 +40,9 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public FavoriteResponse addFavorite(UserEntity user, AdvertisementEntity advertisement) {
+        if (user.getStatus() != org.example.backend.enums.UserStatusEnum.ACTIVE) {
+            throw new UnauthorizedException("حساب کاربری شما مسدود است");
+        }
         if (advertisement.getOwner() != null && advertisement.getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("شما نمی‌توانید آگهی خودتان را به علاقه‌مندی‌ها اضافه کنید");
         }

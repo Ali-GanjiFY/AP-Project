@@ -8,6 +8,7 @@ import org.example.backend.entity.SellerRatingEntity;
 import org.example.backend.entity.UserEntity;
 import org.example.backend.exception.DuplicateResourceException;
 import org.example.backend.exception.InvalidInputException;
+import org.example.backend.exception.UnauthorizedException;
 import org.example.backend.repository.SellerRatingRepository;
 import org.example.backend.service.AdvertisementService;
 import org.example.backend.service.SellerRatingService;
@@ -48,6 +49,11 @@ public class SellerRatingServiceImpl implements SellerRatingService {
     public SellerRatingResponse createRating(UserEntity buyer, CreateRatingRequest request) {
         AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(request.getAdvertisementId());
         UserEntity seller = advertisement.getOwner();
+
+        if (buyer.getStatus() != org.example.backend.enums.UserStatusEnum.ACTIVE) {
+            throw new UnauthorizedException("حساب کاربری شما مسدود است");
+        }
+
 
         // Cannot rate your own advertisement
         if (seller.getId().equals(buyer.getId())) {
