@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Represents admin review service.
+ */
 public class AdminReviewService {
 
     private static final String BASE_URL = "http://localhost:8080/api/admin/advertisements";
@@ -20,6 +23,9 @@ public class AdminReviewService {
     private final HttpClient httpClient;
     private final Gson gson;
 
+    /**
+     * Constructs a new AdminReviewService.
+     */
     public AdminReviewService() {
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
@@ -27,6 +33,11 @@ public class AdminReviewService {
         gson = new Gson();
     }
 
+    /**
+     * Gets pending advertisements.
+     * @param token the token
+     * @return the result
+     */
     public List<Advertisement> getPendingAdvertisements(String token) {
         List<Advertisement> result = new ArrayList<>();
 
@@ -56,6 +67,14 @@ public class AdminReviewService {
         return result;
     }
 
+    /**
+     * Review advertisement.
+     * @param token the token
+     * @param advertisementId the advertisement id
+     * @param decision the decision
+     * @param note the note
+     * @return the result
+     */
     public String reviewAdvertisement(String token, Long advertisementId, String decision, String note) {
         try {
             JsonObject body = new JsonObject();

@@ -15,45 +15,62 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Represents message service impl.
+ */
 @Service
 public class MessageServiceImpl implements MessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ConversationService conversationService;
 
+    /**
+     * Constructs a new MessageServiceImpl.
+     * @param chatMessageRepository the chat message repository
+     * @param conversationService the conversation service
+     */
     public MessageServiceImpl(ChatMessageRepository chatMessageRepository,
                               ConversationService conversationService) {
         this.chatMessageRepository = chatMessageRepository;
         this.conversationService = conversationService;
     }
 
-    // Send a message: validate participant and user status, update conversation timestamp
+    /**
+     * Send a message.
+     * @param conversationId the conversation id
+     * @param sender the sender
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public ChatMessageResponse sendMessage(Long conversationId, UserEntity sender, SendMessageRequest request) {
-        // Verify sender is a participant in this conversation
         ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, sender);
 
-        // Both buyer and seller must be active (not blocked or deleted)
+        // Both buyer and seller must be active
         if (conversation.getBuyer().getStatus() != UserStatusEnum.ACTIVE
                 || conversation.getSeller().getStatus() != UserStatusEnum.ACTIVE) {
             throw new UnauthorizedException("امکان ارسال پیام برای کاربر مسدودشده وجود ندارد");
         }
 
-        // Create and save the message
+        // Create the message
         ChatMessageEntity message = new ChatMessageEntity(request.getContent(), sender, conversation);
         ChatMessageEntity saved = chatMessageRepository.save(message);
 
-        // Update the conversation's last message timestamp
+        // Update the conversation's last message
         conversationService.touchLastMessageAt(conversation, saved.getSentAt());
 
         return toResponse(saved);
     }
 
-    // Get all messages in a conversation with access control
+    /**
+     * Get all messages in a conversation with access control.
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     * @return the result
+     */
     @Override
     public List<ChatMessageResponse> getConversationMessages(Long conversationId, UserEntity currentUser) {
-        // Verify current user is a participant
         ConversationEntity conversation = conversationService.getConversationEntityById(conversationId, currentUser);
         // Return messages in chronological order
         return chatMessageRepository.findByConversationOrderBySentAtAsc(conversation).stream()
@@ -61,7 +78,11 @@ public class MessageServiceImpl implements MessageService {
                 .toList();
     }
 
-    // Mark all unseen messages as seen (only messages from other users)
+    /**
+     * Mark all unseen messages as seen (only messages from other users).
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     */
     @Override
     @Transactional
     public void markMessagesAsSeen(Long conversationId, UserEntity currentUser) {
@@ -78,7 +99,11 @@ public class MessageServiceImpl implements MessageService {
         chatMessageRepository.saveAll(unseen);
     }
 
-    // Convert ChatMessage entity to ChatMessageResponse DTO
+    /**
+     * Convert ChatMessage entity to ChatMessageResponse DTO.
+     * @param message the message
+     * @return the result
+     */
     private ChatMessageResponse toResponse(ChatMessageEntity message) {
         return new ChatMessageResponse(
                 message.getId(), message.getContent(), message.getSentAt(), message.isSeen(),

@@ -7,17 +7,37 @@ import org.example.backend.entity.UserEntity;
 
 import java.util.List;
 
+/**
+ * Contract for seller rating service.
+ */
 public interface SellerRatingService {
 
-    // Create a rating for a seller (buyer rates seller for an advertisement)
+    /**
+     * Rate a seller for an ad (prevents duplicate).
+     * @param buyer the buyer
+     * @param request the request
+     * @return the result
+     */
     SellerRatingResponse createRating(UserEntity buyer, CreateRatingRequest request);
 
-    // Get all ratings received by a seller
+    /**
+     * Get all ratings received by a seller.
+     * @param seller the seller
+     * @return the result
+     */
     List<SellerRatingResponse> getSellerRatings(UserEntity seller);
 
-    // Get all ratings for a specific advertisement
+    /**
+     * Get ratings for a specific ad.
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     List<SellerRatingResponse> getRatingsByAdvertisement(Long advertisementId);
 
-    // Get rating summary (average score and total count) for a seller
+    /**
+     * Get average score and count for a seller.
+     * @param seller the seller
+     * @return the result
+     */
     SellerRatingSummaryResponse getSellerRatingSummary(UserEntity seller);
 }

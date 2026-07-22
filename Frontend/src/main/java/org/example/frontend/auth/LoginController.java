@@ -6,6 +6,9 @@ import javafx.application.Platform;
 import org.example.frontend.shared.NavigationService;
 import org.example.frontend.shared.UserSession;
 
+/**
+ * Represents login controller.
+ */
 public class LoginController {
 
     @FXML private TextField usernameField;
@@ -14,6 +17,9 @@ public class LoginController {
 
     private final AuthService authService = new AuthService();
 
+    /**
+     * Handles login.
+     */
     @FXML
     private void handleLogin() {
         String username = usernameField.getText().trim();
@@ -55,11 +61,19 @@ public class LoginController {
         }).start();
     }
 
+    /**
+     * Navigates to to register.
+     */
     @FXML
     private void navigateToRegister() {
         NavigationService.switchScene("/fxml/auth/register-view.fxml", "ثبت‌نام در سامانه");
     }
 
+    /**
+     * Translate error message.
+     * @param rawError the raw error
+     * @return the result
+     */
     private String translateErrorMessage(String rawError) {
         if (rawError == null) return "خطای نامشخصی رخ داده است.";
 
@@ -74,10 +88,17 @@ public class LoginController {
         if (cleanError.contains("connection refused") || cleanError.contains("network") || cleanError.contains("timeout")) {
             return "برقراری ارتباط با سرور برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.";
         }
+        if (cleanError.toLowerCase().contains("blocked")) {
+            return "حساب کاربری شما مسدود شده است.";
+        }
 
         return rawError;
     }
 
+    /**
+     * Shows error.
+     * @param message the message
+     */
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.getStyleClass().removeAll("success-text");
@@ -85,6 +106,10 @@ public class LoginController {
         errorLabel.setVisible(true);
     }
 
+    /**
+     * Shows success.
+     * @param message the message
+     */
     private void showSuccess(String message) {
         errorLabel.setText(message);
         errorLabel.getStyleClass().removeAll("error-text");

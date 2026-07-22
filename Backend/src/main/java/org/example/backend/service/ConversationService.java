@@ -8,20 +8,46 @@ import org.example.backend.entity.UserEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Contract for conversation service.
+ */
 public interface ConversationService {
 
-    // Start a new conversation or get existing one between buyer and seller for an ad
+    /**
+     * Start new or return existing conversation.
+     * @param buyer the buyer
+     * @param advertisement the advertisement
+     * @return the result
+     */
     ConversationResponse startOrGetConversation(UserEntity buyer, AdvertisementEntity advertisement);
 
-    // Get all conversations for a user (both as buyer and seller)
+    /**
+     * Get all conversations for a user.
+     * @param user the user
+     * @return the result
+     */
     List<ConversationResponse> getUserConversations(UserEntity user);
 
-    // Get conversation by ID with access control (user must be a participant)
+    /**
+     * Get conversation by ID (user must be participant).
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     * @return the result
+     */
     ConversationResponse getConversationById(Long conversationId, UserEntity currentUser);
 
-    // Get conversation entity by ID with access control (internal use by MessageService)
+    /**
+     * Internal use - get conversation entity with access check.
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     * @return the result
+     */
     ConversationEntity getConversationEntityById(Long conversationId, UserEntity currentUser);
 
-    // Update last message timestamp for a conversation
+    /**
+     * Update last message timestamp.
+     * @param conversation the conversation
+     * @param time the time
+     */
     void touchLastMessageAt(ConversationEntity conversation, LocalDateTime time);
 }

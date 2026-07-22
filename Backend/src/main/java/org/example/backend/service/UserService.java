@@ -8,35 +8,78 @@ import org.example.backend.enums.UserStatusEnum;
 
 import java.util.List;
 
+/**
+ * Contract for user service.
+ */
 public interface UserService {
 
-    // Get user entity by ID (internal use by other services)
+    /**
+     * Internal: get user entity by ID.
+     * @param userId the user id
+     * @return the result
+     */
     UserEntity getUserEntityById(Long userId);
 
-    // Get user entity by username (internal use by other services)
+    /**
+     * Internal: get user entity by username.
+     * @param username the username
+     * @return the result
+     */
     UserEntity getUserEntityByUsername(String username);
 
-    // Get user profile as DTO by ID
+    /**
+     * Get user profile as DTO.
+     * @param userId the user id
+     * @return the result
+     */
     UserResponse getUserById(Long userId);
 
-    // Update user profile (full name, email, phone) with uniqueness validation
+    /**
+     * Update profile (full name, email, phone).
+     * @param userId the user id
+     * @param request the request
+     * @return the result
+     */
     UserResponse updateProfile(Long userId, UpdateProfileRequest request);
 
-    // Change user password with old password verification
+    /**
+     * Change password (requires old password check).
+     * @param userId the user id
+     * @param request the request
+     */
     void changePassword(Long userId, ChangePasswordRequest request);
 
-    // Get list of all users
+    /**
+     * List all users.
+     * @return the result
+     */
     List<UserResponse> getAllUsers();
 
-    // Get list of users filtered by status (ACTIVE, BLOCKED, DELETED)
+    /**
+     * Filter users by status.
+     * @param status the status
+     * @return the result
+     */
     List<UserResponse> getUsersByStatus(UserStatusEnum status);
 
-    // Block a user (admin only, cannot block other admins)
+    /**
+     * Block user (admin only).
+     * @param userId the user id
+     * @return the result
+     */
     UserResponse blockUser(Long userId);
 
-    // Unblock a user (admin only, cannot unblock deleted users)
+    /**
+     * Unblock user (admin only).
+     * @param userId the user id
+     * @return the result
+     */
     UserResponse unblockUser(Long userId);
 
-    // Soft delete a user: user can delete self, admin can delete others
+    /**
+     * Soft delete (self or admin for others).
+     * @param currentUserId the current user id
+     * @param targetUserId the target user id
+     */
     void deleteUser(Long currentUserId, Long targetUserId);
 }

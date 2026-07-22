@@ -17,19 +17,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Represents seller rating service impl.
+ */
 @Service
 public class SellerRatingServiceImpl implements SellerRatingService {
 
     private final SellerRatingRepository sellerRatingRepository;
     private final AdvertisementService advertisementService;
 
+    /**
+     * Constructs a new SellerRatingServiceImpl.
+     * @param sellerRatingRepository the seller rating repository
+     * @param advertisementService the advertisement service
+     */
     public SellerRatingServiceImpl(SellerRatingRepository sellerRatingRepository,
                                    AdvertisementService advertisementService) {
         this.sellerRatingRepository = sellerRatingRepository;
         this.advertisementService = advertisementService;
     }
 
-    // Create a rating: prevent self-rating and duplicate ratings
+    /**
+     * Create a rating: prevent self-rating and duplicate ratings.
+     * @param buyer the buyer
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public SellerRatingResponse createRating(UserEntity buyer, CreateRatingRequest request) {
@@ -49,13 +62,21 @@ public class SellerRatingServiceImpl implements SellerRatingService {
         return toResponse(sellerRatingRepository.save(rating));
     }
 
-    // Get all ratings received by a seller
+    /**
+     * Get all ratings received by a seller.
+     * @param seller the seller
+     * @return the result
+     */
     @Override
     public List<SellerRatingResponse> getSellerRatings(UserEntity seller) {
         return sellerRatingRepository.findBySeller(seller).stream().map(this::toResponse).toList();
     }
 
-    // Get all ratings for a specific advertisement
+    /**
+     * Get all ratings for a specific advertisement.
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     @Override
     @Transactional(readOnly = true)
     public List<SellerRatingResponse> getRatingsByAdvertisement(Long advertisementId) {
@@ -65,7 +86,11 @@ public class SellerRatingServiceImpl implements SellerRatingService {
                 .collect(Collectors.toList());
     }
 
-    // Get rating summary: average score and total count for a seller
+    /**
+     * Get rating summary: average score and total count for a seller.
+     * @param seller the seller
+     * @return the result
+     */
     @Override
     public SellerRatingSummaryResponse getSellerRatingSummary(UserEntity seller) {
         List<SellerRatingEntity> ratings = sellerRatingRepository.findBySeller(seller);
@@ -75,7 +100,11 @@ public class SellerRatingServiceImpl implements SellerRatingService {
         return new SellerRatingSummaryResponse(average, count);
     }
 
-    // Convert SellerRating entity to SellerRatingResponse DTO
+    /**
+     * Convert SellerRating entity to SellerRatingResponse DTO.
+     * @param rating the rating
+     * @return the result
+     */
     private SellerRatingResponse toResponse(SellerRatingEntity rating) {
         return new SellerRatingResponse(
                 rating.getId(), rating.getScore(), rating.getComment(), rating.getRatedAt(),

@@ -11,38 +11,88 @@ import org.example.backend.enums.AdvertisementStatusEnum;
 
 import java.util.List;
 
+/**
+ * Contract for advertisement service.
+ */
 public interface AdvertisementService {
 
-    // Create a new advertisement with PENDING status and at least one image
+    /**
+     * Creates ad with PENDING status.
+     * @param owner the owner
+     * @param request the request
+     * @return the result
+     */
     AdvertisementDetailResponse createAdvertisement(UserEntity owner, CreateAdvertisementRequest request);
 
-    // Update existing advertisement, returns to PENDING status for admin review
+    /**
+     * Edits ad, reverts status to PENDING for re-review.
+     * @param adId the ad id
+     * @param currentUser the current user
+     * @param request the request
+     * @return the result
+     */
     AdvertisementDetailResponse updateAdvertisement(Long adId, UserEntity currentUser, UpdateAdvertisementRequest request);
 
-    // Soft delete advertisement (owner or admin only)
+    /**
+     * Soft delete (owner or admin).
+     * @param adId the ad id
+     * @param currentUser the current user
+     */
     void deleteAdvertisement(Long adId, UserEntity currentUser);
 
-    // Mark active advertisement as SOLD (owner only)
+    /**
+     * Marks as SOLD (owner only).
+     * @param adId the ad id
+     * @param currentUser the current user
+     * @return the result
+     */
     AdvertisementDetailResponse markAsSold(Long adId, UserEntity currentUser);
 
-    // Internal method: change advertisement status (used by AdminReviewService)
+    /**
+     * Used by AdminReviewService.
+     * @param ad the ad
+     * @param newStatus the new status
+     */
     void changeStatus(AdvertisementEntity ad, AdvertisementStatusEnum newStatus);
 
-    // Get full advertisement details with seller ratings
+    /**
+     * Full details with seller ratings.
+     * @param adId the ad id
+     * @param currentUser the current user
+     * @return the result
+     */
     AdvertisementDetailResponse getAdvertisementDetail(Long adId, UserEntity currentUser);
 
-    // Get advertisement entity by ID (internal use by other services)
+    /**
+     * Internal use only.
+     * @param adId the ad id
+     * @return the result
+     */
     AdvertisementEntity getAdvertisementEntityById(Long adId);
 
-    // Get all active advertisements for public browsing
+    /**
+     * All active ads for public view.
+     * @return the result
+     */
     List<AdvertisementSummaryResponse> getAllActiveAds();
 
-    // Get all advertisements owned by a specific user
+    /**
+     * Ads owned by specific user.
+     * @param owner the owner
+     * @return the result
+     */
     List<AdvertisementSummaryResponse> getMyAdvertisements(UserEntity owner);
 
-    // Get pending advertisements for admin review (oldest first)
+    /**
+     * Pending ads for admin (oldest first).
+     * @return the result
+     */
     List<AdvertisementSummaryResponse> getPendingAdvertisements();
 
-    // Search and filter active advertisements by keyword, category, city, price range and sorting
+    /**
+     * Search: keyword, category, city, price, sorting.
+     * @param request the request
+     * @return the result
+     */
     List<AdvertisementSummaryResponse> searchAdvertisements(AdvertisementSearchRequest request);
 }

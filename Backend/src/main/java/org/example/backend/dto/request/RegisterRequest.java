@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 
 
 
+/**
+ * Represents register request.
+ */
 public class RegisterRequest {
 
     @NotBlank(message = "Full name is required")
@@ -27,10 +30,20 @@ public class RegisterRequest {
     @Email(message = "Email format is invalid")
     private String email;
 
-    // Constructor
+    /**
+     * Constructs a new RegisterRequest.
+     */
     public RegisterRequest() {
     }
 
+    /**
+     * Constructs a new RegisterRequest.
+     * @param fullName the full name
+     * @param username the username
+     * @param password the password
+     * @param phone the phone
+     * @param email the email
+     */
     public RegisterRequest(String fullName, String username, String password, String phone, String email) {
         this.fullName = fullName;
         this.username = username;
@@ -40,38 +53,77 @@ public class RegisterRequest {
     }
 
 
-    // Getters and Setters
+    /**
+     * Gets full name.
+     * @return the result
+     */
     public String getFullName() {
         return fullName;
     }
+    /**
+     * Sets full name.
+     * @param fullName the full name
+     */
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
+    /**
+     * Gets username.
+     * @return the result
+     */
     public String getUsername() {
         return username;
     }
+    /**
+     * Sets username.
+     * @param username the username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Gets password.
+     * @return the result
+     */
     public String getPassword() {
         return password;
     }
+    /**
+     * Sets password.
+     * @param password the password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     * Gets phone.
+     * @return the result
+     */
     public String getPhone() {
         return phone;
     }
+    /**
+     * Sets phone.
+     * @param phone the phone
+     */
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    /**
+     * Gets email.
+     * @return the result
+     */
     public String getEmail() {
         return email;
     }
+    /**
+     * Sets email.
+     * @param email the email
+     */
     public void setEmail(String email) {
         this.email = email;
     }

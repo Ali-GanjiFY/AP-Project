@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents seller rating controller.
+ */
 @RestController
 @RequestMapping("/api/ratings")
 public class SellerRatingController {
@@ -22,17 +25,31 @@ public class SellerRatingController {
     private final SellerRatingService sellerRatingService;
     private final UserService userService;
 
+    /**
+     * Constructs a new SellerRatingController.
+     * @param sellerRatingService the seller rating service
+     * @param userService the user service
+     */
     public SellerRatingController(SellerRatingService sellerRatingService, UserService userService) {
         this.sellerRatingService = sellerRatingService;
         this.userService = userService;
     }
 
-    // Resolves the authenticated User entity from the JWT-backed Authentication.
+    /**
+     * Resolves the authenticated User entity from the JWT-backed Authentication.
+     * @param authentication the authentication
+     * @return the result
+     */
     private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
-    // POST /api/ratings -> self, create a new rating for a seller
+    /**
+     * POST /api/ratings -> self, create a new rating for a seller.
+     * @param authentication the authentication
+     * @param request the request
+     * @return the result
+     */
     @PostMapping
     public ResponseEntity<SellerRatingResponse> createRating(
             Authentication authentication, @Valid @RequestBody CreateRatingRequest request) {
@@ -41,16 +58,22 @@ public class SellerRatingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // GET /api/ratings/advertisements/{advertisementId} -> public, all ratings
-    // left for a specific advertisement.
+    /**
+     * GET /api/ratings/advertisements/{advertisementId} -> public, all ratings left for a specific advertisement.
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     @GetMapping("/advertisements/{advertisementId}")
     public ResponseEntity<List<SellerRatingResponse>> getRatingsByAdvertisement(
             @PathVariable Long advertisementId) {
         return ResponseEntity.ok(sellerRatingService.getRatingsByAdvertisement(advertisementId));
     }
 
-    // GET /api/ratings/sellers/{sellerId} -> admin only, all ratings received by
-    // a specific seller.
+    /**
+     * GET /api/ratings/sellers/{sellerId} -> admin only, all ratings received by a specific seller.
+     * @param sellerId the seller id
+     * @return the result
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/sellers/{sellerId}")
     public ResponseEntity<List<SellerRatingResponse>> getSellerRatings(@PathVariable Long sellerId) {
@@ -58,8 +81,11 @@ public class SellerRatingController {
         return ResponseEntity.ok(sellerRatingService.getSellerRatings(seller));
     }
 
-    // GET /api/ratings/sellers/{sellerId}/summary -> admin only, average score +
-    // total count for a specific seller.
+    /**
+     * GET /api/ratings/sellers/{sellerId}/summary -> admin only, average score + total count for a specific seller.
+     * @param sellerId the seller id
+     * @return the result
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/sellers/{sellerId}/summary")
     public ResponseEntity<SellerRatingSummaryResponse> getSellerRatingSummary(@PathVariable Long sellerId) {
@@ -67,13 +93,21 @@ public class SellerRatingController {
         return ResponseEntity.ok(sellerRatingService.getSellerRatingSummary(seller));
     }
 
-    // GET /api/ratings/me -> self, ratings received by the current logged-in user
+    /**
+     * GET /api/ratings/me -> self, ratings received by the current logged-in user.
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping("/me")
     public ResponseEntity<List<SellerRatingResponse>> getMyRatings(Authentication authentication) {
         return ResponseEntity.ok(sellerRatingService.getSellerRatings(currentUser(authentication)));
     }
 
-    // GET /api/ratings/me/summary -> self, rating summary for the current user
+    /**
+     * GET /api/ratings/me/summary -> self, rating summary for the current user.
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping("/me/summary")
     public ResponseEntity<SellerRatingSummaryResponse> getMyRatingSummary(Authentication authentication) {
         return ResponseEntity.ok(sellerRatingService.getSellerRatingSummary(currentUser(authentication)));

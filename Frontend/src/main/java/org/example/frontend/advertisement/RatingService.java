@@ -13,6 +13,9 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents rating service.
+ */
 public class RatingService {
 
     private static final String BASE_URL = "http://localhost:8080/api/ratings";
@@ -20,6 +23,9 @@ public class RatingService {
     private final HttpClient httpClient;
     private final Gson gson;
 
+    /**
+     * Constructs a new RatingService.
+     */
     public RatingService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
@@ -27,7 +33,11 @@ public class RatingService {
         this.gson = new Gson();
     }
 
-    // GET /api/ratings/advertisements/{id} -> public
+    /**
+     * GET /api/ratings/advertisements/{id} -> public.
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     public List<RatingDto> getRatingsByAdvertisement(Long advertisementId) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -51,7 +61,11 @@ public class RatingService {
         }
     }
 
-    // GET /api/ratings/me -> ratings received by the logged-in user (as seller)
+    /**
+     * GET /api/ratings/me -> ratings received by the logged-in user (as seller).
+     * @param token the token
+     * @return the result
+     */
     public List<RatingDto> getMyReceivedRatings(String token) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -76,7 +90,11 @@ public class RatingService {
         }
     }
 
-    // GET /api/ratings/me/summary -> average + count for the logged-in user (as seller)
+    /**
+     * GET /api/ratings/me/summary -> average + count for the logged-in user (as seller).
+     * @param token the token
+     * @return the result
+     */
     public RatingSummaryDto getMyRatingSummary(String token) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -99,7 +117,14 @@ public class RatingService {
         }
     }
 
-    // POST /api/ratings -> create a rating for the seller of the given advertisement
+    /**
+     * POST /api/ratings -> create a rating for the seller of the given advertisement.
+     * @param token the token
+     * @param advertisementId the advertisement id
+     * @param score the score
+     * @param comment the comment
+     * @return the result
+     */
     public String createRating(String token, Long advertisementId, int score, String comment) {
         try {
             JsonObject body = new JsonObject();
@@ -136,6 +161,9 @@ public class RatingService {
         }
     }
 
+    /**
+     * Represents rating dto.
+     */
     public static class RatingDto {
         private Long id;
         private Integer score;
@@ -143,18 +171,49 @@ public class RatingService {
         private String ratedAt;
         private String buyerUsername;
 
+        /**
+         * Gets id.
+         * @return the result
+         */
         public Long getId() { return id; }
+        /**
+         * Gets score.
+         * @return the result
+         */
         public Integer getScore() { return score; }
+        /**
+         * Gets comment.
+         * @return the result
+         */
         public String getComment() { return comment; }
+        /**
+         * Gets rated at.
+         * @return the result
+         */
         public String getRatedAt() { return ratedAt; }
+        /**
+         * Gets buyer username.
+         * @return the result
+         */
         public String getBuyerUsername() { return buyerUsername; }
     }
 
+    /**
+     * Represents rating summary dto.
+     */
     public static class RatingSummaryDto {
         private double averageScore;
         private long totalCount;
 
+        /**
+         * Gets average score.
+         * @return the result
+         */
         public double getAverageScore() { return averageScore; }
+        /**
+         * Gets total count.
+         * @return the result
+         */
         public long getTotalCount() { return totalCount; }
     }
 }

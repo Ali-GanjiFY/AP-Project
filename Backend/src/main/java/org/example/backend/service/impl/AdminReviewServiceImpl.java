@@ -19,19 +19,33 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Represents admin review service impl.
+ */
 @Service
 public class AdminReviewServiceImpl implements AdminReviewService {
 
     private final AdminReviewRepository adminReviewRepository;
     private final AdvertisementService advertisementService;
 
+    /**
+     * Constructs a new AdminReviewServiceImpl.
+     * @param adminReviewRepository the admin review repository
+     * @param advertisementService the advertisement service
+     */
     public AdminReviewServiceImpl(AdminReviewRepository adminReviewRepository,
                                   AdvertisementService advertisementService) {
         this.adminReviewRepository = adminReviewRepository;
         this.advertisementService = advertisementService;
     }
 
-    // Review an advertisement: only PENDING ads can be reviewed
+    /**
+     * Review an advertisement: only PENDING ads can be reviewed.
+     * @param admin the admin
+     * @param advertisementId the advertisement id
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public AdminReviewResponse reviewAdvertisement(UserEntity admin, Long advertisementId, AdminDecisionRequest request) {
@@ -67,7 +81,11 @@ public class AdminReviewServiceImpl implements AdminReviewService {
         return toResponse(saved);
     }
 
-    // Get review record for a specific advertisement
+    /**
+     * Get review record for a specific advertisement.
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     @Override
     public AdminReviewResponse getReviewByAdvertisementId(Long advertisementId) {
         AdvertisementEntity advertisement = advertisementService.getAdvertisementEntityById(advertisementId);
@@ -76,13 +94,20 @@ public class AdminReviewServiceImpl implements AdminReviewService {
         return toResponse(review);
     }
 
-    // Delegate to AdvertisementService for pending ads list
+    /**
+     * Delegate to AdvertisementService for pending ads list.
+     * @return the result
+     */
     @Override
     public List<AdvertisementSummaryResponse> getPendingAdvertisements() {
         return advertisementService.getPendingAdvertisements();
     }
 
-    // Convert AdminReview entity to AdminReviewResponse DTO
+    /**
+     * Convert AdminReview entity to AdminReviewResponse DTO.
+     * @param review the review
+     * @return the result
+     */
     private AdminReviewResponse toResponse(AdminReviewEntity review) {
         return new AdminReviewResponse(
                 review.getId(), review.getDecision(), review.getNote(), review.getReviewedAt(),

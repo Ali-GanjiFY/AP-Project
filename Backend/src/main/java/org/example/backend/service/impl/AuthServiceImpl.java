@@ -15,6 +15,9 @@ import org.example.backend.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Represents auth service impl.
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -22,6 +25,12 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    /**
+     * Constructs a new AuthServiceImpl.
+     * @param userRepository the user repository
+     * @param passwordEncoder the password encoder
+     * @param jwtUtil the jwt util
+     */
     public AuthServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            JwtUtil jwtUtil) {
@@ -30,7 +39,11 @@ public class AuthServiceImpl implements AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    // Register a new user with unique validation and JWT generation
+    /**
+     * Register a new user with unique validation and JWT generation.
+     * @param request the request
+     * @return the result
+     */
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -48,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
             throw new DuplicateResourceException("Email already exists");
         }
 
-        // Create and save new user
+        // Create user
         UserEntity user = new UserEntity();
         user.setFullName(request.getFullName());
         user.setUsername(request.getUsername());
@@ -65,10 +78,14 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(token, user.getId(), user.getUsername(), user.getRole());
     }
 
-    // Authenticate user and return JWT token
+    /**
+     * Authenticate user and return JWT token.
+     * @param request the request
+     * @return the result
+     */
     @Override
     public AuthResponse login(LoginRequest request) {
-        // Find user by username
+        // Find by username
         UserEntity user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
 
@@ -76,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new AuthenticationException("Invalid username or password");
         }
-        // Check if user is not blocked
+        // Check user is not blocked
         if (user.getStatus() != UserStatusEnum.ACTIVE) {
             throw new AuthenticationException("User is blocked");
         }

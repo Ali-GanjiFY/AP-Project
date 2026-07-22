@@ -15,6 +15,9 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents advertisement service.
+ */
 public class AdvertisementService {
 
     private static final String BASE_URL = "http://localhost:8080/api/advertisements";
@@ -24,6 +27,9 @@ public class AdvertisementService {
     private final HttpClient httpClient;
     private final Gson gson;
 
+    /**
+     * Constructs a new AdvertisementService.
+     */
     public AdvertisementService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
@@ -31,6 +37,10 @@ public class AdvertisementService {
         this.gson = new Gson();
     }
 
+    /**
+     * Gets all active ads.
+     * @return the result
+     */
     public List<Advertisement> getAllActiveAds() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -55,6 +65,17 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Searches for advertisements.
+     * @param keyword the keyword
+     * @param categoryId the category id
+     * @param cityId the city id
+     * @param minPrice the min price
+     * @param maxPrice the max price
+     * @param sortBy the sort by
+     * @param sortDirection the sort direction
+     * @return the result
+     */
     public List<Advertisement> searchAdvertisements(String keyword, Long categoryId, Long cityId,
                                                     Double minPrice, Double maxPrice,
                                                     String sortBy, String sortDirection) {
@@ -112,6 +133,11 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Gets my advertisements.
+     * @param token the token
+     * @return the result
+     */
     public List<Advertisement> getMyAdvertisements(String token) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -137,6 +163,12 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Deletes advertisement.
+     * @param token the token
+     * @param id the id
+     * @return the result
+     */
     public String deleteAdvertisement(String token, Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -159,6 +191,12 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Marks as sold.
+     * @param token the token
+     * @param id the id
+     * @return the result
+     */
     public String markAsSold(String token, Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -190,10 +228,21 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Gets advertisement detail.
+     * @param id the id
+     * @return the result
+     */
     public AdvertisementDetail getAdvertisementDetail(Long id) {
         return getAdvertisementDetail(id, null);
     }
 
+    /**
+     * Gets advertisement detail.
+     * @param id the id
+     * @param token the token
+     * @return the result
+     */
     public AdvertisementDetail getAdvertisementDetail(Long id, String token) {
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder()
@@ -221,6 +270,17 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Creates advertisement.
+     * @param token the token
+     * @param title the title
+     * @param description the description
+     * @param price the price
+     * @param categoryId the category id
+     * @param cityId the city id
+     * @param imagePaths the image paths
+     * @return the result
+     */
     public String createAdvertisement(String token, String title, String description,
                                       Double price, Long categoryId, Long cityId,
                                       List<String> imagePaths) {
@@ -262,9 +322,18 @@ public class AdvertisementService {
         }
     }
 
-    // PUT /api/advertisements/{id} -> owner only; backend moves the ad back to PENDING for re-review
-    // imagePaths: pass null to leave images untouched, or the FULL final list
-    // (remaining existing images + newly uploaded ones) to replace the ad's images entirely.
+    /**
+     * PUT /api/advertisements/{id} -> owner only; backend moves the ad back to PENDING for re-review imagePaths: pass null to leave images untouched, or the FULL final list (remaining existing images + newly uploaded ones) to replace the ad's images entirely.
+     * @param token the token
+     * @param id the id
+     * @param title the title
+     * @param description the description
+     * @param price the price
+     * @param categoryId the category id
+     * @param cityId the city id
+     * @param imagePaths the image paths
+     * @return the result
+     */
     public String updateAdvertisement(String token, Long id, String title, String description,
                                       Double price, Long categoryId, Long cityId, List<String> imagePaths) {
         try {
@@ -307,6 +376,10 @@ public class AdvertisementService {
         }
     }
 
+    /**
+     * Gets all cities.
+     * @return the result
+     */
     public List<CityDto> getAllCities() {
 
         try {
@@ -329,6 +402,10 @@ public class AdvertisementService {
         return Collections.emptyList();
     }
 
+    /**
+     * Gets all categories.
+     * @return the result
+     */
     public List<CategoryDto> getAllCategories() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -350,36 +427,66 @@ public class AdvertisementService {
         return Collections.emptyList();
     }
 
+    /**
+     * Represents city dto.
+     */
     public static class CityDto {
         private Long id;
         private String name;
 
+        /**
+         * Gets id.
+         * @return the result
+         */
         public Long getId() {
             return id;
         }
 
+        /**
+         * Gets name.
+         * @return the result
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * Converts to string.
+         * @return the result
+         */
         @Override
         public String toString() {
             return name;
         }
     }
 
+    /**
+     * Represents category dto.
+     */
     public static class CategoryDto {
         private Long id;
         private String name;
 
+        /**
+         * Gets id.
+         * @return the result
+         */
         public Long getId() {
             return id;
         }
 
+        /**
+         * Gets name.
+         * @return the result
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * Converts to string.
+         * @return the result
+         */
         @Override
         public String toString() {
             return name;

@@ -13,18 +13,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents category service.
+ */
 public class CategoryService {
 
     private static final String BASE_URL = "http://localhost:8080/api/categories";
     private final HttpClient httpClient;
 
+    /**
+     * Constructs a new CategoryService.
+     */
     public CategoryService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
     }
 
-    // GET /api/categories
+    /**
+     * GET /api/categories.
+     * @return the result
+     */
     public List<CategoryOption> getAllCategories() {
         List<CategoryOption> all = fetchAll();
         List<CategoryOption> result = new ArrayList<>();
@@ -36,11 +45,18 @@ public class CategoryService {
         return result;
     }
 
-    // GET /api/categories
+    /**
+     * GET /api/categories.
+     * @return the result
+     */
     public List<CategoryOption> getAllCategoriesForAdmin() {
         return fetchAll();
     }
 
+    /**
+     * Fetches all.
+     * @return the result
+     */
     private List<CategoryOption> fetchAll() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -78,7 +94,14 @@ public class CategoryService {
         }
     }
 
-    // POST /api/categories -> admin only
+    /**
+     * POST /api/categories -> admin only.
+     * @param token the token
+     * @param name the name
+     * @param description the description
+     * @param parentCategoryId the parent category id
+     * @return the result
+     */
     public String createCategory(String token, String name, String description, Long parentCategoryId) {
         try {
             JsonObject body = new JsonObject();
@@ -113,7 +136,12 @@ public class CategoryService {
         }
     }
 
-    // DELETE /api/categories/{id} -> admin only
+    /**
+     * DELETE /api/categories/{id} -> admin only.
+     * @param token the token
+     * @param id the id
+     * @return the result
+     */
     public String deleteCategory(String token, Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()

@@ -10,6 +10,9 @@ import org.example.frontend.shared.UserSession;
 
 import java.util.List;
 
+/**
+ * Represents user management controller.
+ */
 public class UserManagementController {
 
     @FXML private TableView<UserResponse> usersTable;
@@ -24,6 +27,9 @@ public class UserManagementController {
 
     private final AdminUserService userService = new AdminUserService();
 
+    /**
+     * Initialize.
+     */
     @FXML
     public void initialize() {
         // مپ کردن ستون‌ها با فیلدهای DTO
@@ -37,6 +43,11 @@ public class UserManagementController {
 
         // استایل دهی زیباتر به ستون وضعیت (Status)
         statusCol.setCellFactory(column -> new TableCell<>() {
+            /**
+             * Updates item.
+             * @param status the status
+             * @param empty the empty
+             */
             @Override
             protected void updateItem(String status, boolean empty) {
                 super.updateItem(status, empty);
@@ -67,6 +78,9 @@ public class UserManagementController {
         loadUsers();
     }
 
+    /**
+     * Loads users.
+     */
     @FXML
     public void loadUsers() {
         new Thread(() -> {
@@ -80,6 +94,9 @@ public class UserManagementController {
         }).start();
     }
 
+    /**
+     * Setup actions column.
+     */
     private void setupActionsColumn() {
         actionsCol.setCellFactory(param -> new TableCell<>() {
             private final Button actionBtn = new Button();
@@ -90,6 +107,11 @@ public class UserManagementController {
                 actionBtn.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 4px;");
             }
 
+            /**
+             * Updates item.
+             * @param item the item
+             * @param empty the empty
+             */
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -120,6 +142,11 @@ public class UserManagementController {
         });
     }
 
+    /**
+     * Handles toggle block.
+     * @param user the user
+     * @param shouldBlock the should block
+     */
     private void handleToggleBlock(UserResponse user, boolean shouldBlock) {
         String actionTitle = shouldBlock ? "مسدود سازی" : "فعال سازی";
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -150,6 +177,11 @@ public class UserManagementController {
         }
     }
 
+    /**
+     * Shows error.
+     * @param title the title
+     * @param content the content
+     */
     private void showError(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -158,21 +190,33 @@ public class UserManagementController {
         alert.showAndWait();
     }
 
+    /**
+     * Handles back to dashboard.
+     */
     @FXML
     private void handleBackToDashboard() {
         NavigationService.switchScene("/fxml/dashboard/admin-dashboard-view.fxml", "پنل مدیریت (ادمین)");
     }
 
+    /**
+     * Handles review ads.
+     */
     @FXML
     private void handleReviewAds() {
         NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
     }
 
+    /**
+     * Handles manage sections.
+     */
     @FXML
     private void handleManageSections() {
         NavigationService.switchScene("/fxml/dashboard/manage-sections-view.fxml", "مدیریت بخش‌ها");
     }
 
+    /**
+     * Handles logout.
+     */
     @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();

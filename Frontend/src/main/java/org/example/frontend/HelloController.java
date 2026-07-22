@@ -7,11 +7,17 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * Represents hello controller.
+ */
 public class HelloController {
 
     @FXML
     private Label welcomeText;
 
+    /**
+     * On hello button click.
+     */
     @FXML
     protected void onHelloButtonClick() {
         try {

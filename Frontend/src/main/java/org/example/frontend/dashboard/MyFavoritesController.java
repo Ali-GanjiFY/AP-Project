@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Represents my favorites controller.
+ */
 public class MyFavoritesController implements javafx.fxml.Initializable {
 
     private static final double CARD_WIDTH = 220;
@@ -39,11 +42,19 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
     private final FavoriteService favoriteService = new FavoriteService();
     private final AdvertisementService advertisementService = new AdvertisementService();
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadFavorites();
     }
 
+    /**
+     * Loads favorites.
+     */
     private void loadFavorites() {
         statusLabel.setText("در حال بارگذاری علاقه‌مندی‌ها...");
         String token = UserSession.getInstance().getToken();
@@ -68,6 +79,11 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Builds ad card.
+     * @param favorite the favorite
+     * @return the result
+     */
     private VBox buildAdCard(FavoriteService.FavoriteItem favorite) {
         Advertisement ad = favorite.getAdvertisement();
 
@@ -155,12 +171,20 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
         return card;
     }
 
+    /**
+     * Builds no image label.
+     * @return the result
+     */
     private Label buildNoImageLabel() {
         Label noImageLabel = new Label("بدون تصویر");
         noImageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
         return noImageLabel;
     }
 
+    /**
+     * Handles remove favorite.
+     * @param ad the ad
+     */
     private void handleRemoveFavorite(Advertisement ad) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "آیا از حذف این آگهی از علاقه‌مندی‌ها مطمئن هستید؟", ButtonType.YES, ButtonType.NO);
@@ -185,6 +209,10 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Opens ad detail.
+     * @param ad the ad
+     */
     private void openAdDetail(Advertisement ad) {
         if (ad.getId() == null) {
             return;
@@ -217,6 +245,11 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Maps status to message.
+     * @param status the status
+     * @return the result
+     */
     private String mapStatusToMessage(String status) {
         switch (status) {
             case "DELETED":
@@ -232,26 +265,41 @@ public class MyFavoritesController implements javafx.fxml.Initializable {
         }
     }
 
+    /**
+     * Handles back to dashboard.
+     */
     @FXML
     private void handleBackToDashboard() {
         NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد کاربر");
     }
 
+    /**
+     * Handles manage my ads.
+     */
     @FXML
     private void handleManageMyAds() {
         NavigationService.switchScene("/fxml/dashboard/manage-my-ads-view.fxml", "مدیریت آگهی‌های من");
     }
 
+    /**
+     * Handles create advertisement.
+     */
     @FXML
     private void handleCreateAdvertisement() {
         NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
     }
 
+    /**
+     * Handles open chats.
+     */
     @FXML
     private void handleOpenChats() {
         NavigationService.switchScene("/fxml/chat/conversation-list-view.fxml", "چت‌ها");
     }
 
+    /**
+     * Handles logout.
+     */
     @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();

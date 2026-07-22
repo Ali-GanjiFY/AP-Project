@@ -11,12 +11,18 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
+/**
+ * Represents admin user service.
+ */
 public class AdminUserService {
     private static final String BASE_URL = "http://localhost:8080/api/users";
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
-
+    /**
+     * دریافت لیست همه کاربران.
+     * @return the result
+     */
     public List<UserResponse> getAllUsers() throws Exception {
         String token = UserSession.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()
@@ -35,7 +41,11 @@ public class AdminUserService {
         }
     }
 
-
+    /**
+     * مسدود کردن کاربر.
+     * @param userId the user id
+     * @return the result
+     */
     public UserResponse blockUser(Long userId) throws Exception {
         String token = UserSession.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()
@@ -53,7 +63,11 @@ public class AdminUserService {
         }
     }
 
-
+    /**
+     * فعال‌سازی مجدد کاربر.
+     * @param userId the user id
+     * @return the result
+     */
     public UserResponse unblockUser(Long userId) throws Exception {
         String token = UserSession.getInstance().getToken();
         HttpRequest request = HttpRequest.newBuilder()

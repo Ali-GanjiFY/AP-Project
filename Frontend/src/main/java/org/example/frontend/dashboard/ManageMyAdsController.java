@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Represents manage my ads controller.
+ */
 public class ManageMyAdsController implements javafx.fxml.Initializable {
 
     private static final double CARD_WIDTH = 280;
@@ -59,12 +62,20 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
     private final RatingService ratingService = new RatingService();
     private boolean ratingsCommentsLoaded = false;
 
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadMyAdvertisements();
         loadRatingsSummary();
     }
 
+    /**
+     * Loads ratings summary.
+     */
     private void loadRatingsSummary() {
         String token = UserSession.getInstance().getToken();
         new Thread(() -> {
@@ -81,6 +92,9 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles toggle ratings comments.
+     */
     @FXML
     private void handleToggleRatingsComments() {
         boolean showing = ratingsCommentsContainer.isVisible();
@@ -100,6 +114,9 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }
     }
 
+    /**
+     * Loads ratings comments.
+     */
     private void loadRatingsComments() {
         ratingsCommentsStatusLabel.setText("در حال بارگذاری نظرات...");
         String token = UserSession.getInstance().getToken();
@@ -123,6 +140,11 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Builds rating card.
+     * @param rating the rating
+     * @return the result
+     */
     private VBox buildRatingCard(RatingService.RatingDto rating) {
         VBox card = new VBox(6);
         card.setPadding(new Insets(10));
@@ -152,10 +174,19 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         return card;
     }
 
+    /**
+     * Safe text.
+     * @param value the value
+     * @param defaultValue the default value
+     * @return the result
+     */
     private String safeText(String value, String defaultValue) {
         return value == null || value.isBlank() ? defaultValue : value;
     }
 
+    /**
+     * Loads my advertisements.
+     */
     private void loadMyAdvertisements() {
         statusLabel.setText("در حال بارگذاری آگهی‌های شما...");
         String token = UserSession.getInstance().getToken();
@@ -180,6 +211,11 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Builds ad card.
+     * @param ad the ad
+     * @return the result
+     */
     private VBox buildAdCard(Advertisement ad) {
 
         String title = ad.getTitle() != null ? ad.getTitle() : "بدون عنوان";
@@ -265,6 +301,11 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         return card;
     }
 
+    /**
+     * Status text.
+     * @param status the status
+     * @return the result
+     */
     private String statusText(String status) {
         return switch (status.toUpperCase()) {
             case "ACTIVE" -> "فعال";
@@ -276,6 +317,11 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         };
     }
 
+    /**
+     * Status chip style.
+     * @param status the status
+     * @return the result
+     */
     private String statusChipStyle(String status) {
         String base = "-fx-font-size: 10px; -fx-background-radius: 20; -fx-padding: 3px 10px;";
         return switch (status.toUpperCase()) {
@@ -288,6 +334,10 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         };
     }
 
+    /**
+     * Handles mark as sold.
+     * @param ad the ad
+     */
     private void handleMarkAsSold(Advertisement ad) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "آیا از تغییر وضعیت این آگهی به «فروخته شده» مطمئن هستید؟", ButtonType.YES, ButtonType.NO);
@@ -312,6 +362,10 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles edit.
+     * @param ad the ad
+     */
     private void handleEdit(Advertisement ad) {
         String token = UserSession.getInstance().getToken();
         statusLabel.setText("در حال بارگذاری اطلاعات آگهی...");
@@ -339,6 +393,10 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles delete.
+     * @param ad the ad
+     */
     private void handleDelete(Advertisement ad) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "آیا از حذف این آگهی مطمئن هستید؟", ButtonType.YES, ButtonType.NO);
@@ -363,6 +421,9 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }).start();
     }
 
+    /**
+     * Handles refresh.
+     */
     @FXML
     private void handleRefresh() {
         loadMyAdvertisements();
@@ -373,26 +434,41 @@ public class ManageMyAdsController implements javafx.fxml.Initializable {
         }
     }
 
+    /**
+     * Handles back to dashboard.
+     */
     @FXML
     private void handleBackToDashboard() {
         NavigationService.switchScene("/fxml/dashboard/dashboard-view.fxml", "داشبورد کاربر");
     }
 
+    /**
+     * Handles create advertisement.
+     */
     @FXML
     private void handleCreateAdvertisement() {
         NavigationService.switchScene("/fxml/advertisement/create-advertisement-view.fxml", "ثبت آگهی جدید");
     }
 
+    /**
+     * Handles show favorites.
+     */
     @FXML
     private void handleShowFavorites() {
         NavigationService.switchScene("/fxml/dashboard/my-favorites-view.fxml", "علاقه‌مندی‌های من");
     }
 
+    /**
+     * Handles open chats.
+     */
     @FXML
     private void handleOpenChats() {
         NavigationService.switchScene("/fxml/chat/conversation-list-view.fxml", "چت‌ها");
     }
 
+    /**
+     * Handles logout.
+     */
     @FXML
     private void handleLogout() {
         UserSession.getInstance().cleanSession();

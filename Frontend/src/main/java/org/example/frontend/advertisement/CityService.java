@@ -13,18 +13,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents city service.
+ */
 public class CityService {
 
     private static final String BASE_URL = "http://localhost:8080/api/cities";
     private final HttpClient httpClient;
 
+    /**
+     * Constructs a new CityService.
+     */
     public CityService() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
     }
 
-    // GET /api/cities
+    /**
+     * GET /api/cities.
+     * @return the result
+     */
     public List<CityOption> getAllCities() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -48,6 +57,13 @@ public class CityService {
         }
     }
 
+    /**
+     * Creates city.
+     * @param token the token
+     * @param name the name
+     * @param province the province
+     * @return the result
+     */
     public String createCity(String token, String name, String province) {
         try {
             JsonObject bodyJson = new JsonObject();
@@ -80,6 +96,12 @@ public class CityService {
         }
     }
 
+    /**
+     * Deletes city.
+     * @param token the token
+     * @param id the id
+     * @return the result
+     */
     public String deleteCity(String token, Long id) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -104,6 +126,11 @@ public class CityService {
         }
     }
 
+    /**
+     * Parses city list from json.
+     * @param jsonBody the json body
+     * @return the result
+     */
     private List<CityOption> parseCityListFromJson(String jsonBody) {
         List<CityOption> result = new ArrayList<>();
         JsonArray jsonArray = JsonParser.parseString(jsonBody).getAsJsonArray();

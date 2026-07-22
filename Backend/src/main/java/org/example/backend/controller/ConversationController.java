@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents conversation controller.
+ */
 @RestController
 @RequestMapping("/api/conversations")
 public class ConversationController {
@@ -21,6 +24,12 @@ public class ConversationController {
     private final AdvertisementService advertisementService;
     private final UserService userService;
 
+    /**
+     * Constructs a new ConversationController.
+     * @param conversationService the conversation service
+     * @param advertisementService the advertisement service
+     * @param userService the user service
+     */
     public ConversationController(ConversationService conversationService,
                                   AdvertisementService advertisementService,
                                   UserService userService) {
@@ -29,13 +38,21 @@ public class ConversationController {
         this.userService = userService;
     }
 
-    // Resolves the authenticated User entity from the JWT-backed Authentication.
+    /**
+     * Resolves the authenticated User entity from the JWT-backed Authentication.
+     * @param authentication the authentication
+     * @return the result
+     */
     private UserEntity currentUser(Authentication authentication) {
         return userService.getUserEntityByUsername(authentication.getName());
     }
 
-    // POST /api/conversations/advertisements/{advertisementId} -> self, start a
-    // new conversation with the ad owner, or return the existing one
+    /**
+     * POST /api/conversations/advertisements/{advertisementId} -> self, start a new conversation with the ad owner, or return the existing one.
+     * @param advertisementId the advertisement id
+     * @param authentication the authentication
+     * @return the result
+     */
     @PostMapping("/advertisements/{advertisementId}")
     public ResponseEntity<ConversationResponse> startOrGetConversation(
             @PathVariable Long advertisementId, Authentication authentication) {
@@ -44,14 +61,22 @@ public class ConversationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // GET /api/conversations -> self, all conversations for the current user
-    // (for both buyer and seller), most recently active first
+    /**
+     * GET /api/conversations -> self, all conversations for the current user (for both buyer and seller), most recently active first.
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping
     public ResponseEntity<List<ConversationResponse>> getMyConversations(Authentication authentication) {
         return ResponseEntity.ok(conversationService.getUserConversations(currentUser(authentication)));
     }
 
-    // GET /api/conversations/{id} -> self, single conversation (participant only)
+    /**
+     * GET /api/conversations/{id} -> self, single conversation (participant only).
+     * @param id the id
+     * @param authentication the authentication
+     * @return the result
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ConversationResponse> getConversationById(
             @PathVariable Long id, Authentication authentication) {

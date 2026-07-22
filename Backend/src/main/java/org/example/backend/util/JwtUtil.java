@@ -11,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
+/**
+ * Represents jwt util.
+ */
 @Component
 public class JwtUtil {
 
@@ -20,12 +23,21 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expirationMs;
 
-    // Build HMAC key from UTF-8 secret
+    /**
+     * Build HMAC key from UTF-8 secret.
+     * @return the result
+     */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Generate token: userId in subject, username & role as custom claims
+    /**
+     * Generate token: userId in subject, username & role as custom claims.
+     * @param userId the user id
+     * @param username the username
+     * @param role the role
+     * @return the result
+     */
     public String generateToken(Long userId, String username, String role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
@@ -46,32 +58,56 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    // Extract userId from subject
+    /**
+     * Extract userId from subject.
+     * @param token the token
+     * @return the result
+     */
     public Long extractUserId(String token) {
         return Long.parseLong(extractClaim(token, Claims::getSubject));
     }
 
-    // Extract username from custom claim
+    /**
+     * Extract username from custom claim.
+     * @param token the token
+     * @return the result
+     */
     public String extractUsername(String token) {
         return extractClaim(token, claims -> claims.get("username", String.class));
     }
 
-    // Extract role from custom claim
+    /**
+     * Extract role from custom claim.
+     * @param token the token
+     * @return the result
+     */
     public String extractRole(String token) {
         return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
-    // Extract expiration date
+    /**
+     * Extract expiration date.
+     * @param token the token
+     * @return the result
+     */
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // Check if token is expired
+    /**
+     * Check if token is expired.
+     * @param token the token
+     * @return the result
+     */
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // Validate token (signature + expiration)
+    /**
+     * Validate token (signature + expiration).
+     * @param token the token
+     * @return the result
+     */
     public boolean validateToken(String token) {
         try {
             extractAllClaims(token);
@@ -81,7 +117,12 @@ public class JwtUtil {
         }
     }
 
-    // Validate token against a specific userId
+    /**
+     * Validate token against a specific userId.
+     * @param token the token
+     * @param userId the user id
+     * @return the result
+     */
     public boolean validateToken(String token, Long userId) {
         try {
             Long extractedUserId = extractUserId(token);
@@ -91,7 +132,11 @@ public class JwtUtil {
         }
     }
 
-    // Helper: parse token and retrieve claims
+    /**
+     * Helper: parse token and retrieve claims.
+     * @param token the token
+     * @return the result
+     */
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())

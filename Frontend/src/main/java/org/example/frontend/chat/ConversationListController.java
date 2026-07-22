@@ -15,6 +15,9 @@ import org.example.frontend.shared.NavigationService;
 
 import java.util.List;
 
+/**
+ * Represents conversation list controller.
+ */
 public class ConversationListController {
 
     @FXML
@@ -25,11 +28,17 @@ public class ConversationListController {
 
     private final ChatService chatService = new ChatService();
 
+    /**
+     * Initialize.
+     */
     @FXML
     private void initialize() {
         loadConversations();
     }
 
+    /**
+     * Loads conversations.
+     */
     private void loadConversations() {
         statusLabel.setText("در حال بارگذاری گفتگوها...");
         conversationContainer.getChildren().clear();
@@ -55,6 +64,10 @@ public class ConversationListController {
         thread.start();
     }
 
+    /**
+     * Updates conversation list.
+     * @param conversations the conversations
+     */
     private void updateConversationList(List<ConversationResponse> conversations) {
         conversationContainer.getChildren().clear();
 
@@ -70,6 +83,11 @@ public class ConversationListController {
         }
     }
 
+    /**
+     * Builds conversation item.
+     * @param conversation the conversation
+     * @return the result
+     */
     private VBox buildConversationItem(ConversationResponse conversation) {
         VBox root = new VBox(8);
         root.setPadding(new Insets(14));
@@ -116,6 +134,10 @@ public class ConversationListController {
         return root;
     }
 
+    /**
+     * Opens conversation.
+     * @param conversation the conversation
+     */
     private void openConversation(ConversationResponse conversation) {
         if (conversation == null || conversation.getId() == null) {
             showError("شناسه گفتگو نامعتبر است.");
@@ -129,6 +151,9 @@ public class ConversationListController {
         );
     }
 
+    /**
+     * Handles back.
+     */
     @FXML
     private void handleBack() {
         NavigationService.switchScene(
@@ -137,10 +162,21 @@ public class ConversationListController {
         );
     }
 
+    /**
+     * Safe text.
+     * @param value the value
+     * @param fallback the fallback
+     * @return the result
+     */
     private String safeText(String value, String fallback) {
         return (value == null || value.isBlank()) ? fallback : value;
     }
 
+    /**
+     * Formats date time.
+     * @param value the value
+     * @return the result
+     */
     private String formatDateTime(String value) {
         if (value == null || value.isBlank()) {
             return "";
@@ -155,6 +191,11 @@ public class ConversationListController {
         return formatted;
     }
 
+    /**
+     * Gets useful error message.
+     * @param e the e
+     * @return the result
+     */
     private String getUsefulErrorMessage(Exception e) {
         if (e.getMessage() != null && !e.getMessage().isBlank()) {
             return e.getMessage();
@@ -162,6 +203,10 @@ public class ConversationListController {
         return e.getClass().getSimpleName();
     }
 
+    /**
+     * Shows error.
+     * @param message the message
+     */
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("خطا");

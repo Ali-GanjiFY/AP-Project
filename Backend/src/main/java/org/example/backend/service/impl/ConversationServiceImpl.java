@@ -18,19 +18,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Represents conversation service impl.
+ */
 @Service
 public class ConversationServiceImpl implements ConversationService {
 
     private final ConversationRepository conversationRepository;
     private final ChatMessageRepository chatMessageRepository;
 
+    /**
+     * Constructs a new ConversationServiceImpl.
+     * @param conversationRepository the conversation repository
+     * @param chatMessageRepository the chat message repository
+     */
     public ConversationServiceImpl(ConversationRepository conversationRepository,
                                    ChatMessageRepository chatMessageRepository) {
         this.conversationRepository = conversationRepository;
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    // Start a new conversation or get existing one between buyer and seller
+    /**
+     * Start a new conversation or get existing one between buyer and seller.
+     * @param buyer the buyer
+     * @param advertisement the advertisement
+     * @return the result
+     */
     @Override
     @Transactional
     public ConversationResponse startOrGetConversation(UserEntity buyer, AdvertisementEntity advertisement) {
@@ -52,7 +65,11 @@ public class ConversationServiceImpl implements ConversationService {
         return toResponse(conversation, buyer);
     }
 
-    // Get all conversations for a user (both as buyer and seller)
+    /**
+     * Get all conversations for a user (both as buyer and seller).
+     * @param user the user
+     * @return the result
+     */
     @Override
     public List<ConversationResponse> getUserConversations(UserEntity user) {
         // Query conversations where user is either buyer or seller
@@ -61,13 +78,23 @@ public class ConversationServiceImpl implements ConversationService {
                 .toList();
     }
 
-    // Get conversation by ID with access control
+    /**
+     * Get conversation by ID with access control.
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     * @return the result
+     */
     @Override
     public ConversationResponse getConversationById(Long conversationId, UserEntity currentUser) {
         return toResponse(getConversationEntityById(conversationId, currentUser), currentUser);
     }
 
-    // Get conversation entity with access control (internal use)
+    /**
+     * Get conversation entity with access control (internal use).
+     * @param conversationId the conversation id
+     * @param currentUser the current user
+     * @return the result
+     */
     @Override
     public ConversationEntity getConversationEntityById(Long conversationId, UserEntity currentUser) {
         ConversationEntity conversation = conversationRepository.findById(conversationId)
@@ -83,7 +110,11 @@ public class ConversationServiceImpl implements ConversationService {
         return conversation;
     }
 
-    // Update last message timestamp
+    /**
+     * Update last message timestamp.
+     * @param conversation the conversation
+     * @param time the time
+     */
     @Override
     @Transactional
     public void touchLastMessageAt(ConversationEntity conversation, LocalDateTime time) {
@@ -91,9 +122,14 @@ public class ConversationServiceImpl implements ConversationService {
         conversationRepository.save(conversation);
     }
 
-    // Convert Conversation entity to ConversationResponse DTO
+    /**
+     * Convert Conversation entity to ConversationResponse.
+     * @param conversation the conversation
+     * @param currentUser the current user
+     * @return the result
+     */
     private ConversationResponse toResponse(ConversationEntity conversation, UserEntity currentUser) {
-        // Determine the other participant
+
         UserEntity other = conversation.getBuyer().getId().equals(currentUser.getId())
                 ? conversation.getSeller() : conversation.getBuyer();
 

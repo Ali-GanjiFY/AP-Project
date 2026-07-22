@@ -7,14 +7,30 @@ import org.example.backend.entity.UserEntity;
 
 import java.util.List;
 
+/**
+ * Contract for admin review service.
+ */
 public interface AdminReviewService {
 
-    // Review an advertisement: approve, reject, or remove (admin only)
+    /**
+     * Review an advertisement.
+     * @param admin the admin
+     * @param advertisementId the advertisement id
+     * @param request the request
+     * @return the result
+     */
     AdminReviewResponse reviewAdvertisement(UserEntity admin, Long advertisementId, AdminDecisionRequest request);
 
-    // Get the review record for a specific advertisement
+    /**
+     * Get the review record for a specific advertisement.
+     * @param advertisementId the advertisement id
+     * @return the result
+     */
     AdminReviewResponse getReviewByAdvertisementId(Long advertisementId);
 
-    // Get all pending advertisements for admin review
+    /**
+     * Get all pending advertisements for admin review.
+     * @return the result
+     */
     List<AdvertisementSummaryResponse> getPendingAdvertisements();
 }

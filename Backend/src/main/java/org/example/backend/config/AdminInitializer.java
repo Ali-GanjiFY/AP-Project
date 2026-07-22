@@ -8,6 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Represents admin initializer.
+ */
 @Component
 public class AdminInitializer implements CommandLineRunner {
 
@@ -21,11 +24,20 @@ public class AdminInitializer implements CommandLineRunner {
     private static final String ADMIN_EMAIL = "admin@example.com";
     private static final String ADMIN_FULLNAME = "Administrator";
 
+    /**
+     * Constructs a new AdminInitializer.
+     * @param userRepository the user repository
+     * @param passwordEncoder the password encoder
+     */
     public AdminInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Runs.
+     * @param args the args
+     */
     @Override
     public void run(String... args) {
         // Skip if admin already exists
