@@ -16,6 +16,7 @@ public class AdvertisementSummaryResponse  {
     private final AdvertisementStatusEnum status;
     private final LocalDateTime createdAt;
     private final String mainImagePath;
+    private final String rejectionReason;
 
     /**
      * Constructs a new AdvertisementSummaryResponse.
@@ -31,6 +32,24 @@ public class AdvertisementSummaryResponse  {
     public AdvertisementSummaryResponse(Long id, String title, Double price, String cityName,
                                         String categoryName, AdvertisementStatusEnum status,
                                         LocalDateTime createdAt, String mainImagePath) {
+        this(id, title, price, cityName, categoryName, status, createdAt, mainImagePath, null);
+    }
+
+    /**
+     * Constructs a new AdvertisementSummaryResponse.
+     * @param id the id
+     * @param title the title
+     * @param price the price
+     * @param cityName the city name
+     * @param categoryName the category name
+     * @param status the status
+     * @param createdAt the created at
+     * @param mainImagePath the main image path
+     * @param rejectionReason the admin's note when the ad was rejected (null otherwise)
+     */
+    public AdvertisementSummaryResponse(Long id, String title, Double price, String cityName,
+                                        String categoryName, AdvertisementStatusEnum status,
+                                        LocalDateTime createdAt, String mainImagePath, String rejectionReason) {
         this.id = id;
         this.title = title;
         this.price = price;
@@ -39,6 +58,7 @@ public class AdvertisementSummaryResponse  {
         this.status = status;
         this.createdAt = createdAt;
         this.mainImagePath = mainImagePath;
+        this.rejectionReason = rejectionReason;
     }
 
     /**
@@ -81,5 +101,9 @@ public class AdvertisementSummaryResponse  {
      * @return the result
      */
     public String getMainImagePath() { return mainImagePath; }
+    /**
+     * Gets rejection reason (admin note). Null unless status is REJECTED.
+     * @return the result
+     */
+    public String getRejectionReason() { return rejectionReason; }
 }
-
