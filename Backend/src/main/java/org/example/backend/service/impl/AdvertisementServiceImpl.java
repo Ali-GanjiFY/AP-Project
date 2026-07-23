@@ -263,6 +263,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     /**
+     * All advertisements, any status, newest first (admin "all ads" view).
+     * @return the result
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<AdvertisementSummaryResponse> getAllAdvertisementsForAdmin() {
+        return advertisementRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(this::toSummaryResponse)
+                .toList();
+    }
+
+    /**
      * Pending ads for admin (oldest first).
      * @return the result
      */

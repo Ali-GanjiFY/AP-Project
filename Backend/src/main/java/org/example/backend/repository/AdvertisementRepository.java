@@ -35,6 +35,12 @@ public interface AdvertisementRepository extends JpaRepository<AdvertisementEnti
     List<AdvertisementEntity> findByStatusOrderByCreatedAtAsc(AdvertisementStatusEnum status);
 
     /**
+     * Finds all ads (any status) for the admin "all advertisements" view, newest first.
+     * @return the result
+     */
+    List<AdvertisementEntity> findAllByOrderByCreatedAtDesc();
+
+    /**
      * Counts by category.
      * @param category the category
      * @return the result

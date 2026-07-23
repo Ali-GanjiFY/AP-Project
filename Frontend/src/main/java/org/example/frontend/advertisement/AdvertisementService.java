@@ -164,6 +164,36 @@ public class AdvertisementService {
     }
 
     /**
+     * Gets all advertisements regardless of status (admin only).
+     * @param token the token
+     * @return the result
+     */
+    public List<Advertisement> getAllAdvertisementsForAdmin(String token) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/all"))
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + token)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                Type listType = new TypeToken<List<Advertisement>>() {}.getType();
+                List<Advertisement> ads = gson.fromJson(response.body(), listType);
+                return ads != null ? ads : Collections.emptyList();
+            } else {
+                System.err.println("خطا در دریافت کل آگهی‌ها! " + response.statusCode());
+                return Collections.emptyList();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    /**
      * Deletes advertisement.
      * @param token the token
      * @param id the id

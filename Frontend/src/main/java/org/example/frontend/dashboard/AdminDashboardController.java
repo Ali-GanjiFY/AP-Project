@@ -124,6 +124,14 @@ public class AdminDashboardController {
     }
 
     /**
+     * Handles all ads.
+     */
+    @FXML
+    private void handleAllAds() {
+        NavigationService.switchScene("/fxml/dashboard/all-ads-view.fxml", "کل آگهی‌ها");
+    }
+
+    /**
      * Handles manage sections.
      */
     @FXML

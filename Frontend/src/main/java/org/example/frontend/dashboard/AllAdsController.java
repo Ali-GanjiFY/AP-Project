@@ -1,0 +1,259 @@
+package org.example.frontend.dashboard;
+
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import org.example.frontend.advertisement.Advertisement;
+import org.example.frontend.advertisement.AdvertisementService;
+import org.example.frontend.shared.NavigationService;
+import org.example.frontend.shared.UserSession;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+/**
+ * Represents the admin "all advertisements" controller. Lets the admin see every
+ * advertisement in the system (any status) and delete any of them.
+ */
+public class AllAdsController implements javafx.fxml.Initializable {
+
+    private static final double CARD_WIDTH = 240;
+
+    @FXML
+    private StackPane contentArea;
+
+    @FXML
+    private FlowPane adsListContainer;
+
+    @FXML
+    private Label statusLabel;
+
+    private final AdvertisementService advertisementService = new AdvertisementService();
+
+    /**
+     * Initialize.
+     * @param location the location
+     * @param resources the resources
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadAllAdvertisements();
+    }
+
+    /**
+     * Loads all advertisements.
+     */
+    private void loadAllAdvertisements() {
+        statusLabel.setText("در حال بارگذاری آگهی‌ها...");
+        String token = UserSession.getInstance().getToken();
+
+        new Thread(() -> {
+            List<Advertisement> ads = advertisementService.getAllAdvertisementsForAdmin(token);
+
+            Platform.runLater(() -> {
+                adsListContainer.getChildren().clear();
+
+                if (ads.isEmpty()) {
+                    statusLabel.setText("در حال حاضر هیچ آگهی‌ای در سامانه ثبت نشده است.");
+                    return;
+                }
+
+                statusLabel.setText("تعداد " + ads.size() + " آگهی در کل سامانه.");
+
+                for (Advertisement ad : ads) {
+                    adsListContainer.getChildren().add(buildAdCard(ad));
+                }
+            });
+        }).start();
+    }
+
+    /**
+     * Builds ad card.
+     * @param ad the ad
+     * @return the result
+     */
+    private VBox buildAdCard(Advertisement ad) {
+        String title = ad.getTitle() != null ? ad.getTitle() : "بدون عنوان";
+
+        String priceText = "-";
+        if (ad.getPrice() != null) {
+            priceText = String.format("%,.0f تومان", ad.getPrice());
+        }
+
+        String category = ad.getCategoryName() != null ? ad.getCategoryName() : "-";
+        String city = ad.getCityName() != null ? ad.getCityName() : "-";
+        String metaText = category + " | " + city;
+
+        String status = ad.getStatus() != null ? ad.getStatus() : "-";
+
+        Label statusChip = new Label(statusText(status));
+        statusChip.setStyle(statusChipStyle(status));
+
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e293b;");
+        titleLabel.setWrapText(true);
+        titleLabel.setMaxWidth(CARD_WIDTH - 24);
+
+        Label priceLabel = new Label(priceText);
+        priceLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #16a34a; -fx-font-weight: bold;");
+
+        Label metaLabel = new Label(metaText);
+        metaLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #64748b;");
+        metaLabel.setWrapText(true);
+        metaLabel.setMaxWidth(CARD_WIDTH - 24);
+
+        Button viewDetailsBtn = new Button("مشاهده جزئیات");
+        viewDetailsBtn.setMaxWidth(Double.MAX_VALUE);
+        viewDetailsBtn.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; "
+                + "-fx-background-radius: 6; -fx-cursor: hand;");
+        viewDetailsBtn.setOnAction(e -> {
+            AllAdsDetailController.setSelectedAdvertisementId(ad.getId());
+            NavigationService.switchScene(
+                    "/fxml/dashboard/all-ads-detail-view.fxml",
+                    "جزئیات آگهی (کل آگهی‌ها)"
+            );
+        });
+
+        Button deleteBtn = new Button("حذف آگهی");
+        deleteBtn.setMaxWidth(Double.MAX_VALUE);
+        deleteBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; "
+                + "-fx-background-radius: 6; -fx-cursor: hand;");
+        deleteBtn.setOnAction(e -> handleDelete(ad));
+
+        HBox actionsRow = new HBox(8, viewDetailsBtn, deleteBtn);
+        actionsRow.setAlignment(Pos.CENTER_RIGHT);
+
+        VBox card = new VBox(8);
+        card.setPrefWidth(CARD_WIDTH);
+        card.setMaxWidth(CARD_WIDTH);
+        card.setPadding(new Insets(12));
+        card.setAlignment(Pos.TOP_RIGHT);
+        card.setStyle("-fx-background-color: white; -fx-background-radius: 10; "
+                + "-fx-border-color: #e2e8f0; -fx-border-radius: 10;");
+
+        card.getChildren().addAll(statusChip, titleLabel, priceLabel, metaLabel, actionsRow);
+        return card;
+    }
+
+    /**
+     * Status text.
+     * @param status the status
+     * @return the result
+     */
+    private String statusText(String status) {
+        return switch (status.toUpperCase()) {
+            case "ACTIVE" -> "فعال";
+            case "PENDING" -> "در انتظار بررسی";
+            case "REJECTED" -> "رد شده";
+            case "SOLD" -> "فروخته شده";
+            case "DELETED" -> "حذف شده";
+            default -> status;
+        };
+    }
+
+    /**
+     * Status chip style.
+     * @param status the status
+     * @return the result
+     */
+    private String statusChipStyle(String status) {
+        String base = "-fx-font-size: 10px; -fx-background-radius: 20; -fx-padding: 3px 10px;";
+        return switch (status.toUpperCase()) {
+            case "ACTIVE" -> base + "-fx-text-fill: #166534; -fx-background-color: #dcfce7;";
+            case "PENDING" -> base + "-fx-text-fill: #92400e; -fx-background-color: #fef3c7;";
+            case "REJECTED" -> base + "-fx-text-fill: #991b1b; -fx-background-color: #fee2e2;";
+            case "SOLD" -> base + "-fx-text-fill: #1e40af; -fx-background-color: #dbeafe;";
+            case "DELETED" -> base + "-fx-text-fill: #475569; -fx-background-color: #e2e8f0;";
+            default -> base + "-fx-text-fill: #334155; -fx-background-color: #f1f5f9;";
+        };
+    }
+
+    /**
+     * Handles delete.
+     * @param ad the ad
+     */
+    private void handleDelete(Advertisement ad) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "آیا از حذف این آگهی مطمئن هستید؟",
+                ButtonType.YES, ButtonType.NO);
+        confirm.setHeaderText("حذف آگهی");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.YES) {
+            return;
+        }
+
+        String token = UserSession.getInstance().getToken();
+        new Thread(() -> {
+            String outcome = advertisementService.deleteAdvertisement(token, ad.getId());
+            Platform.runLater(() -> {
+                if ("SUCCESS".equals(outcome)) {
+                    loadAllAdvertisements();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, outcome, ButtonType.OK);
+                    alert.setHeaderText("خطا در حذف آگهی");
+                    alert.showAndWait();
+                }
+            });
+        }).start();
+    }
+
+    /**
+     * Handles refresh.
+     */
+    @FXML
+    private void handleRefresh() {
+        loadAllAdvertisements();
+    }
+
+    /**
+     * Handles back to dashboard.
+     */
+    @FXML
+    private void handleBackToDashboard() {
+        NavigationService.switchScene("/fxml/dashboard/admin-dashboard-view.fxml", "پنل مدیریت (ادمین)");
+    }
+
+    /**
+     * Handles manage users.
+     */
+    @FXML
+    private void handleManageUsers() {
+        NavigationService.switchScene("/fxml/dashboard/user-management-view.fxml", "مدیریت کاربران");
+    }
+
+    /**
+     * Handles review ads.
+     */
+    @FXML
+    private void handleReviewAds() {
+        NavigationService.switchScene("/fxml/dashboard/review-ads-view.fxml", "بررسی آگهی‌ها");
+    }
+
+    /**
+     * Handles manage sections.
+     */
+    @FXML
+    private void handleManageSections() {
+        NavigationService.switchScene("/fxml/dashboard/manage-sections-view.fxml", "مدیریت بخش‌ها");
+    }
+
+    /**
+     * Handles logout.
+     */
+    @FXML
+    private void handleLogout() {
+        UserSession.getInstance().cleanSession();
+        NavigationService.switchScene("/fxml/auth/login-view.fxml", "ورود به حساب کاربری");
+    }
+}

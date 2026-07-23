@@ -84,6 +84,12 @@ public interface AdvertisementService {
     List<AdvertisementSummaryResponse> getMyAdvertisements(UserEntity owner);
 
     /**
+     * All advertisements, any status, newest first (admin "all ads" view).
+     * @return the result
+     */
+    List<AdvertisementSummaryResponse> getAllAdvertisementsForAdmin();
+
+    /**
      * Pending ads for admin (oldest first).
      * @return the result
      */

@@ -91,6 +91,16 @@ public class AdvertisementController {
     }
 
     /**
+     * GET /api/advertisements/all -> admin only, all ads regardless of status, newest first.
+     * @return the result
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<AdvertisementSummaryResponse>> getAllAdvertisementsForAdmin() {
+        return ResponseEntity.ok(advertisementService.getAllAdvertisementsForAdmin());
+    }
+
+    /**
      * GET /api/advertisements/{id} -> public, full detail. Ownership flag is computed correctly whether the caller is logged in or a guest.
      * @param id the id
      * @param authentication the authentication

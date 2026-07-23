@@ -103,6 +103,9 @@
                         <Button text="بررسی آگهی‌ها" onAction="#handleReviewAds"
                                 style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
 
+                        <Button text="کل آگهی‌ها" onAction="#handleAllAds"
+                                style="-fx-background-color: #16a34a; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+
                         <Button text="مدیریت بخش‌ها" onAction="#handleManageSections"
                                 style="-fx-background-color: #475569; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
                     </HBox>
@@ -130,6 +133,8 @@
             <Button text="مدیریت کاربران" onAction="#handleManageUsers" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Button text="بررسی آگهی‌ها" onAction="#handleReviewAds" maxWidth="Infinity" styleClass="menu-button"/>
+
+            <Button text="کل آگهی‌ها" onAction="#handleAllAds" maxWidth="Infinity" styleClass="menu-button"/>
 
             <Button text="مدیریت بخش‌ها" onAction="#handleManageSections" maxWidth="Infinity" styleClass="menu-button"/>
 
