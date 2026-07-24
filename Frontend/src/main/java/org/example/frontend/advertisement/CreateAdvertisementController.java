@@ -69,7 +69,7 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         titleField.setText(ad.getTitle());
         descriptionField.setText(ad.getDescription());
         if (ad.getPrice() != null) {
-            priceField.setText(String.valueOf(ad.getPrice()));
+            priceField.setText(formatPriceForEdit(ad.getPrice()));
         }
 
         if (formTitleLabel != null) {
@@ -389,5 +389,12 @@ public class CreateAdvertisementController implements javafx.fxml.Initializable 
         if (!statusLabel.getStyleClass().contains("success-text")) {
             statusLabel.getStyleClass().add("success-text");
         }
+    }
+
+    private String formatPriceForEdit(Double price) {
+        if (price == Math.floor(price) && !Double.isInfinite(price)) {
+            return java.math.BigDecimal.valueOf(price).toBigInteger().toString();
+        }
+        return java.math.BigDecimal.valueOf(price).toPlainString();
     }
 }
